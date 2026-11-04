@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -34,6 +35,7 @@ import org.spf4j.avro.AvroRuntimeException;
 import org.spf4j.avro.AvroTypeException;
 import org.spf4j.avro.Conversion;
 import org.spf4j.avro.Conversions;
+import org.spf4j.avro.DatumContext;
 import org.spf4j.avro.LogicalType;
 import org.spf4j.avro.Schema;
 import org.spf4j.avro.Schema.Field;
@@ -195,19 +197,26 @@ public class GenericDatumReader<D> implements DatumReader<D> {
 
   /** Called to read data. */
   protected Object read(Object old, Schema expected, ResolvingDecoder in) throws IOException {
-    Object datum = readWithoutConversion(old, expected, in);
     LogicalType logicalType = expected.getLogicalType();
     if (logicalType != null) {
       Conversion<?> conversion = getData().getConversionFor(logicalType);
       if (conversion != null) {
-        return convert(datum, expected, logicalType, conversion);
+        return readWithConversion(old, expected, logicalType, conversion, in);
       }
     }
-    return datum;
+    return readWithoutConversion(old, expected, in);
   }
 
   protected Object readWithConversion(Object old, Schema expected, LogicalType logicalType, Conversion<?> conversion,
       ResolvingDecoder in) throws IOException {
+    // The conversion gets first refusal on the raw stream: a direct decode
+    // that is present replaces the read-then-convert default path entirely.
+    if (conversion != null) {
+      Optional<?> direct = conversion.tryDirectDecode(in, expected, DatumContext.of(getData()));
+      if (direct.isPresent()) {
+        return direct.get();
+      }
+    }
     return convert(readWithoutConversion(old, expected, in), expected, logicalType, conversion);
   }
 

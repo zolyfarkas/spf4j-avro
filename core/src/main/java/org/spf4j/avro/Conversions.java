@@ -24,8 +24,10 @@ import org.spf4j.avro.generic.GenericFixed;
 import org.spf4j.avro.generic.IndexedRecord;
 import org.spf4j.avro.io.BinaryDecoder;
 import org.spf4j.avro.io.BinaryEncoder;
+import org.spf4j.avro.io.Decoder;
 import org.spf4j.avro.io.DecoderFactory;
 import org.spf4j.avro.io.EncoderFactory;
+import org.spf4j.avro.io.JsonExtensionDecoder;
 import org.spf4j.avro.util.TimePeriod;
 
 import java.io.ByteArrayOutputStream;
@@ -39,6 +41,7 @@ import java.nio.IntBuffer;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class Conversions {
@@ -100,6 +103,35 @@ public class Conversions {
     @Override
     public String getLogicalTypeName() {
       return "decimal";
+    }
+
+    /**
+     * Direct decode of the natural (extended) JSON form: when the decoder
+     * is an extension decoder, read the value as the JSON number it is
+     * written as, adjusted to the schema's scale. Without this, a natural
+     * JSON number goes through {@code readBytes}, whose scale-prefixed
+     * layout {@link #fromBytes} would misread as the unscaled value.
+     * (The fork's {@code Decimal2Converter} direct path, applied to the
+     * standard decimal logical type.)
+     */
+    @Override
+    public Optional<BigDecimal> tryDirectDecode(Decoder dec, Schema schema) throws IOException {
+      if (dec instanceof JsonExtensionDecoder) {
+        BigDecimal bigD = ((JsonExtensionDecoder) dec).readBigDecimal(schema);
+        if (bigD != null) {
+          int scale = ((LogicalTypes.Decimal) schema.getLogicalType()).getScale();
+          if (bigD.scale() == scale) {
+            return Optional.of(bigD);
+          }
+          try {
+            return Optional.of(bigD.setScale(scale, RoundingMode.UNNECESSARY));
+          } catch (ArithmeticException e) {
+            throw new AvroTypeException(
+                "Cannot decode decimal " + bigD + " as scale " + scale + " without rounding", e);
+          }
+        }
+      }
+      return Optional.empty();
     }
 
     @Override

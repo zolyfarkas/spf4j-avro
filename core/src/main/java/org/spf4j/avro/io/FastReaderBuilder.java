@@ -29,6 +29,7 @@ import java.util.function.IntFunction;
 import org.spf4j.avro.AvroTypeException;
 import org.spf4j.avro.Conversion;
 import org.spf4j.avro.Conversions;
+import org.spf4j.avro.DatumContext;
 import org.spf4j.avro.Resolver;
 import org.spf4j.avro.Resolver.Action;
 import org.spf4j.avro.Resolver.Container;
@@ -271,8 +272,18 @@ public class FastReaderBuilder {
     }
 
     Conversion<?> finalConversion = conversion;
-    return (old, decoder) -> Conversions.convertToLogicalType(reader.read(old, decoder), readerSchema,
-        readerSchema.getLogicalType(), finalConversion);
+    return (old, decoder) -> {
+      // The conversion gets first refusal on the raw stream, exactly as in
+      // GenericDatumReader: a direct decode that is present replaces the
+      // read-then-convert default path entirely. (This path hands the
+      // conversion the raw decoder, not a resolving one.)
+      Optional<?> direct = finalConversion.tryDirectDecode(decoder, readerSchema, DatumContext.of(data));
+      if (direct.isPresent()) {
+        return direct.get();
+      }
+      return Conversions.convertToLogicalType(reader.read(old, decoder), readerSchema,
+          readerSchema.getLogicalType(), finalConversion);
+    };
   }
 
   private FieldReader getNonConvertedReader(Action action) throws IOException {

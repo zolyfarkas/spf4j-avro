@@ -18,15 +18,19 @@
 
 package org.spf4j.avro;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ServiceLoader;
 
 import org.spf4j.avro.generic.GenericData;
 import org.spf4j.avro.generic.GenericEnumSymbol;
 import org.spf4j.avro.generic.GenericFixed;
 import org.spf4j.avro.generic.IndexedRecord;
+import org.spf4j.avro.io.Decoder;
+import org.spf4j.avro.io.Encoder;
 
 /**
  * Conversion between generic and logical type instances.
@@ -185,6 +189,90 @@ public abstract class Conversion<T> {
 
   public IndexedRecord toRecord(T value, Schema schema, LogicalType type) {
     throw new UnsupportedOperationException("toRecord is not supported for " + type.getName());
+  }
+
+  // The direct encode/decode hooks below are ported from the spf4j fork of
+  // Avro (where they returned the fork's null-tolerant util.Optional; here
+  // they use java.util.Optional, so a direct decode cannot express a
+  // present null value -- returning Optional.empty() falls back to the
+  // default path, which handles null through the usual conversion).
+
+  /**
+   * Special encoding logic for a logical type. This allows a conversion to
+   * take over encoding of a value entirely for a specific encoder -- for
+   * example, writing a decimal as a raw JSON number through an extension
+   * encoder instead of in the standard bytes-as-string form.
+   *
+   * <p>
+   * Called by the datum writers before the default conversion path
+   * ({@link #toBytes(Object, Schema, LogicalType)} and friends).
+   * </p>
+   *
+   * @param object the value to encode
+   * @param enc    the encoder to write to
+   * @param schema the schema of the value, carrying the logical type
+   * @return {@code true} if direct encoding was done (the value has been
+   *         fully written to {@code enc}); {@code false} to let the caller
+   *         use the default conversion path
+   */
+  public boolean tryDirectEncode(T object, final Encoder enc, final Schema schema) throws IOException {
+    return false;
+  }
+
+  /**
+   * Context-carrying form of
+   * {@link #tryDirectEncode(Object, Encoder, Schema)}, invoked by the datum
+   * writers. The default implementation delegates to the three-argument
+   * form, so conversions written against that form keep working unchanged;
+   * override this form when the encoding needs the IO context (see
+   * {@link DatumContext}).
+   *
+   * @param context the IO context of the current datum operation
+   * @return {@code true} if direct encoding was done
+   */
+  public boolean tryDirectEncode(T object, final Encoder enc, final Schema schema, final DatumContext context)
+      throws IOException {
+    return tryDirectEncode(object, enc, schema);
+  }
+
+  /**
+   * Special decoding logic for a logical type. This allows a conversion to
+   * take over decoding of a value entirely for a specific decoder -- for
+   * example, reading a decimal from its natural JSON number form through
+   * an extension decoder instead of from the standard bytes layout.
+   *
+   * <p>
+   * Called by the datum readers before the default path (read the raw
+   * value, then convert it with the {@code fromXxx} methods).
+   * </p>
+   *
+   * @param dec    the decoder to read from (a resolving decoder when the
+   *               read goes through schema resolution; extension decoder
+   *               features of the underlying decoder are reachable through
+   *               it, see
+   *               {@link org.spf4j.avro.io.ResolvingDecoder})
+   * @param schema the reader schema of the value, carrying the logical type
+   * @return the directly decoded value, or {@link Optional#empty()} if no
+   *         direct decode applies (the caller then uses the default path)
+   */
+  public Optional<T> tryDirectDecode(final Decoder dec, final Schema schema) throws IOException {
+    return Optional.empty();
+  }
+
+  /**
+   * Context-carrying form of {@link #tryDirectDecode(Decoder, Schema)},
+   * invoked by the datum readers. The default implementation delegates to
+   * the two-argument form, so conversions written against that form keep
+   * working unchanged; override this form when the decoding needs the IO
+   * context (see {@link DatumContext}).
+   *
+   * @param context the IO context of the current datum operation
+   * @return the directly decoded value, or {@link Optional#empty()} for
+   *         the default path
+   */
+  public Optional<T> tryDirectDecode(final Decoder dec, final Schema schema, final DatumContext context)
+      throws IOException {
+    return tryDirectDecode(dec, schema);
   }
 
 }

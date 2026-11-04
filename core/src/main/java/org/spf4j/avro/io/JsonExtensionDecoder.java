@@ -47,10 +47,22 @@ public interface JsonExtensionDecoder {
 
   JsonParser bufferValue(final Schema schema) throws IOException;
 
-  /** @return the next value as a BigInteger, or null if no number is next */
+  /**
+   * @return the next value as a BigInteger, or null if no number is next.
+   *         Implementations advance their grammar to the value before
+   *         inspecting it, so a null return does not leave the decoder
+   *         positioned to re-read the same value through the grammar
+   *         (see {@link ExtendedJsonDecoder}).
+   */
   BigInteger readBigInteger(final Schema schema) throws IOException;
 
-  /** @return the next value as a BigDecimal, or null if no number is next */
+  /**
+   * @return the next value as a BigDecimal, or null if no number is next.
+   *         Implementations advance their grammar to the value before
+   *         inspecting it, so a null return does not leave the decoder
+   *         positioned to re-read the same value through the grammar
+   *         (see {@link ExtendedJsonDecoder}).
+   */
   BigDecimal readBigDecimal(final Schema schema) throws IOException;
 
 }

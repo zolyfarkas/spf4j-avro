@@ -379,8 +379,22 @@ public final class ExtendedJsonDecoder extends JsonDecoder implements JsonExtens
     }
   }
 
+  // readBigInteger/readBigDecimal advance the grammar to the value BEFORE
+  // inspecting the token (the fork inspected the token first). Only a
+  // grammar advance positions the token at a nested value -- e.g. a record
+  // field -- so the fork's order could only ever see a value that a
+  // previous advance had already positioned, and returned null for every
+  // record field read through a datum reader. The advance-first order is
+  // the one every other read method on this decoder uses. Consequence: a
+  // null return ("the value is not a JSON number") leaves the grammar
+  // advanced past the value's terminal with the value token unconsumed,
+  // so a caller must not fall back to a grammar-driven read of the same
+  // value through this decoder; through the datum readers this narrows
+  // extension-decoder decimal/bigint reads to the natural (number) form.
+
   @Override
   public BigInteger readBigInteger(final Schema schema) throws IOException {
+    advanceBy(schema);
     JsonToken currentToken = in.getCurrentToken();
     BigInteger result;
     if (currentToken == JsonToken.VALUE_NUMBER_INT) {
@@ -388,13 +402,13 @@ public final class ExtendedJsonDecoder extends JsonDecoder implements JsonExtens
     } else {
       return null;
     }
-    advanceBy(schema);
     in.nextToken();
     return result;
   }
 
   @Override
   public BigDecimal readBigDecimal(final Schema schema) throws IOException {
+    advanceBy(schema);
     JsonToken currentToken = in.getCurrentToken();
     BigDecimal result;
     switch (currentToken) {
@@ -405,7 +419,6 @@ public final class ExtendedJsonDecoder extends JsonDecoder implements JsonExtens
     default:
       return null;
     }
-    advanceBy(schema);
     in.nextToken();
     return result;
   }

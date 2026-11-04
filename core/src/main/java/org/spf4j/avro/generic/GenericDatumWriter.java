@@ -29,6 +29,7 @@ import org.spf4j.avro.AvroRuntimeException;
 import org.spf4j.avro.AvroTypeException;
 import org.spf4j.avro.Conversion;
 import org.spf4j.avro.Conversions;
+import org.spf4j.avro.DatumContext;
 import org.spf4j.avro.LogicalType;
 import org.spf4j.avro.Schema;
 import org.spf4j.avro.Schema.Field;
@@ -90,10 +91,22 @@ public class GenericDatumWriter<D> implements DatumWriter<D> {
     LogicalType logicalType = schema.getLogicalType();
     if (datum != null && logicalType != null) {
       Conversion<?> conversion = getData().getConversionByClass(datum.getClass(), logicalType);
+      // The conversion gets first refusal on the raw stream: a direct
+      // encode that reports success replaces the convert-then-write
+      // default path entirely.
+      if (conversion != null && tryDirectEncode(conversion, datum, out, schema)) {
+        return;
+      }
       writeWithoutConversion(schema, convert(schema, logicalType, conversion, datum), out);
     } else {
       writeWithoutConversion(schema, datum, out);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  private boolean tryDirectEncode(Conversion<?> conversion, Object datum, Encoder out, Schema schema)
+      throws IOException {
+    return ((Conversion<Object>) conversion).tryDirectEncode(datum, out, schema, DatumContext.of(getData()));
   }
 
   /**

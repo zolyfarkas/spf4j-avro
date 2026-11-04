@@ -18,6 +18,8 @@
 package org.spf4j.avro.io;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
@@ -27,6 +29,9 @@ import org.spf4j.avro.Schema;
 import org.spf4j.avro.io.parsing.ResolvingGrammarGenerator;
 import org.spf4j.avro.io.parsing.Symbol;
 import org.spf4j.avro.util.Utf8;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * {@link Decoder} that performs type-resolution between the reader's and
@@ -43,7 +48,7 @@ import org.spf4j.avro.util.Utf8;
  * See the <a href="parsing/doc-files/parsing.html">parser documentation</a> for
  * information on how this works.
  */
-public class ResolvingDecoder extends ValidatingDecoder {
+public class ResolvingDecoder extends ValidatingDecoder implements JsonExtensionDecoder {
 
   private Decoder backup;
 
@@ -155,6 +160,129 @@ public class ResolvingDecoder extends ValidatingDecoder {
    */
   public final void drain() throws IOException {
     parser.processImplicitActions();
+  }
+
+  // JsonExtensionDecoder support. The fork carried this in a separate
+  // JsonExtensionResolvingDecoder subclass selected by DecoderFactory;
+  // here the (single, schema-cached) ResolvingDecoder implements the
+  // interface itself and delegates to the underlying decoder only when
+  // that decoder is itself an extension decoder, so a resolver created
+  // for one input can be reconfigured for any other. Each method lets the
+  // underlying decoder consume the value first (advancing its own
+  // grammar) and only then advances this decoder's resolving grammar by
+  // the same schema. When the underlying decoder is not an extension
+  // decoder at all, the number reads return null without touching either
+  // grammar, so the caller's default read path is unaffected; when it is
+  // one, a null result carries the caveat documented on
+  // ExtendedJsonDecoder.readBigDecimal (the underlying grammar has
+  // advanced to the value, so that value is not fallback-readable).
+
+  private JsonExtensionDecoder extensionDecoder() {
+    return in instanceof JsonExtensionDecoder ? (JsonExtensionDecoder) in : null;
+  }
+
+  private JsonExtensionDecoder requireExtensionDecoder() {
+    JsonExtensionDecoder ext = extensionDecoder();
+    if (ext == null) {
+      throw new UnsupportedOperationException(
+          "Underlying decoder " + in + " does not implement JsonExtensionDecoder");
+    }
+    return ext;
+  }
+
+  /**
+   * Advance this decoder's resolving grammar past one value of the given
+   * schema, mirroring what the corresponding {@code readXxx} method would
+   * do. Only terminal (primitive) schemas are supported: a direct decode
+   * of a composite schema through a resolving decoder is not (yet)
+   * supported -- such conversions read their value through the terminal
+   * fields instead.
+   */
+  private void advanceBy(Schema schema) throws IOException {
+    switch (schema.getType()) {
+    case NULL:
+      parser.advance(Symbol.NULL);
+      break;
+    case BOOLEAN:
+      parser.advance(Symbol.BOOLEAN);
+      break;
+    case INT:
+      parser.advance(Symbol.INT);
+      break;
+    case LONG:
+      parser.advance(Symbol.LONG);
+      break;
+    case FLOAT:
+      parser.advance(Symbol.FLOAT);
+      break;
+    case DOUBLE:
+      parser.advance(Symbol.DOUBLE);
+      break;
+    case STRING:
+      parser.advance(Symbol.STRING);
+      break;
+    case BYTES:
+      parser.advance(Symbol.BYTES);
+      break;
+    case FIXED:
+      parser.advance(Symbol.FIXED);
+      parser.popSymbol();
+      break;
+    case ENUM:
+      parser.advance(Symbol.ENUM);
+      parser.popSymbol();
+      break;
+    default:
+      throw new UnsupportedOperationException(
+          "Direct extension decode of composite schema " + schema + " through a ResolvingDecoder is not supported");
+    }
+  }
+
+  @Override
+  public BigDecimal readBigDecimal(Schema schema) throws IOException {
+    JsonExtensionDecoder ext = extensionDecoder();
+    if (ext == null) {
+      return null;
+    }
+    BigDecimal result = ext.readBigDecimal(schema);
+    if (result != null) {
+      advanceBy(schema);
+    }
+    return result;
+  }
+
+  @Override
+  public BigInteger readBigInteger(Schema schema) throws IOException {
+    JsonExtensionDecoder ext = extensionDecoder();
+    if (ext == null) {
+      return null;
+    }
+    BigInteger result = ext.readBigInteger(schema);
+    if (result != null) {
+      advanceBy(schema);
+    }
+    return result;
+  }
+
+  @Override
+  public <T> T readValue(Schema schema, Class<T> clasz) throws IOException {
+    T result = requireExtensionDecoder().readValue(schema, clasz);
+    advanceBy(schema);
+    return result;
+  }
+
+  @Override
+  public JsonNode readValueAsTree(Schema schema) throws IOException {
+    JsonNode result = requireExtensionDecoder().readValueAsTree(schema);
+    advanceBy(schema);
+    return result;
+  }
+
+  @Override
+  public JsonParser bufferValue(Schema schema) throws IOException {
+    JsonParser result = requireExtensionDecoder().bufferValue(schema);
+    advanceBy(schema);
+    return result;
   }
 
   @Override

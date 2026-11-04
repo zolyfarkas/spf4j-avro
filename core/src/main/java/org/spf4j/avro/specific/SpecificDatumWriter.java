@@ -21,6 +21,7 @@ import java.io.IOException;
 
 import org.spf4j.avro.AvroTypeException;
 import org.spf4j.avro.Conversion;
+import org.spf4j.avro.DatumContext;
 import org.spf4j.avro.LogicalType;
 import org.spf4j.avro.Schema;
 import org.spf4j.avro.path.TracingAvroTypeException;
@@ -92,6 +93,12 @@ public class SpecificDatumWriter<T> extends GenericDatumWriter<T> {
     super.writeRecord(schema, datum, out);
   }
 
+  @SuppressWarnings("unchecked")
+  private boolean tryDirectEncodeField(Conversion<?> conversion, Object value, Encoder out, Schema fieldSchema)
+      throws IOException {
+    return ((Conversion<Object>) conversion).tryDirectEncode(value, out, fieldSchema, DatumContext.of(getData()));
+  }
+
   @Override
   protected void writeField(Object datum, Schema.Field f, Encoder out, Object state) throws IOException {
     if (datum instanceof SpecificRecordBase) {
@@ -100,6 +107,10 @@ public class SpecificDatumWriter<T> extends GenericDatumWriter<T> {
       LogicalType logicalType = fieldSchema.getLogicalType();
 
       Object value = getData().getField(datum, f.name(), f.pos());
+      if (conversion != null && logicalType != null && value != null
+          && tryDirectEncodeField(conversion, value, out, fieldSchema)) {
+        return;
+      }
       if (conversion != null && logicalType != null) {
         value = convert(fieldSchema, logicalType, conversion, value);
       }

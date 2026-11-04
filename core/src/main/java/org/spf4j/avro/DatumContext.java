@@ -1,0 +1,74 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.spf4j.avro;
+
+import java.util.Objects;
+
+import org.spf4j.avro.generic.GenericData;
+
+/**
+ * The IO context handed to the direct conversion hooks
+ * ({@link Conversion#tryDirectDecode(org.spf4j.avro.io.Decoder, Schema, DatumContext)}
+ * and
+ * {@link Conversion#tryDirectEncode(Object, org.spf4j.avro.io.Encoder, Schema, DatumContext)})
+ * by the datum readers and writers at each call site.
+ *
+ * <p>
+ * This is the GenericData-carried context of the library's resolver design:
+ * at this stage it carries only the {@link GenericData} performing the IO
+ * operation (the instance the conversion was registered on, whose other
+ * conversions and settings are therefore reachable from the hook). It is
+ * the extension point through which the GenericData's {@link SchemaResolver}
+ * will be delivered to conversions in a later stage; conversions should
+ * take what they need from the context per call instead of capturing
+ * ambient (static or construction-time) state.
+ * </p>
+ *
+ * <p>
+ * Instances are immutable and are created by the datum reader/writer for
+ * each hook invocation; a context never outlives the datum operation it
+ * belongs to.
+ * </p>
+ */
+public final class DatumContext {
+
+  private final GenericData data;
+
+  private DatumContext(GenericData data) {
+    this.data = Objects.requireNonNull(data, "data");
+  }
+
+  /** Create a context carrying the given datum model. */
+  public static DatumContext of(GenericData data) {
+    return new DatumContext(data);
+  }
+
+  /**
+   * The datum model performing the IO operation (the {@code GenericData},
+   * {@code SpecificData} or {@code ReflectData} instance the conversion was
+   * registered on).
+   */
+  public GenericData getData() {
+    return data;
+  }
+
+  @Override
+  public String toString() {
+    return "DatumContext{data=" + data + '}';
+  }
+}
