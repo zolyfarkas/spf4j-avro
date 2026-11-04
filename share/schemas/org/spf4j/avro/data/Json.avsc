@@ -1,0 +1,15 @@
+{"type": "record", "name": "Json", "namespace":"org.spf4j.avro.data",
+ "fields": [
+     {"name": "value",
+      "type": [
+          "long",
+          "double",
+          "string",
+          "boolean",
+          "null",
+          {"type": "array", "items": "Json"},
+          {"type": "map", "values": "Json"}
+      ]
+     }
+ ]
+}

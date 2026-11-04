@@ -49,7 +49,7 @@
   <build>
     <resources>
       <resource>
-        <directory>../../../share/schemas</directory>
+        <directory>../share/schemas</directory>
         <includes>
           <include>org/spf4j/avro/data/Json.avsc</include>
         </includes>
@@ -63,7 +63,7 @@
         <directory>src/test/resources</directory>
       </testResource>
       <testResource>
-        <directory>../../../share/</directory>
+        <directory>../share/</directory>
         <includes>
           <include>schemas/**</include>
           <include>test/**</include>

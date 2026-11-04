@@ -39,7 +39,7 @@
         <directory>../../src/test/resources</directory>
       </testResource>
       <testResource>
-        <directory>../../../../../share/</directory>
+        <directory>../../../share/</directory>
         <includes>
           <include>schemas/**</include>
           <include>test/**</include>

@@ -1,0 +1,21 @@
+
+{"namespace": "org.spf4j.avro.test",
+ "protocol": "BulkData",
+
+ "types": [],
+
+ "messages": {
+
+     "read": {
+         "request": [],
+         "response": "bytes"
+     },
+
+     "write": {
+         "request": [ {"name": "data", "type": "bytes"} ],
+         "response": "null"
+     }
+
+ }
+
+}
