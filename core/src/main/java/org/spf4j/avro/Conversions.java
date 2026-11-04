@@ -18,6 +18,7 @@
 
 package org.spf4j.avro;
 
+import org.spf4j.avro.data.TimeConversions;
 import org.spf4j.avro.generic.GenericData;
 import org.spf4j.avro.generic.GenericEnumSymbol;
 import org.spf4j.avro.generic.GenericFixed;
@@ -42,11 +43,70 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ServiceLoader;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Conversions {
+
+  private static final Logger LOG = LoggerFactory.getLogger(Conversions.class);
+
+  private static final Map<String, Conversion<?>> DEFAULT_CONVERSIONS;
+
+  static {
+    Map<String, Conversion<?>> map = new LinkedHashMap<>();
+    registerConversion(map, new DecimalConversion());
+    registerConversion(map, new BigDecimalConversion());
+    registerConversion(map, new DurationConversion());
+    registerConversion(map, new UUIDConversion());
+    registerConversion(map, new TimeConversions.DateConversion());
+    registerConversion(map, new TimeConversions.TimeMillisConversion());
+    registerConversion(map, new TimeConversions.TimeMicrosConversion());
+    registerConversion(map, new TimeConversions.TimestampMillisConversion());
+    registerConversion(map, new TimeConversions.TimestampMicrosConversion());
+    registerConversion(map, new TimeConversions.TimestampNanosConversion());
+    registerConversion(map, new TimeConversions.LocalTimestampMillisConversion());
+    registerConversion(map, new TimeConversions.LocalTimestampMicrosConversion());
+    registerConversion(map, new TimeConversions.LocalTimestampNanosConversion());
+    for (Conversion<?> conversion : ServiceLoader.load(Conversion.class)) {
+      registerConversion(map, conversion);
+    }
+    DEFAULT_CONVERSIONS = map;
+  }
+
+  /**
+   * The default conversions: this class's and {@link TimeConversions}'
+   * built-in conversions, plus every {@link Conversion} provider discovered
+   * through {@link ServiceLoader} (that is, named in
+   * {@code META-INF/services/org.spf4j.avro.Conversion}).
+   *
+   * <p>
+   * Conversions are keyed by logical type name. Built-ins are registered
+   * first and ServiceLoader providers afterwards, so on a logical-type-name
+   * collision a provider overwrites the built-in it replaces (and a later
+   * provider overwrites an earlier one) -- the fork's registration order,
+   * and the same put-by-name overwrite {@code GenericData} applies in its
+   * own, separate ServiceLoader discovery.
+   *
+   * @return a copy of the default conversions, keyed by logical type name;
+   *         mutating the returned map does not affect the defaults seen by
+   *         other callers
+   */
+  public static Map<String, Conversion<?>> defaultConversions() {
+    return new LinkedHashMap<>(DEFAULT_CONVERSIONS);
+  }
+
+  private static void registerConversion(Map<String, Conversion<?>> map, Conversion<?> conversion) {
+    Conversion<?> existing = map.put(conversion.getLogicalTypeName(), conversion);
+    if (existing != null) {
+      LOG.info("Conversion: {} is being overwritten with {}", existing, conversion);
+    }
+  }
 
   public static class UUIDConversion extends Conversion<UUID> {
     @Override
