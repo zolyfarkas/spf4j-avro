@@ -350,7 +350,13 @@ public class ResolvingDecoder extends ValidatingDecoder implements JsonExtension
         // grammar pass does not produce.)
         continue;
       }
-      if (top.production != null && top.kind != Symbol.Kind.ROOT) {
+      if (top.production != null) {
+        // A ROOT top is the not-yet-expanded grammar of a root-level
+        // value (the value is the whole input, e.g. a logical-typed bytes
+        // schema decoded directly or as a field default): expand it like
+        // Parser.advance does -- its production carries the root itself
+        // as the bottom sentinel, with the value's symbols on top -- and
+        // match the terminal they hold.
         parser.pushProduction(top);
         continue;
       }
@@ -385,7 +391,9 @@ public class ResolvingDecoder extends ValidatingDecoder implements JsonExtension
         }
         continue;
       }
-      if (top.production != null && top.kind != Symbol.Kind.ROOT) {
+      if (top.production != null) {
+        // ROOT included, as in advanceTerminal: a root-level record
+        // value's grammar is expanded on first use.
         parser.pushProduction(top);
         continue;
       }

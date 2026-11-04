@@ -81,6 +81,7 @@ public class TestCompositeDirectDecode {
 
   private static final String LT = "test_composite_lt";
   private static final String ARRAY_LT = "test_array_lt";
+  private static final String ROOT_BYTES_LT = "test_root_bytes_lt";
 
   static {
     LogicalTypes.register(LT, new LogicalTypes.LogicalTypeFactory() {
@@ -103,6 +104,17 @@ public class TestCompositeDirectDecode {
       @Override
       public String getTypeName() {
         return ARRAY_LT;
+      }
+    });
+    LogicalTypes.register(ROOT_BYTES_LT, new LogicalTypes.LogicalTypeFactory() {
+      @Override
+      public LogicalType fromSchema(Schema schema) {
+        return new LogicalType(ROOT_BYTES_LT);
+      }
+
+      @Override
+      public String getTypeName() {
+        return ROOT_BYTES_LT;
       }
     });
   }
@@ -153,6 +165,36 @@ public class TestCompositeDirectDecode {
       if (dec instanceof JsonExtensionDecoder) {
         JsonNode node = ((JsonExtensionDecoder) dec).readValueAsTree(schema);
         return Optional.of(node.toString());
+      }
+      return Optional.empty();
+    }
+  }
+
+  /**
+   * Direct-decodes a logical-typed bytes value by reading it as a Map, as
+   * the logical-types library's json_record conversion does through
+   * {@code JsonConversions.tryDirectDecode}.
+   */
+  public static class MapValueConversion extends Conversion<Map> {
+    @Override
+    @SuppressWarnings("unchecked")
+    public Class<Map> getConvertedType() {
+      return Map.class;
+    }
+
+    @Override
+    public String getLogicalTypeName() {
+      return ROOT_BYTES_LT;
+    }
+
+    @Override
+    public Optional<Map> tryDirectDecode(Decoder dec, Schema schema) throws IOException {
+      if (dec instanceof JsonExtensionDecoder) {
+        try {
+          return Optional.ofNullable(((JsonExtensionDecoder) dec).readValue(schema, Map.class));
+        } catch (UnsupportedOperationException ex) {
+          return Optional.empty();
+        }
       }
       return Optional.empty();
     }
@@ -256,6 +298,28 @@ public class TestCompositeDirectDecode {
       GenericRecord rec = readExtendedJson(schema, json, data(fast, new TreeConversion(ARRAY_LT)));
       assertEquals("[1,2,3]", rec.get("arr").toString());
       assertEquals("done", rec.get("after").toString());
+    }
+  }
+
+  @Test
+  public void testRootLevelBytesLogicalTypeClassicReader() throws IOException {
+    // A logical-typed bytes schema at the root: the value is the whole
+    // input, so the ResolvingDecoder's resolving grammar is still at its
+    // unexpanded ROOT when the conversion direct-decodes it. advanceBy
+    // must expand the root and consume the value as its bytes terminal;
+    // it used to throw "Attempt to process a bytes when a Root was
+    // expected" -- the failure Schema.validateDefault -> decodeDefault
+    // hits on the classic reader path when a json_record field default
+    // is validated.
+    Schema bytes = Schema.create(Schema.Type.BYTES);
+    new LogicalType(ROOT_BYTES_LT).addToSchema(bytes);
+    for (boolean fast : new boolean[] { false, true }) {
+      GenericDatumReader<Object> reader = new GenericDatumReader<>(bytes, bytes,
+          data(fast, new MapValueConversion()));
+      Object result = reader.read(null, new ExtendedJsonDecoder(bytes,
+          new ByteArrayInputStream("{\"a\":3}".getBytes(StandardCharsets.UTF_8))));
+      assertTrue(result instanceof Map);
+      assertEquals(3, ((Number) ((Map<?, ?>) result).get("a")).intValue());
     }
   }
 
