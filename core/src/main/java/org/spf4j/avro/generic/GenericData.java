@@ -166,20 +166,60 @@ public class GenericData {
   /**
    * Returns the first conversion found for the given class.
    *
+   * <p>
+   * The lookup is assignability-based, as in the spf4j avro fork: a
+   * conversion whose converted type is a supertype of (or interface
+   * implemented by) {@code datumClass} applies to it -- for example a
+   * conversion with converted type {@code Object}, {@code Map} or
+   * {@code Schema} applies to any datum class, a {@code HashMap} or a
+   * {@code Schema} subclass respectively. An exact-class registration wins
+   * over a supertype one; among supertype registrations the most specific
+   * converted type wins.
+   *
    * @param datumClass a Class
    * @return the first registered conversion for the class, or null
    */
   @SuppressWarnings("unchecked")
   public <T> Conversion<T> getConversionByClass(Class<T> datumClass) {
-    Map<String, Conversion<?>> conversions = conversionsByClass.get(datumClass);
-    if (conversions != null) {
-      return (Conversion<T>) conversions.values().iterator().next();
+    Map<String, Conversion<?>> exact = conversionsByClass.get(datumClass);
+    if (exact != null) {
+      return (Conversion<T>) exact.values().iterator().next();
     }
-    return null;
+    Conversion<?> best = null;
+    Class<?> bestType = null;
+    for (Map.Entry<Class<?>, Map<String, Conversion<?>>> entry : conversionsByClass.entrySet()) {
+      Class<?> convertedType = entry.getKey();
+      if (convertedType.isAssignableFrom(datumClass)
+          && (bestType == null || bestType.isAssignableFrom(convertedType))) {
+        Conversion<?> candidate = entry.getValue().values().iterator().next();
+        best = candidate;
+        bestType = convertedType;
+      }
+    }
+    return (Conversion<T>) best;
   }
 
   /**
    * Returns the conversion for the given class and logical type.
+   *
+   * <p>
+   * The lookup is by logical type name with an assignability check, as in
+   * the spf4j avro fork ({@code getConversionFor} there): the conversion
+   * registered for the logical type applies when its converted type is
+   * assignable from {@code datumClass}
+   * ({@code convertedType.isAssignableFrom(datumClass)}), not only when the
+   * datum's class is exactly the converted type. This is what the write
+   * path ({@link GenericDatumWriter}) dispatches through: conversions
+   * whose converted type is a supertype -- {@code Object} for {@code any},
+   * {@code Map} for {@code json_record}, {@code Schema} for {@code avsc},
+   * an interface such as {@code List} or {@code Temporal} -- were never
+   * applied to subclass/implementation datums by the exact-class lookup
+   * this replaces, so the raw value hit the writer and failed with a
+   * {@code ClassCastException}. An exact-class registration for the same
+   * logical type name still wins over a supertype one, and among supertype
+   * registrations the most specific converted type wins. The read path is
+   * unaffected: it looks conversions up by logical type only
+   * ({@link #getConversionFor(LogicalType)}).
    *
    * @param datumClass  a Class
    * @param logicalType a LogicalType
@@ -187,14 +227,34 @@ public class GenericData {
    */
   @SuppressWarnings("unchecked")
   public <T> Conversion<T> getConversionByClass(Class<T> datumClass, LogicalType logicalType) {
-    if (logicalType == null) {
+    if (logicalType == null || datumClass == null) {
       return null;
     }
-    Map<String, Conversion<?>> conversions = conversionsByClass.get(datumClass);
-    if (conversions != null) {
-      return (Conversion<T>) conversions.get(logicalType.getName());
+    String logicalTypeName = logicalType.getName();
+    Map<String, Conversion<?>> exact = conversionsByClass.get(datumClass);
+    if (exact != null) {
+      Conversion<?> conversion = exact.get(logicalTypeName);
+      if (conversion != null) {
+        return (Conversion<T>) conversion;
+      }
     }
-    return null;
+    Conversion<?> byName = conversions.get(logicalTypeName);
+    if (byName != null && byName.getConvertedType().isAssignableFrom(datumClass)) {
+      return (Conversion<T>) byName;
+    }
+    Conversion<?> best = null;
+    Class<?> bestType = null;
+    for (Map.Entry<Class<?>, Map<String, Conversion<?>>> entry : conversionsByClass.entrySet()) {
+      Class<?> convertedType = entry.getKey();
+      if (convertedType.isAssignableFrom(datumClass)) {
+        Conversion<?> candidate = entry.getValue().get(logicalTypeName);
+        if (candidate != null && (bestType == null || bestType.isAssignableFrom(convertedType))) {
+          best = candidate;
+          bestType = convertedType;
+        }
+      }
+    }
+    return (Conversion<T>) best;
   }
 
   /**
@@ -983,16 +1043,16 @@ public class GenericData {
     // this allows logical type concrete classes to overlap with supported ones
     // for example, a conversion could return a map
     if (datum != null) {
-      Map<String, Conversion<?>> conversions = conversionsByClass.get(datum.getClass());
-      if (conversions != null) {
-        List<Schema> candidates = union.getTypes();
-        for (int i = 0; i < candidates.size(); i += 1) {
-          LogicalType candidateType = candidates.get(i).getLogicalType();
-          if (candidateType != null) {
-            Conversion<?> conversion = conversions.get(candidateType.getName());
-            if (conversion != null) {
-              return i;
-            }
+      List<Schema> candidates = union.getTypes();
+      for (int i = 0; i < candidates.size(); i += 1) {
+        LogicalType candidateType = candidates.get(i).getLogicalType();
+        if (candidateType != null) {
+          // Assignability-based lookup, like the write path: a conversion
+          // whose converted type is a supertype of the datum's class (for
+          // example Object for the "any" logical type) selects the branch.
+          Conversion<?> conversion = getConversionByClass(datum.getClass(), candidateType);
+          if (conversion != null) {
+            return i;
           }
         }
       }
