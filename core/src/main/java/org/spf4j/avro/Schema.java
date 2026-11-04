@@ -1968,7 +1968,15 @@ public abstract class Schema extends JsonProperties implements Serializable {
       break;
     case FLOAT:
     case DOUBLE:
-      if (!defaultValue.isNumber()) {
+      // A non-numeric floating value (NaN, +/-Infinity) is also accepted in
+      // its textual form: that is the form Avro's JSON encoding writes for
+      // these values (and the form JsonDecoder accepts back for
+      // float/double). The fork never needed this case -- its Jackson
+      // version turned a NaN default into a numeric node -- but on main
+      // Jackson quotes non-numeric numbers, so a donor-valid default such
+      // as SchemaBuilder's withDefault(Double.NaN) arrives here as the
+      // text "NaN" and must not be rejected.
+      if (!defaultValue.isNumber() && !isNonNumericFloatingText(defaultValue)) {
         throw new AvroTypeException("Default value must be number");
       }
       break;
@@ -2019,6 +2027,20 @@ public abstract class Schema extends JsonProperties implements Serializable {
     default:
       throw new IllegalStateException("Unsupported schema type: " + schema);
     }
+  }
+
+  /**
+   * The textual spellings of the non-numeric float/double values, exactly
+   * the set {@code JsonDecoder} accepts when reading a float or double
+   * from a JSON string.
+   */
+  private static boolean isNonNumericFloatingText(JsonNode value) {
+    if (!value.isTextual()) {
+      return false;
+    }
+    String text = value.textValue();
+    return "NaN".equals(text) || "Infinity".equals(text) || "INF".equals(text) || "-Infinity".equals(text)
+        || "-INF".equals(text);
   }
 
   /** Validates a value against a union schema: any branch may match. */

@@ -26,8 +26,10 @@ import org.spf4j.avro.io.BinaryDecoder;
 import org.spf4j.avro.io.BinaryEncoder;
 import org.spf4j.avro.io.Decoder;
 import org.spf4j.avro.io.DecoderFactory;
+import org.spf4j.avro.io.Encoder;
 import org.spf4j.avro.io.EncoderFactory;
 import org.spf4j.avro.io.JsonExtensionDecoder;
+import org.spf4j.avro.io.JsonExtensionEncoder;
 import org.spf4j.avro.util.TimePeriod;
 
 import java.io.ByteArrayOutputStream;
@@ -132,6 +134,27 @@ public class Conversions {
         }
       }
       return Optional.empty();
+    }
+
+    /**
+     * Direct encode of the natural (extended) JSON form: when the encoder
+     * is an extension encoder, write the value as a raw JSON number
+     * through it instead of in the standard bytes-as-string form. The
+     * value is first {@link #validate(LogicalTypes.Decimal, BigDecimal)
+     * validated} -- adjusted to the schema's scale and checked against
+     * its precision -- exactly as the default {@link #toBytes} path does,
+     * so the natural form carries the same value the standard form
+     * would. (The fork's {@code Decimal2Converter} direct-encode pattern,
+     * applied to the standard decimal logical type.)
+     */
+    @Override
+    public boolean tryDirectEncode(BigDecimal object, Encoder enc, Schema schema) throws IOException {
+      if (enc instanceof JsonExtensionEncoder) {
+        BigDecimal value = validate((LogicalTypes.Decimal) schema.getLogicalType(), object);
+        ((JsonExtensionEncoder) enc).writeDecimal(value, schema);
+        return true;
+      }
+      return false;
     }
 
     @Override

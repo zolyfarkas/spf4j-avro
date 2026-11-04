@@ -52,7 +52,11 @@ import com.fasterxml.jackson.core.util.MinimalPrettyPrinter;
 public class JsonEncoder extends ParsingEncoder implements Parser.ActionHandler {
   private static final String LINE_SEPARATOR = System.lineSeparator();
   final Parser parser;
-  private JsonGenerator out;
+  // Package-private (not private) so ExtendedJsonEncoder, in this package,
+  // can write natural-JSON forms directly; upstream's public API is
+  // unchanged. The same minimal-seam approach as JsonDecoder's widenings
+  // for ExtendedJsonDecoder.
+  JsonGenerator out;
   private boolean includeNamespace = true;
 
   /**
