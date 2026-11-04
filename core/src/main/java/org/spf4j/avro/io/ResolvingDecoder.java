@@ -192,49 +192,217 @@ public class ResolvingDecoder extends ValidatingDecoder implements JsonExtension
 
   /**
    * Advance this decoder's resolving grammar past one value of the given
-   * schema, mirroring what the corresponding {@code readXxx} method would
-   * do. Only terminal (primitive) schemas are supported: a direct decode
-   * of a composite schema through a resolving decoder is not (yet)
-   * supported -- such conversions read their value through the terminal
-   * fields instead.
+   * (reader) schema. The underlying extension decoder has already consumed
+   * the value from the stream, so this is a grammar-only walk: it consumes
+   * exactly the symbols the value's segment occupies in the resolving
+   * grammar, without reading anything from the underlying decoder.
+   *
+   * <p>
+   * Terminal schemas advance as the corresponding {@code readXxx} method
+   * would. Composite schemas -- previously unsupported here, which broke
+   * direct decode of a record-typed logical type (for example inside a
+   * map) -- are walked schema-first, in the spirit of the fork's
+   * {@code JsonExtensionResolvingDecoder} production-skipping
+   * {@code advanceBy}, but over this decoder's resolving grammar instead
+   * of the JSON grammar:
+   * </p>
+   * <ul>
+   * <li>a record consumes its {@code FieldOrderAction} and then, in the
+   * order that action prescribes (writer order, reader fields only), each
+   * field's segment;</li>
+   * <li>an array or map consumes its start terminal and then closes its
+   * repeater with the end terminal (the repeater represents all elements,
+   * however many the extension decoder consumed);</li>
+   * <li>a union consumes the {@code UNION} terminal and, for a
+   * reader-union, the deterministically adjusted branch. A writer-selected
+   * branch (an {@code Alternative} on the stack) cannot be advanced
+   * grammar-only -- the branch index lived in the stream the extension
+   * decoder has already consumed -- and still throws
+   * {@link UnsupportedOperationException}; datum readers never reach it,
+   * because they select the branch with {@link #readIndex()} before any
+   * direct decode of the branch.</li>
+   * </ul>
+   *
+   * <p>
+   * Implicit actions encountered during the walk are dropped, not
+   * executed: a {@code SkipAction}'s writer-only field is part of the
+   * value the extension decoder already consumed, so performing its
+   * stream skip would consume the <em>next</em> value; likewise default
+   * start/end actions need no decoder switch for a grammar-only pass. A
+   * {@code ResolvingAction} whose reader symbol is the expected terminal
+   * (a promotion) occupies that terminal's slot and is consumed as it.
+   * </p>
    */
   private void advanceBy(Schema schema) throws IOException {
     switch (schema.getType()) {
     case NULL:
-      parser.advance(Symbol.NULL);
+      advanceTerminal(Symbol.NULL);
       break;
     case BOOLEAN:
-      parser.advance(Symbol.BOOLEAN);
+      advanceTerminal(Symbol.BOOLEAN);
       break;
     case INT:
-      parser.advance(Symbol.INT);
+      advanceTerminal(Symbol.INT);
       break;
     case LONG:
-      parser.advance(Symbol.LONG);
+      advanceTerminal(Symbol.LONG);
       break;
     case FLOAT:
-      parser.advance(Symbol.FLOAT);
+      advanceTerminal(Symbol.FLOAT);
       break;
     case DOUBLE:
-      parser.advance(Symbol.DOUBLE);
+      advanceTerminal(Symbol.DOUBLE);
       break;
     case STRING:
-      parser.advance(Symbol.STRING);
+      advanceTerminal(Symbol.STRING);
       break;
     case BYTES:
-      parser.advance(Symbol.BYTES);
+      advanceTerminal(Symbol.BYTES);
       break;
     case FIXED:
-      parser.advance(Symbol.FIXED);
-      parser.popSymbol();
+      advanceTerminal(Symbol.FIXED);
       break;
     case ENUM:
-      parser.advance(Symbol.ENUM);
-      parser.popSymbol();
+      advanceTerminal(Symbol.ENUM);
       break;
+    case RECORD:
+      for (Schema.Field field : advanceToFieldOrder()) {
+        advanceBy(field.schema());
+      }
+      skipTrailingImplicitActions();
+      break;
+    case ARRAY:
+      advanceTerminal(Symbol.ARRAY_START);
+      advanceTerminal(Symbol.ARRAY_END);
+      break;
+    case MAP:
+      advanceTerminal(Symbol.MAP_START);
+      advanceTerminal(Symbol.MAP_END);
+      break;
+    case UNION: {
+      advanceTerminal(Symbol.UNION);
+      Symbol top = parser.popSymbol();
+      if (top instanceof Symbol.UnionAdjustAction) {
+        Symbol.UnionAdjustAction adjust = (Symbol.UnionAdjustAction) top;
+        parser.pushSymbol(adjust.symToParse);
+        advanceBy(schema.getTypes().get(adjust.rindex));
+      } else {
+        throw new UnsupportedOperationException(
+            "Direct extension decode of a writer-selected union branch of " + schema
+                + " through a ResolvingDecoder is not supported: the branch was selected"
+                + " by the writer, whose index the extension decoder has already consumed");
+      }
+      break;
+    }
     default:
       throw new UnsupportedOperationException(
-          "Direct extension decode of composite schema " + schema + " through a ResolvingDecoder is not supported");
+          "Direct extension decode of schema " + schema + " through a ResolvingDecoder is not supported");
+    }
+  }
+
+  /**
+   * Consume one terminal of the resolving grammar, grammar-only: expand
+   * sequences, drop implicit/explicit actions without executing them, and
+   * match either the terminal itself or a {@code ResolvingAction} carrying
+   * it as its reader symbol (a promotion). The end terminal of an array or
+   * map matches (and consumes) its repeater. {@code FIXED} and
+   * {@code ENUM} also consume the check/adjust action that follows the
+   * terminal in the grammar.
+   */
+  private void advanceTerminal(Symbol expected) throws IOException {
+    for (;;) {
+      if (parser.depth() <= 0) {
+        throw new AvroTypeException("Attempt to process a " + expected + " but the grammar is exhausted.");
+      }
+      Symbol top = parser.popSymbol();
+      if (top == expected) {
+        if (expected == Symbol.FIXED || expected == Symbol.ENUM) {
+          parser.popSymbol();
+        }
+        return;
+      }
+      if (top instanceof Symbol.ResolvingAction) {
+        if (((Symbol.ResolvingAction) top).reader == expected) {
+          return;
+        }
+        throw new AvroTypeException(
+            "Found " + ((Symbol.ResolvingAction) top).reader + " while looking for " + expected);
+      }
+      if (top.kind == Symbol.Kind.TERMINAL) {
+        throw new AvroTypeException("Attempt to process a " + expected + " when a " + top + " was expected.");
+      }
+      if (top.kind == Symbol.Kind.REPEATER) {
+        if (expected == ((Symbol.Repeater) top).end) {
+          return;
+        }
+        parser.pushProduction(top);
+        continue;
+      }
+      if (top == Symbol.WRITER_UNION_ACTION) {
+        throw new UnsupportedOperationException(
+            "Direct extension decode of a writer-selected union through a ResolvingDecoder"
+                + " is not supported: the branch was selected by the writer, whose index"
+                + " the extension decoder has already consumed");
+      }
+      if (top.kind == Symbol.Kind.IMPLICIT_ACTION || top.kind == Symbol.Kind.EXPLICIT_ACTION) {
+        // Drop without executing: see advanceBy's javadoc. (Enum/fixed
+        // check actions land here only when orphaned, which a well-formed
+        // grammar pass does not produce.)
+        continue;
+      }
+      if (top.production != null && top.kind != Symbol.Kind.ROOT) {
+        parser.pushProduction(top);
+        continue;
+      }
+      throw new AvroTypeException("Attempt to process a " + expected + " when a " + top + " was expected.");
+    }
+  }
+
+  /** Consume the record segment's field-order action and return its fields. */
+  private Schema.Field[] advanceToFieldOrder() throws IOException {
+    for (;;) {
+      if (parser.depth() <= 0) {
+        throw new AvroTypeException("Attempt to process a record but the grammar is exhausted.");
+      }
+      Symbol top = parser.popSymbol();
+      if (top instanceof Symbol.FieldOrderAction) {
+        return ((Symbol.FieldOrderAction) top).fields;
+      }
+      if (top instanceof Symbol.ResolvingAction || top.kind == Symbol.Kind.TERMINAL
+          || top.kind == Symbol.Kind.ALTERNATIVE) {
+        throw new AvroTypeException("Attempt to process a record when a " + top + " was expected.");
+      }
+      if (top == Symbol.WRITER_UNION_ACTION) {
+        throw new UnsupportedOperationException(
+            "Direct extension decode of a writer-selected union through a ResolvingDecoder"
+                + " is not supported: the branch was selected by the writer, whose index"
+                + " the extension decoder has already consumed");
+      }
+      if (top.kind == Symbol.Kind.IMPLICIT_ACTION || top.kind == Symbol.Kind.EXPLICIT_ACTION
+          || top.kind == Symbol.Kind.REPEATER) {
+        if (top.kind == Symbol.Kind.REPEATER) {
+          parser.pushProduction(top);
+        }
+        continue;
+      }
+      if (top.production != null && top.kind != Symbol.Kind.ROOT) {
+        parser.pushProduction(top);
+        continue;
+      }
+      throw new AvroTypeException("Attempt to process a record when a " + top + " was expected.");
+    }
+  }
+
+  /**
+   * Drop implicit actions left on top of the grammar after a record's
+   * reader fields have been consumed: the {@code SkipAction}s of
+   * writer-only fields that follow them (part of the value the extension
+   * decoder already consumed, so their stream skips must not run) and the
+   * end action of a default segment.
+   */
+  private void skipTrailingImplicitActions() {
+    while (parser.depth() > 0 && parser.topSymbol().kind == Symbol.Kind.IMPLICIT_ACTION) {
+      parser.popSymbol();
     }
   }
 

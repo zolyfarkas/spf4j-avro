@@ -227,7 +227,14 @@ public class Parser {
       if (top.kind == Symbol.Kind.ROOT) {
         break;
       }
-      if (top.production != null) {
+      if (top.kind == Symbol.Kind.REPEATER) {
+        // A repeater's production contains the repeater itself
+        // (production[0] == this), so expanding it here would never
+        // terminate. It denotes a single stack slot for the
+        // advanceBy surgery arithmetic in the extended JSON
+        // encoder/decoder, and skip(int) pops it as one symbol.
+        i++;
+      } else if (top.production != null) {
         pushProduction(top);
       } else {
         i++;
@@ -263,7 +270,13 @@ public class Parser {
   public final void skip(int nrToSkip) throws IOException {
     while (nrToSkip > 0) {
       Symbol top = stack[--pos];
-      if (top.production != null) {
+      if (top.kind == Symbol.Kind.REPEATER) {
+        // See countToEnd(): a repeater is a single stack slot here;
+        // expanding its self-referential production would misalign
+        // the countToEnd-based surgery that is this method's only
+        // caller (the extended JSON encoder/decoder advanceBy).
+        nrToSkip--;
+      } else if (top.production != null) {
         pushProduction(top);
       } else {
         nrToSkip--;

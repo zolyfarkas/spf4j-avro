@@ -38,6 +38,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.TokenBuffer;
 
 /**
@@ -73,12 +74,29 @@ import com.fasterxml.jackson.databind.util.TokenBuffer;
  * numeric value through upstream's conversion.</li>
  * <li>The byte encoding charset is the fork's
  * {@code JsonDecoder.CHARSET} (ISO-8859-1), inlined; main's JsonDecoder has
- * no such constant. Likewise {@code readValue} creates parsers from a new
- * {@code JsonFactory} where the fork used {@code Schema.FACTORY}, which is
- * package-private on main.</li>
+ * no such constant. Likewise {@code readValue} / {@code readValueAsTree}
+ * read through a static {@code ObjectMapper} where the fork used
+ * {@code Schema.FACTORY} / {@code Schema.MAPPER}, which are
+ * package-private on main; the parsers here are codec-less, so calling
+ * {@code JsonParser.readValueAs*} on them would always throw
+ * {@code IllegalStateException}.</li>
  * </ul>
  */
 public final class ExtendedJsonDecoder extends JsonDecoder implements JsonExtensionDecoder {
+
+  /**
+   * Codec for {@link #readValue} / {@link #readValueAsTree}: the parsers
+   * this decoder works with are created from codec-less
+   * {@code JsonFactory} instances (see {@link JsonDecoder}), so calling
+   * {@code JsonParser.readValueAs*} on them always threw
+   * {@code IllegalStateException} ("No ObjectCodec defined"). Reading
+   * through this mapper instead works regardless of the parser's codec;
+   * it mirrors the fork's use of its {@code Schema.MAPPER}. (The
+   * logical-types library worked around the defect by buffering values
+   * and converting them with its own mapper.)
+   */
+  private static final ObjectMapper MAPPER = new ObjectMapper(
+      new JsonFactory().enable(JsonParser.Feature.ALLOW_COMMENTS));
 
   private final boolean lenient;
 
@@ -436,10 +454,10 @@ public final class ExtendedJsonDecoder extends JsonDecoder implements JsonExtens
       } else {
         switch (schema.getType()) {
         case STRING:
-          result = new JsonFactory().createParser(text).readValueAs(clasz);
+          result = MAPPER.readValue(text, clasz);
           break;
         case BYTES:
-          result = new JsonFactory().createParser(text.getBytes(StandardCharsets.ISO_8859_1)).readValueAs(clasz);
+          result = MAPPER.readValue(text.getBytes(StandardCharsets.ISO_8859_1), clasz);
           break;
         default:
           throw new UnsupportedOperationException("Unsupported schema " + schema);
@@ -448,7 +466,7 @@ public final class ExtendedJsonDecoder extends JsonDecoder implements JsonExtens
       in.nextToken();
       return result;
     }
-    T result = in.readValueAs(clasz);
+    T result = MAPPER.readValue(in, clasz);
     in.nextToken();
     return result;
   }
@@ -494,7 +512,7 @@ public final class ExtendedJsonDecoder extends JsonDecoder implements JsonExtens
   @Override
   public JsonNode readValueAsTree(final Schema schema) throws IOException {
     advanceBy(schema);
-    JsonNode result = in.readValueAsTree();
+    JsonNode result = MAPPER.readTree(in);
     in.nextToken();
     return result;
   }
