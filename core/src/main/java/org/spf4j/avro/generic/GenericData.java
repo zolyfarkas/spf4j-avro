@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
@@ -45,6 +46,7 @@ import org.spf4j.avro.JsonProperties;
 import org.spf4j.avro.LogicalType;
 import org.spf4j.avro.Schema;
 import org.spf4j.avro.Schema.Field;
+import org.spf4j.avro.SchemaResolver;
 import org.spf4j.avro.Schema.Type;
 import org.spf4j.avro.UnresolvedUnionException;
 import org.spf4j.avro.io.BinaryData;
@@ -207,6 +209,63 @@ public class GenericData {
       return null;
     }
     return (Conversion<T>) conversions.get(logicalType.getName());
+  }
+
+  /**
+   * The default schema resolver carried by this datum model (the IO-time
+   * half of the library's resolver design), or {@code null} when none was
+   * set. Conversions obtain it at use time through
+   * {@link org.spf4j.avro.DatumContext#getEffectiveSchemaResolver(Schema)};
+   * it is configured here, on the datum model instance, the same place
+   * conversions are registered — never in static or JVM-global state.
+   */
+  private SchemaResolver schemaResolver;
+
+  /**
+   * Named schema resolvers registered on this instance, selected by the
+   * {@code "resolver"} property a schema carries (as the {@code "any"}
+   * logical type writes it). Instance-scoped: two datum models with
+   * different registrations operate independently.
+   */
+  private final Map<String, SchemaResolver> namedSchemaResolvers = new LinkedHashMap<>();
+
+  /** The default schema resolver of this datum model, or {@code null}. */
+  public SchemaResolver getSchemaResolver() {
+    return schemaResolver;
+  }
+
+  /**
+   * Set (or clear, with {@code null}) the default schema resolver of this
+   * datum model.
+   *
+   * @return this datum model, for chaining
+   */
+  public GenericData setSchemaResolver(SchemaResolver schemaResolver) {
+    this.schemaResolver = schemaResolver;
+    return this;
+  }
+
+  /**
+   * Register a schema resolver under {@code name} on this datum model. A
+   * schema whose {@code "resolver"} property names it selects this resolver
+   * at conversion time (see
+   * {@link org.spf4j.avro.DatumContext#resolveEffectiveSchemaResolver(GenericData, Schema)}).
+   * Registering under an existing name replaces the previous registration.
+   *
+   * @return this datum model, for chaining
+   */
+  public GenericData registerSchemaResolver(String name, SchemaResolver resolver) {
+    namedSchemaResolvers.put(Objects.requireNonNull(name, "name"),
+        Objects.requireNonNull(resolver, "resolver"));
+    return this;
+  }
+
+  /**
+   * The schema resolver registered under {@code name} on this datum model,
+   * or {@code null} when no resolver was registered under that name.
+   */
+  public SchemaResolver getSchemaResolver(String name) {
+    return namedSchemaResolvers.get(name);
   }
 
   public static final String FAST_READER_PROP = "org.spf4j.avro.fastread";

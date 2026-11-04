@@ -18,6 +18,7 @@
 package org.spf4j.avro;
 
 import org.spf4j.avro.util.SchemaResolver;
+import org.spf4j.avro.util.SchemaVisitor;
 import org.spf4j.avro.util.Schemas;
 
 import java.util.ArrayList;
@@ -269,6 +270,54 @@ public class ParseContext {
   }
 
   /**
+   * Stamp every schema in the graph rooted at {@code schema} with this
+   * context's registered resolver (see
+   * {@link Schema#getSchemaResolver()}). A no-op when no resolver is
+   * registered, so resolver-less parses are exactly upstream's.
+   *
+   * <p>
+   * Stamping mechanics: individual schemas are already stamped as they are
+   * created during the parse (so a logical type factory can read the stamp
+   * from its own schema at construction time), but the resolution phase
+   * substitutes clones for most container and named schemas, and name
+   * references return instances created outside the node being parsed.
+   * This whole-graph walk therefore runs on the parsed graph and again on
+   * the resolved graph, which is what guarantees the stamp is reachable
+   * from every node of the graph a caller receives. The stamp is
+   * write-once per instance ({@link Schema#setSchemaResolverStamp}), so
+   * repeated walks and shared instances keep the first stamp.
+   * </p>
+   */
+  void applySchemaResolverStamp(final Schema schema) {
+    if (schemaResolver == null || schema == null) {
+      return;
+    }
+    Schemas.visit(schema, new SchemaVisitor<Void>() {
+      @Override
+      public SchemaVisitor.SchemaVisitorAction visitTerminal(Schema terminal) {
+        terminal.setSchemaResolverStamp(schemaResolver);
+        return SchemaVisitor.SchemaVisitorAction.CONTINUE;
+      }
+
+      @Override
+      public SchemaVisitor.SchemaVisitorAction visitNonTerminal(Schema nonTerminal) {
+        nonTerminal.setSchemaResolverStamp(schemaResolver);
+        return SchemaVisitor.SchemaVisitorAction.CONTINUE;
+      }
+
+      @Override
+      public SchemaVisitor.SchemaVisitorAction afterVisitNonTerminal(Schema nonTerminal) {
+        return SchemaVisitor.SchemaVisitorAction.CONTINUE;
+      }
+
+      @Override
+      public Void get() {
+        return null;
+      }
+    });
+  }
+
+  /**
    * Optional override for tolerating undefined logical types while parsing.
    * When {@code null} (the default), parsing falls back to
    * {@link LogicalTypes#isAllowUndefinedLogicalTypes()} (thread-local
@@ -339,7 +388,9 @@ public class ParseContext {
   public List<Schema> resolveAllSchemas() {
     ensureSchemasAreResolved();
 
-    return new ArrayList<>(oldSchemas.values());
+    List<Schema> schemas = new ArrayList<>(oldSchemas.values());
+    schemas.forEach(this::applySchemaResolverStamp);
+    return schemas;
   }
 
   private void ensureSchemasAreResolved() {
@@ -382,14 +433,21 @@ public class ParseContext {
     // — All named types are either in oldSchemas or unknown.
     // — All unnamed types can be visited&resolved without validation.
 
+    Schema resolved;
     if (NAMED_SCHEMA_TYPES.contains(schema.getType()) && schema.getFullName() != null) {
-      return requireNonNull(oldSchemas.get(schema.getFullName()), () -> "Unknown schema: " + schema.getFullName());
+      resolved = requireNonNull(oldSchemas.get(schema.getFullName()),
+          () -> "Unknown schema: " + schema.getFullName());
     } else {
       // Unnamed or anonymous schema
       // (protocol message request parameters are anonymous records)
       Schemas.visit(schema, resolvingVisitor); // This field is set, as ensureSchemasAreResolved(); was called.
-      return resolvingVisitor.getResolved(schema);
+      resolved = resolvingVisitor.getResolved(schema);
     }
+    // Stamp the resolved graph: resolution substituted clones for the
+    // schemas created during the parse, and the stamp must be reachable
+    // from every node of the graph the caller receives.
+    applySchemaResolverStamp(resolved);
+    return resolved;
   }
 
   /**

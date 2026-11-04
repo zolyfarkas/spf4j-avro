@@ -151,6 +151,15 @@ public abstract class Schema extends JsonProperties implements Serializable {
   private final Type type;
   private LogicalType logicalType = null;
 
+  /**
+   * The resolver this schema was parsed with (its "stamp"), or {@code null}
+   * when it was not parsed with one. Set once during parsing by the parse
+   * context (see {@link ParseContext}); transient and deliberately not a
+   * schema property: it is never written by {@code toJson}/{@code toString}
+   * and plays no part in {@code equals}/{@code hashCode}.
+   */
+  private transient SchemaResolver schemaResolver;
+
   Schema(Type type) {
     super(type == Type.ENUM ? ENUM_RESERVED : SCHEMA_RESERVED);
     this.type = type;
@@ -204,6 +213,43 @@ public abstract class Schema extends JsonProperties implements Serializable {
 
   public LogicalType getLogicalType() {
     return logicalType;
+  }
+
+  /**
+   * The schema resolver this schema was stamped with at parse time: when a
+   * {@link Parser} parses with a resolver registered on its
+   * {@link ParseContext}, every schema of the resulting graph is stamped
+   * with that resolver, so it is reachable from any node of the graph (in
+   * particular from a leaf field's schema, which is how a logical type such
+   * as {@code "any"} finds its resolver at construction time). Returns
+   * {@code null} for schemas built programmatically or parsed without a
+   * resolver; such schemas behave exactly as upstream's.
+   *
+   * <p>
+   * The stamp is per-instance and is not copied: a schema created by
+   * copying or rebuilding another schema (through {@code SchemaBuilder},
+   * {@link #createRecord} and friends, or a {@link Field} copy constructor
+   * given a schema) starts unstamped, while a schema instance that is
+   * shared into the copy keeps its own stamp. The stamp is not serialized:
+   * neither {@code toJson} nor Java serialization carries it.
+   * </p>
+   */
+  public SchemaResolver getSchemaResolver() {
+    return schemaResolver;
+  }
+
+  /**
+   * Stamp this schema with the resolver of the parse that created it.
+   * Write-once: a schema that already carries a stamp keeps it, so a schema
+   * instance shared between parses is stamped by the first parse that
+   * reaches it. Package-private: stamping is the parser's job, not a public
+   * attach API (programmatic schemas use the GenericData-carried resolver
+   * instead, see {@code GenericData#setSchemaResolver}).
+   */
+  void setSchemaResolverStamp(SchemaResolver resolver) {
+    if (this.schemaResolver == null) {
+      this.schemaResolver = resolver;
+    }
   }
 
   void setLogicalType(LogicalType logicalType) {
@@ -1751,6 +1797,39 @@ public abstract class Schema extends JsonProperties implements Serializable {
       }
     }
 
+    /**
+     * Parse a schema from an already-read JSON tree, using this parser's
+     * context (its registered schema resolver, name validation and
+     * logical-type settings), and return the resolved schema. If named, the
+     * schema is added to the names known to this parser.
+     *
+     * <p>
+     * This is the equivalent of the fork's static
+     * {@code Schema.parse(JsonNode, Names, ...)} entry point, which
+     * conversions decoding an embedded schema (the {@code "any"} converter
+     * reading its {@code avsc} member) relied on: the tree's only other
+     * parse entry for a {@link JsonNode} is package-private, and the public
+     * text entry points would force a serialize/re-read round-trip of the
+     * node. Schemas produced here carry this parser's resolver stamp, like
+     * any other parse with a registered resolver.
+     * </p>
+     */
+    public Schema parse(JsonNode node) {
+      NameValidator saved = VALIDATE_NAMES.get();
+      boolean savedValidateDefaults = VALIDATE_DEFAULTS.get();
+      try {
+        VALIDATE_NAMES.set(validate);
+        VALIDATE_DEFAULTS.set(validateDefaults);
+        Schema schema = Schema.parse(node, context, null);
+        context.applySchemaResolverStamp(schema);
+        context.commit();
+        return context.resolve(schema);
+      } finally {
+        VALIDATE_NAMES.set(saved);
+        VALIDATE_DEFAULTS.set(savedValidateDefaults);
+      }
+    }
+
     public Schema parseInternal(String s) {
       try {
         return parse(FACTORY.createParser(s), false, false);
@@ -1769,6 +1848,11 @@ public abstract class Schema extends JsonProperties implements Serializable {
         VALIDATE_DEFAULTS.set(validateDefaults);
         JsonNode jsonNode = MAPPER.readTree(parser);
         Schema schema = Schema.parse(jsonNode, context, null);
+        // Stamp the graph as parsed (this is the only stamping the
+        // parseInternal path, which skips resolution, gets); when the
+        // schema is resolved below, the context stamps the resolved graph
+        // as well, covering the clones resolution substitutes.
+        context.applySchemaResolverStamp(schema);
         if (resolveSchema) {
           context.commit();
           schema = context.resolve(schema);
@@ -2467,12 +2551,20 @@ public abstract class Schema extends JsonProperties implements Serializable {
     LockableArrayList<Schema> types = new LockableArrayList<>(schema.size());
     for (JsonNode typeNode : schema)
       types.add(parse(typeNode, context, currentNameSpace));
-    return new UnionSchema(types);
+    UnionSchema result = new UnionSchema(types);
+    result.setSchemaResolverStamp(context.getSchemaResolver());
+    return result;
   }
 
   private static void parsePropertiesAndLogicalType(JsonNode jsonNode, Schema result, Set<String> propertiesToSkip,
       ParseContext context) {
     parseProperties(jsonNode, result, propertiesToSkip);
+    // Stamp before constructing the logical type: a logical type factory
+    // reads the stamp from its own schema at construction time (the "any"
+    // factory is the motivating case). The parse context re-stamps the
+    // final resolved graph after parsing, which covers the clones the
+    // resolution phase substitutes for the schemas created here.
+    result.setSchemaResolverStamp(context.getSchemaResolver());
     // parse logical type if present; undefined logical types fail the parse
     // unless the parse context tolerates them (spf4j avro fork, ef9086f52)
     result.logicalType = LogicalTypes.fromSchema(result, context.isAllowUndefinedLogicalTypes());
