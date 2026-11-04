@@ -268,6 +268,36 @@ public class ParseContext {
     this.schemaResolver = schemaResolver;
   }
 
+  /**
+   * Optional override for tolerating undefined logical types while parsing.
+   * When {@code null} (the default), parsing falls back to
+   * {@link LogicalTypes#isAllowUndefinedLogicalTypes()} (thread-local
+   * override, then the {@code allowUndefinedLogicalTypes} system property),
+   * which is {@code false} unless explicitly enabled: an undefined logical
+   * type then fails parsing, as in the spf4j avro fork.
+   */
+  private Boolean allowUndefinedLogicalTypes;
+
+  /** The per-context override, or {@code null} when none was set. */
+  public Boolean getAllowUndefinedLogicalTypes() {
+    return allowUndefinedLogicalTypes;
+  }
+
+  /** Set (or clear, with {@code null}) the per-context override. */
+  public void setAllowUndefinedLogicalTypes(Boolean allowUndefinedLogicalTypes) {
+    this.allowUndefinedLogicalTypes = allowUndefinedLogicalTypes;
+  }
+
+  /**
+   * Whether undefined logical types are tolerated for this parse: the
+   * per-context override when set, otherwise
+   * {@link LogicalTypes#isAllowUndefinedLogicalTypes()}.
+   */
+  public boolean isAllowUndefinedLogicalTypes() {
+    return allowUndefinedLogicalTypes != null ? allowUndefinedLogicalTypes
+        : LogicalTypes.isAllowUndefinedLogicalTypes();
+  }
+
   public boolean hasNewSchemas() {
     return !newSchemas.isEmpty();
   }

@@ -121,6 +121,71 @@ public class LogicalTypes {
     return fromSchemaImpl(schema, false);
   }
 
+  private static final ThreadLocal<Boolean> ALLOW_UNDEF_LT = new ThreadLocal<>();
+
+  /**
+   * Whether undefined logical types are tolerated on the current thread: the
+   * thread-local override set via
+   * {@link #setAllowUndefinedLogicalTypesThreadLocal(Boolean)} when present,
+   * otherwise the {@code allowUndefinedLogicalTypes} system property.
+   * Ported from the spf4j avro fork (commit ef9086f52).
+   */
+  public static boolean isAllowUndefinedLogicalTypes() {
+    Boolean tlb = ALLOW_UNDEF_LT.get();
+    if (tlb == null) {
+      return Boolean.getBoolean("allowUndefinedLogicalTypes");
+    } else {
+      return tlb;
+    }
+  }
+
+  public static void setAllowUndefinedLogicalTypesThreadLocal(final Boolean isAllowUndefinedLogicalTypes) {
+    ALLOW_UNDEF_LT.set(isAllowUndefinedLogicalTypes);
+  }
+
+  public static Boolean getAllowUndefinedLogicalTypesThreadLocal() {
+    return ALLOW_UNDEF_LT.get();
+  }
+
+  /**
+   * Returns the {@link LogicalType} from the schema, if one is present.
+   * Unlike {@link #fromSchemaIgnoreInvalid(Schema)}, an undefined logical
+   * type (a name that is neither a built-in logical type nor registered via
+   * {@link #register(String, LogicalTypeFactory)}) is an error unless
+   * {@code allowUndefinedLogicalTypes} is set: an
+   * {@link IllegalArgumentException} is thrown, as in the spf4j avro fork.
+   * Defined-but-invalid logical types keep the lenient behavior of
+   * {@link #fromSchemaIgnoreInvalid(Schema)} and yield {@code null}.
+   */
+  public static LogicalType fromSchema(Schema schema, final boolean allowUndefinedLogicalTypes) {
+    String typeName = schema.getProp(LogicalType.LOGICAL_TYPE_PROP);
+    if (typeName != null && !allowUndefinedLogicalTypes && isUndefinedLogicalType(typeName)) {
+      throw new IllegalArgumentException("Undefined logical type " + typeName + " for " + schema);
+    }
+    return fromSchemaImpl(schema, false);
+  }
+
+  private static boolean isUndefinedLogicalType(String typeName) {
+    switch (typeName) {
+    case TIMESTAMP_MILLIS:
+    case DECIMAL:
+    case BIG_DECIMAL:
+    case DURATION:
+    case UUID:
+    case DATE:
+    case TIMESTAMP_MICROS:
+    case TIMESTAMP_NANOS:
+    case TIME_MILLIS:
+    case TIME_MICROS:
+    case LOCAL_TIMESTAMP_MICROS:
+    case LOCAL_TIMESTAMP_MILLIS:
+    case LOCAL_TIMESTAMP_NANOS:
+      return false;
+    default:
+      return REGISTERED_TYPES.get(typeName) == null;
+    }
+  }
+
   private static LogicalType fromSchemaImpl(Schema schema, boolean throwErrors) {
     final LogicalType logicalType;
     final String typeName = schema.getProp(LogicalType.LOGICAL_TYPE_PROP);

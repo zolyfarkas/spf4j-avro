@@ -1586,6 +1586,23 @@ public abstract class Schema extends JsonProperties implements Serializable {
       return context.getSchemaResolver();
     }
 
+    /**
+     * Set whether this parser tolerates undefined logical types (logical
+     * type names that are neither built-in nor registered). By default they
+     * fail parsing; when a parser does not set this, the ambient fallback of
+     * {@link LogicalTypes#isAllowUndefinedLogicalTypes()} (thread-local
+     * override, then system property) applies.
+     */
+    public Parser setAllowUndefinedLogicalTypes(boolean allowUndefinedLogicalTypes) {
+      context.setAllowUndefinedLogicalTypes(allowUndefinedLogicalTypes);
+      return this;
+    }
+
+    /** Whether undefined logical types are tolerated for this parser's parses. */
+    public boolean isAllowUndefinedLogicalTypes() {
+      return context.isAllowUndefinedLogicalTypes();
+    }
+
     /** True iff default values are validated. False by default. */
     public boolean getValidateDefaults() {
       return this.validateDefaults;
@@ -1609,12 +1626,43 @@ public abstract class Schema extends JsonProperties implements Serializable {
     }
 
     /**
+     * Parse a schema from the provided stream, explicitly choosing whether
+     * undefined logical types are tolerated for this parse only; the
+     * parser's own setting is restored afterwards.
+     */
+    public Schema parse(InputStream in, boolean allowUndefinedLogicalTypes) throws IOException {
+      Boolean saved = context.getAllowUndefinedLogicalTypes();
+      context.setAllowUndefinedLogicalTypes(allowUndefinedLogicalTypes);
+      try {
+        return parse(in);
+      } finally {
+        context.setAllowUndefinedLogicalTypes(saved);
+      }
+    }
+
+    /**
      * Parse a schema from the provided reader. If named, the schema is added to the
      * names known to this parser. The reader stays open after the parsing.
      */
     public Schema parse(Reader in) throws IOException {
       JsonParser parser = FACTORY.createParser(in).disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
       return parse(parser, true, true);
+    }
+
+    /**
+     * Parse a schema from the provided reader, explicitly choosing whether
+     * undefined logical types are tolerated for this parse only; the
+     * parser's own setting is restored afterwards. This is the per-parse
+     * opt-in surface of the spf4j avro fork (commit ef9086f52).
+     */
+    public Schema parse(Reader in, boolean allowUndefinedLogicalTypes) throws IOException {
+      Boolean saved = context.getAllowUndefinedLogicalTypes();
+      context.setAllowUndefinedLogicalTypes(allowUndefinedLogicalTypes);
+      try {
+        return parse(in);
+      } finally {
+        context.setAllowUndefinedLogicalTypes(saved);
+      }
     }
 
     /** Read a schema from one or more json strings */
@@ -1634,6 +1682,21 @@ public abstract class Schema extends JsonProperties implements Serializable {
         return parse(FACTORY.createParser(s), false, true);
       } catch (IOException e) {
         throw new SchemaParseException(e);
+      }
+    }
+
+    /**
+     * Parse a schema from the provided string, explicitly choosing whether
+     * undefined logical types are tolerated for this parse only; the
+     * parser's own setting is restored afterwards.
+     */
+    public Schema parse(String s, boolean allowUndefinedLogicalTypes) {
+      Boolean saved = context.getAllowUndefinedLogicalTypes();
+      context.setAllowUndefinedLogicalTypes(allowUndefinedLogicalTypes);
+      try {
+        return parse(s);
+      } finally {
+        context.setAllowUndefinedLogicalTypes(saved);
       }
     }
 
@@ -2175,7 +2238,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
       String type = getRequiredText(schema, "type", "No type");
       final boolean isTypeError = "error".equals(type);
       if (PRIMITIVES.containsKey(type)) { // primitive
-        return parsePrimitive(schema, type);
+        return parsePrimitive(schema, type, context);
       } else if ("record".equals(type) || isTypeError) { // record
         return parseRecord(schema, context, currentNameSpace, isTypeError);
       } else if ("enum".equals(type)) { // enum
@@ -2213,9 +2276,9 @@ public abstract class Schema extends JsonProperties implements Serializable {
     }
   }
 
-  private static Schema parsePrimitive(JsonNode schema, String type) {
+  private static Schema parsePrimitive(JsonNode schema, String type, ParseContext context) {
     Schema result = create(PRIMITIVES.get(type));
-    parsePropertiesAndLogicalType(schema, result, SCHEMA_RESERVED);
+    parsePropertiesAndLogicalType(schema, result, SCHEMA_RESERVED, context);
     return result;
   }
 
@@ -2238,7 +2301,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
             name, f.name(), getOptionalText(field, "logicalType"));
     }
     result.setFields(fields);
-    parsePropertiesAndLogicalType(schema, result, SCHEMA_RESERVED);
+    parsePropertiesAndLogicalType(schema, result, SCHEMA_RESERVED, context);
     parseAliases(schema, result);
     context.put(result);
     return result;
@@ -2286,7 +2349,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
     }
 
     Schema result = new EnumSchema(name, doc, symbols, defaultSymbol);
-    parsePropertiesAndLogicalType(schema, result, ENUM_RESERVED);
+    parsePropertiesAndLogicalType(schema, result, ENUM_RESERVED, context);
     parseAliases(schema, result);
     context.put(result);
     return result;
@@ -2298,7 +2361,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
     if (itemsNode == null)
       throw new SchemaParseException("Array has no items type: " + schema);
     result = new ArraySchema(parse(itemsNode, context, currentNameSpace));
-    parsePropertiesAndLogicalType(schema, result, SCHEMA_RESERVED);
+    parsePropertiesAndLogicalType(schema, result, SCHEMA_RESERVED, context);
     return result;
   }
 
@@ -2308,7 +2371,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
     if (valuesNode == null)
       throw new SchemaParseException("Map has no values type: " + schema);
     result = new MapSchema(parse(valuesNode, context, currentNameSpace));
-    parsePropertiesAndLogicalType(schema, result, SCHEMA_RESERVED);
+    parsePropertiesAndLogicalType(schema, result, SCHEMA_RESERVED, context);
     return result;
   }
 
@@ -2321,7 +2384,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
       throw new SchemaParseException("Invalid or no size: " + schema);
 
     Schema result = new FixedSchema(name, doc, sizeNode.intValue());
-    parsePropertiesAndLogicalType(schema, result, SCHEMA_RESERVED);
+    parsePropertiesAndLogicalType(schema, result, SCHEMA_RESERVED, context);
     parseAliases(schema, result);
     context.put(result);
     return result;
@@ -2334,10 +2397,12 @@ public abstract class Schema extends JsonProperties implements Serializable {
     return new UnionSchema(types);
   }
 
-  private static void parsePropertiesAndLogicalType(JsonNode jsonNode, Schema result, Set<String> propertiesToSkip) {
+  private static void parsePropertiesAndLogicalType(JsonNode jsonNode, Schema result, Set<String> propertiesToSkip,
+      ParseContext context) {
     parseProperties(jsonNode, result, propertiesToSkip);
-    // parse logical type if present
-    result.logicalType = LogicalTypes.fromSchemaIgnoreInvalid(result);
+    // parse logical type if present; undefined logical types fail the parse
+    // unless the parse context tolerates them (spf4j avro fork, ef9086f52)
+    result.logicalType = LogicalTypes.fromSchema(result, context.isAllowUndefinedLogicalTypes());
   }
 
   private static void parseProperties(JsonNode schema, JsonProperties result, Set<String> propertiesToSkip) {
