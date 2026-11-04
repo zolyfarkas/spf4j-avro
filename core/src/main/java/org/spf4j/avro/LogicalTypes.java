@@ -195,50 +195,70 @@ public class LogicalTypes {
     }
 
     try {
-      switch (typeName) {
-      case TIMESTAMP_MILLIS:
-        logicalType = TIMESTAMP_MILLIS_TYPE;
-        break;
-      case DECIMAL:
-        logicalType = new Decimal(schema);
-        break;
-      case BIG_DECIMAL:
-        logicalType = BIG_DECIMAL_TYPE;
-        break;
-      case DURATION:
-        logicalType = DURATION_TYPE;
-        break;
-      case UUID:
-        logicalType = UUID_TYPE;
-        break;
-      case DATE:
-        logicalType = DATE_TYPE;
-        break;
-      case TIMESTAMP_MICROS:
-        logicalType = TIMESTAMP_MICROS_TYPE;
-        break;
-      case TIMESTAMP_NANOS:
-        logicalType = TIMESTAMP_NANOS_TYPE;
-        break;
-      case TIME_MILLIS:
-        logicalType = TIME_MILLIS_TYPE;
-        break;
-      case TIME_MICROS:
-        logicalType = TIME_MICROS_TYPE;
-        break;
-      case LOCAL_TIMESTAMP_MICROS:
-        logicalType = LOCAL_TIMESTAMP_MICROS_TYPE;
-        break;
-      case LOCAL_TIMESTAMP_MILLIS:
-        logicalType = LOCAL_TIMESTAMP_MILLIS_TYPE;
-        break;
-      case LOCAL_TIMESTAMP_NANOS:
-        logicalType = LOCAL_TIMESTAMP_NANOS_TYPE;
-        break;
-      default:
-        final LogicalTypeFactory typeFactory = REGISTERED_TYPES.get(typeName);
-        logicalType = (typeFactory == null) ? null : typeFactory.fromSchema(schema);
-        break;
+      // Precedence (stage P7b/B2): a factory registered for the name --
+      // explicitly via register(...) or automatically via ServiceLoader --
+      // wins over the built-in logical type of the same name, for every
+      // name including the built-ins. This restores the fork's registry
+      // model, where fromSchema consulted the registry by name and the
+      // fork's own factories (including its extended Date factory) were
+      // registered for the built-in names they extend. Without it, a
+      // ServiceLoader-registered factory for "date" could never supply
+      // the extended date semantics (string/ymd/record-backed dates): the
+      // hard-coded switch below shadowed it, and the built-in Date
+      // validation rejected those schemas outright. When no factory is
+      // registered for a name, the built-in switch applies exactly as
+      // before, so the library's own date/time behavior is unchanged in
+      // the absence of a registration. A registered factory that throws
+      // for a schema it does not support is handled by the same
+      // invalid-logical-type path as a failing built-in validation below.
+      final LogicalTypeFactory registeredFactory = REGISTERED_TYPES.get(typeName);
+      if (registeredFactory != null) {
+        logicalType = registeredFactory.fromSchema(schema);
+      } else {
+        switch (typeName) {
+        case TIMESTAMP_MILLIS:
+          logicalType = TIMESTAMP_MILLIS_TYPE;
+          break;
+        case DECIMAL:
+          logicalType = new Decimal(schema);
+          break;
+        case BIG_DECIMAL:
+          logicalType = BIG_DECIMAL_TYPE;
+          break;
+        case DURATION:
+          logicalType = DURATION_TYPE;
+          break;
+        case UUID:
+          logicalType = UUID_TYPE;
+          break;
+        case DATE:
+          logicalType = DATE_TYPE;
+          break;
+        case TIMESTAMP_MICROS:
+          logicalType = TIMESTAMP_MICROS_TYPE;
+          break;
+        case TIMESTAMP_NANOS:
+          logicalType = TIMESTAMP_NANOS_TYPE;
+          break;
+        case TIME_MILLIS:
+          logicalType = TIME_MILLIS_TYPE;
+          break;
+        case TIME_MICROS:
+          logicalType = TIME_MICROS_TYPE;
+          break;
+        case LOCAL_TIMESTAMP_MICROS:
+          logicalType = LOCAL_TIMESTAMP_MICROS_TYPE;
+          break;
+        case LOCAL_TIMESTAMP_MILLIS:
+          logicalType = LOCAL_TIMESTAMP_MILLIS_TYPE;
+          break;
+        case LOCAL_TIMESTAMP_NANOS:
+          logicalType = LOCAL_TIMESTAMP_NANOS_TYPE;
+          break;
+        default:
+          logicalType = null;
+          break;
+        }
       }
 
       // make sure the type is valid before returning it
