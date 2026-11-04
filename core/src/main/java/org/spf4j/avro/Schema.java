@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import org.spf4j.avro.generic.GenericDatumReader;
 import org.spf4j.avro.io.ExtendedJsonDecoder;
 import org.spf4j.avro.path.TracingAvroTypeException;
@@ -1178,9 +1179,10 @@ public abstract class Schema extends JsonProperties implements Serializable {
     public String getEnumStringSymbol(String symbol) {
       // Computed from the stringSymbols property on demand (the fork reads
       // the same property here; it additionally maintains a parallel list
-      // via an addProp override, which main's private addProp does not
-      // allow). The fork's parse-time validation of the property (unknown
-      // symbol / duplicate string value) is not reproduced.
+      // via an addProp override, which this tree's private
+      // JsonProperties.addProp(String, JsonNode) does not allow). The fork's
+      // parse-time validation of the property is ported in the addProp
+      // overrides below.
       @SuppressWarnings("unchecked")
       Map<String, Object> strSymbols = (Map<String, Object>) getObjectProp("stringSymbols");
       if (strSymbols == null) {
@@ -1188,6 +1190,55 @@ public abstract class Schema extends JsonProperties implements Serializable {
       } else {
         Object result = strSymbols.get(symbol);
         return (result == null) ? symbol : result.toString();
+      }
+    }
+
+    @Override
+    public void addProp(String name, String value) {
+      if ("stringSymbols".equals(name)) {
+        validateStringSymbols(TextNode.valueOf(value));
+      }
+      super.addProp(name, value);
+    }
+
+    @Override
+    public void addProp(String name, Object value) {
+      if ("stringSymbols".equals(name) && value != null) {
+        validateStringSymbols(value instanceof JsonNode ? (JsonNode) value : JacksonUtils.toJsonNode(value));
+      }
+      super.addProp(name, value);
+    }
+
+    /**
+     * Parse-time validation of the {@code stringSymbols} property, ported
+     * from the fork's {@code EnumSchema.setStringSymbols}: every key must
+     * name a declared enum symbol, and no string may point to two different
+     * ordinals — a symbol's own name already counts as its string, so
+     * assigning it to another symbol collides, as does assigning one string
+     * to two symbols. The fork materializes the mapping into a parallel
+     * list and registers the strings in its ordinal map; here the mapping
+     * stays in the property (read on demand by
+     * {@link #getEnumStringSymbol(String)}), so collisions are tracked in a
+     * scratch copy and {@link #ordinals} keeps declared symbols only.
+     */
+    private void validateStringSymbols(JsonNode node) {
+      @SuppressWarnings("unchecked")
+      Map<String, String> strSymbols = (Map<String, String>) JacksonUtils.toObject(node);
+      if (strSymbols != null) {
+        Map<String, Integer> stringOrdinals = new HashMap<>(ordinals);
+        for (Map.Entry<String, String> entry : strSymbols.entrySet()) {
+          final String key = entry.getKey();
+          final String val = entry.getValue();
+          Integer ordinal = ordinals.get(key);
+          if (ordinal == null) {
+            throw new AvroTypeException("enum value referenced in stringSymbol not defined: " + key);
+          } else {
+            Integer ex = stringOrdinals.put(val, ordinal);
+            if (ex != null && ex.intValue() != ordinal.intValue()) {
+              throw new AvroTypeException("Same string " + val + " pointing to " + ex + " and " + ordinal);
+            }
+          }
+        }
       }
     }
 
