@@ -109,6 +109,26 @@ public class Idl implements Closeable {
     return parserWarnings;
   }
 
+  /**
+   * Whether schemas using an undefined logical type (a {@code logicalType}
+   * name nothing registers) are tolerated by this compilation. Initialized
+   * from {@link LogicalTypes#isAllowUndefinedLogicalTypes()} (the core
+   * thread-local / {@code allowUndefinedLogicalTypes} system property) when
+   * this parser is constructed; the IDL parser builds schemas
+   * programmatically and does not go through {@code Schema.Parser}, so it
+   * needs this compiler-level equivalent of the spf4j avro fork's toggle to
+   * enforce the same strict-by-default behavior on its own parser path.
+   */
+  private boolean allowUndefinedLogicalTypes = LogicalTypes.isAllowUndefinedLogicalTypes();
+
+  public boolean isAllowUndefinedLogicalTypes() {
+    return allowUndefinedLogicalTypes;
+  }
+
+  public void setIsAllowUndefinedLogicalTypes(boolean allowUndefinedLogicalTypes) {
+    this.allowUndefinedLogicalTypes = allowUndefinedLogicalTypes;
+  }
+
   public Idl(File inputFile) throws IOException {
     this(new FileInputStream(inputFile), "UTF-8");
     this.inputDir = inputFile.getParentFile().toURI();
@@ -1095,7 +1115,7 @@ private Schema NamedSchemaDeclaration(String doc, Map<String, JsonNode> props):
      } else {                                     // add all other properties
        Accessor.addProp(s, key, props.get(key));
      }
-   LogicalType logicalType = LogicalTypes.fromSchemaIgnoreInvalid(s);
+   LogicalType logicalType = LogicalTypes.fromSchema(s, allowUndefinedLogicalTypes);
    if (logicalType != null)
      logicalType.addToSchema(s);
 
@@ -1259,6 +1279,7 @@ Protocol ImportIdl() : {
   <IDL> importFile = JsonString() ";"
     {
       try (Idl idl=new Idl(findFile(importFile), this)){
+        idl.setIsAllowUndefinedLogicalTypes(allowUndefinedLogicalTypes);
         return idl.CompilationUnit();
       } catch (IOException e) {
         throw error("Error importing "+importFile+": "+e, token);
@@ -1491,7 +1512,7 @@ Schema UnannotatedType(Map<String, JsonNode> props):
         // NullableType also applies properties, inside any union with null it may create.
         for (String key : props.keySet())
           Accessor.addProp(s, key, props.get(key));
-        LogicalType logicalType = LogicalTypes.fromSchemaIgnoreInvalid(s);
+        LogicalType logicalType = LogicalTypes.fromSchema(s, allowUndefinedLogicalTypes);
         if (logicalType != null)
           logicalType.addToSchema(s);
       }
@@ -1515,7 +1536,7 @@ Schema NullableType(Map<String, JsonNode> props):
     // By applying the properties here (before creating the union), type annotations modify the optional type instead of the union.
     for (String key : props.keySet())
       Accessor.addProp(s, key, props.get(key));
-    LogicalType logicalType = LogicalTypes.fromSchemaIgnoreInvalid(s);
+    LogicalType logicalType = LogicalTypes.fromSchema(s, allowUndefinedLogicalTypes);
     if (logicalType != null)
       logicalType.addToSchema(s);
     if (optional) {
