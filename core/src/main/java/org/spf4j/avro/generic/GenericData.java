@@ -1401,6 +1401,33 @@ public class GenericData {
   protected int compare(Object o1, Object o2, Schema s, boolean equals) {
     if (o1 == o2)
       return 0;
+    if (s.getLogicalType() != null) {
+      // Logical-typed values are compared as their converted representation
+      // (the fork's compare head): for equality that representation's own
+      // equality decides -- the raw type's ordering must not be consulted,
+      // as the converted value need not be Comparable at all (for example a
+      // json_record bytes value converts to a Map). For ordering, a
+      // Comparable converted value compares directly; a non-Comparable one
+      // falls through to the raw-type comparison below.
+      if (equals) {
+        if (Objects.deepEquals(o1, o2)) {
+          return 0;
+        }
+        // Adaptation to this tree: a same-class Comparable converted value
+        // whose compareTo is 0 also counts as equal. The fork's pure
+        // deepEquals is scale-sensitive for BigDecimal (0 != 0E-8), while
+        // this tree's decimal equality (pinned by
+        // TestSpecificRecordWithUnion) follows the Comparable semantics
+        // the raw comparison below has always given it.
+        if (o1 != null && o2 != null && o1.getClass() == o2.getClass() && o1 instanceof Comparable
+            && o2 instanceof Comparable) {
+          return ((Comparable) o1).compareTo(o2) == 0 ? 0 : 1;
+        }
+        return 1;
+      } else if (o1 instanceof Comparable && o2 instanceof Comparable) {
+        return ((Comparable) o1).compareTo(o2);
+      }
+    }
     switch (s.getType()) {
     case RECORD:
       for (Field f : s.getFields()) {

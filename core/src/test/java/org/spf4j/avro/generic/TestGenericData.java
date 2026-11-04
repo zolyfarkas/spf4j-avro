@@ -38,11 +38,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.spf4j.avro.AvroRuntimeException;
+import org.spf4j.avro.LogicalType;
 import org.spf4j.avro.Schema;
 import org.spf4j.avro.Schema.Field;
 import org.spf4j.avro.Schema.Type;
@@ -175,6 +177,40 @@ public class TestGenericData {
 
     assertEquals(r0, r1);
     assertEquals(r1, r0);
+  }
+
+  @Test
+  public void testCompareLogicalTypedBytesHoldingMap() {
+    // A logical-typed bytes field whose converted value is a Map (the
+    // json_record shape): equality must use the converted value's own
+    // equality, not the raw bytes ordering -- a Map is not Comparable, so
+    // falling through to Comparable.compareTo threw ClassCastException.
+    Schema bytes = Schema.create(Type.BYTES);
+    new LogicalType("json_record").addToSchema(bytes);
+    Schema schema = Schema.createRecord("lt_record", "doc", "mytest", false);
+    schema.setFields(Arrays.asList(new Field("payload", bytes, null, null)));
+
+    Map<String, Object> value1 = new LinkedHashMap<>();
+    value1.put("a", 3);
+    value1.put("b", "ty");
+    Map<String, Object> value2 = new LinkedHashMap<>();
+    value2.put("a", 3);
+    value2.put("b", "ty");
+    Map<String, Object> value3 = new LinkedHashMap<>();
+    value3.put("a", 4);
+    value3.put("b", "ty");
+
+    Record record1 = new Record(schema);
+    record1.put(0, value1);
+    Record record2 = new Record(schema);
+    record2.put(0, value2);
+    Record record3 = new Record(schema);
+    record3.put(0, value3);
+
+    assertEquals(record1, record2);
+    assertEquals(0, GenericData.get().compare(record1, record2, schema, true));
+    assertNotEquals(record1, record3);
+    assertNotEquals(0, GenericData.get().compare(record1, record3, schema, true));
   }
 
   @Test
