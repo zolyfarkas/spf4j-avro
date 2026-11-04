@@ -2,7 +2,7 @@
   "type" : "record",
   "name" : "UnionAndFixedFields",
   "doc" : "Schema for UnionAndFixedFields designed to trigger fixed compiler warnings in generated code",
-  "namespace" : "org.apache.avro.specific",
+  "namespace" : "org.spf4j.avro.specific",
   "fields" : [ {
     "name" : "u",
     "type" : [ "boolean", "int", "long", "float", "string" ]

@@ -2,7 +2,7 @@
   "type" : "record",
   "name" : "FullRecordV2",
   "doc" : "Test schema changes: this is the 'new' schema actually used to write data",
-  "namespace" : "org.apache.avro.specific.test",
+  "namespace" : "org.spf4j.avro.specific.test",
   "fields" : [ {
     "name" : "b",
     "type" : "boolean"

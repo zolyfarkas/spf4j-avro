@@ -1,4 +1,4 @@
-@namespace("org.apache.avro.gen")
+@namespace("org.spf4j.avro.gen")
 protocol UnionFwd {
 
 	record TestRecord {

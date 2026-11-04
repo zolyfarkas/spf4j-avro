@@ -35,7 +35,7 @@
   }, {
     "type" : "record",
     "name" : "ImportBar",
-    "namespace" : "org.apache.avro.ipc.specific",
+    "namespace" : "org.spf4j.avro.ipc.specific",
     "fields" : [ {
       "name" : "foo",
       "type" : "avro.examples.baseball.Player"

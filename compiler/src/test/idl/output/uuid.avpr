@@ -1,6 +1,6 @@
 {
   "protocol" : "MyProtocol",
-  "namespace" : "org.apache.avro",
+  "namespace" : "org.spf4j.avro",
   "doc" : "Testing UUID fields",
   "types" : [ {
     "type" : "record",

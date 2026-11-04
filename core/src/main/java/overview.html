@@ -38,7 +38,7 @@
 
   <h2>Schemas</h2>
 
-  <p>Avro relies on <i>{@link org.apache.avro.Schema schemas}</i>.
+  <p>Avro relies on <i>{@link org.spf4j.avro.Schema schemas}</i>.
   When Avro data is read, the schema used when writing it is always
   present.  This permits each datum to be written with no per-value
   overheads, making serialization both fast and small.  This also
@@ -46,12 +46,12 @@
   together with its schema, is fully self-describing.
 
   <p>When Avro data is stored in a {@link
-  org.apache.avro.file.DataFileWriter file}, its schema is stored with
+  org.spf4j.avro.file.DataFileWriter file}, its schema is stored with
   it, so that files may be processed later by any program.  If the
   program reading the data expects a different schema this can be
   easily resolved, since both schemas are present.
 
-  <p>When Avro is used in {@link org.apache.avro.ipc RPC}, the client
+  <p>When Avro is used in {@link org.spf4j.avro.ipc RPC}, the client
     and server exchange schemas in the connection handshake.  (This
     can be optimized so that, for most calls, no schemas are actually
     transmitted.)  Since both client and server both have the other's

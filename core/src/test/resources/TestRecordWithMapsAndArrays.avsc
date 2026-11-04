@@ -1,7 +1,7 @@
 {
     "type": "record",
     "name": "TestRecordWithMapsAndArrays",
-    "namespace": "org.apache.avro.specific",
+    "namespace": "org.spf4j.avro.specific",
     "fields": [
         {
             "name": "arr",

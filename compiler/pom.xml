@@ -37,12 +37,12 @@
   <properties>
     <main.basedir>${project.parent.parent.basedir}</main.basedir>
     <osgi.import>
-      !org.apache.avro.compiler*,
-      org.apache.avro*;version="${project.version}",
+      !org.spf4j.avro.compiler*,
+      org.spf4j.avro*;version="${project.version}",
       org.apache.commons.lang3*,
       *
     </osgi.import>
-    <osgi.export>org.apache.avro.compiler*;version="${project.version}"</osgi.export>
+    <osgi.export>org.spf4j.avro.compiler*;version="${project.version}"</osgi.export>
   </properties>
 
   <build>
@@ -69,7 +69,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Automatic-Module-Name>org.apache.avro.compiler</Automatic-Module-Name>
+              <Automatic-Module-Name>org.spf4j.avro.compiler</Automatic-Module-Name>
             </manifestEntries>
           </archive>
         </configuration>
@@ -134,7 +134,7 @@
               <arguments>
                 <argument>-classpath</argument>
                 <classpath/>
-                <argument>org.apache.avro.compiler.specific.SchemaTask</argument>
+                <argument>org.spf4j.avro.compiler.specific.SchemaTask</argument>
                 <argument>${project.basedir}/src/test/resources/full_record_v1.avsc</argument>
                 <argument>${project.basedir}/src/test/resources/full_record_v2.avsc</argument>
                 <argument>${project.basedir}/src/test/resources/regression_error_field_in_record.avsc</argument>

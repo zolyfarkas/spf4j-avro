@@ -17,7 +17,7 @@
  */
 
 // Currently genavro only does Protocols.
-@namespace("org.apache.avro")
+@namespace("org.spf4j.avro")
 protocol InteropProtocol {
   record Foo {
     string label;

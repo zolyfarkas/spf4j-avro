@@ -20,7 +20,7 @@
  * A simple test case.
  */
 @version("1.0.5")
-@namespace("org.apache.avro.test")
+@namespace("org.spf4j.avro.test")
 protocol Simple {
   /** A kind of record. */
   @aliases(["org.foo.KindOf"])

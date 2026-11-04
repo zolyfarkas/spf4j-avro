@@ -22,7 +22,7 @@
 Testing UUID fields
 */
 
-@namespace("org.apache.avro")
+@namespace("org.spf4j.avro")
 protocol MyProtocol {
     record APlaygroundEvent {
 

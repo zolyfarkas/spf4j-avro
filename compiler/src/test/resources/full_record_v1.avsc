@@ -2,7 +2,7 @@
   "type" : "record",
   "name" : "FullRecordV1",
   "doc" : "Test schema changes: this is the 'old' schema the SpecificRecord expects to see",
-  "namespace" : "org.apache.avro.specific.test",
+  "namespace" : "org.spf4j.avro.specific.test",
   "fields" : [ {
     "name" : "b",
     "type" : "boolean"

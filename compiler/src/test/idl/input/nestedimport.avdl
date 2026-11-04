@@ -17,7 +17,7 @@
  */
 
 @version("1.0.5")
-@namespace("org.apache.avro.ipc.specific")
+@namespace("org.spf4j.avro.ipc.specific")
 protocol nestedimport {
     import idl "reservedwords.avdl";
     import protocol "bar.avpr";

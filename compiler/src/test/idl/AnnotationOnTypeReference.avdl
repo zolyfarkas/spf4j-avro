@@ -19,7 +19,7 @@
 /**
  * A stripped down version of a previous `simple.avdl`, keeping the part where a type reference had an annotation (this is wrong).
  */
-@namespace("org.apache.avro.test")
+@namespace("org.spf4j.avro.test")
 protocol Simple {
   /** An MD5 hash. */
   fixed MD5(16);

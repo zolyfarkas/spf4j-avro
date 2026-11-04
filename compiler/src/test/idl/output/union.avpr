@@ -1,6 +1,6 @@
 {
   "protocol": "UnionFwd",
-  "namespace": "org.apache.avro.gen",
+  "namespace": "org.spf4j.avro.gen",
   "types": [
     {
       "type": "record",

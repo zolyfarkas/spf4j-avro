@@ -1,6 +1,6 @@
 {
   "protocol" : "Simple",
-  "namespace" : "org.apache.avro.test",
+  "namespace" : "org.spf4j.avro.test",
   "doc" : "A simple test case.",
   "version" : "1.0.5",
   "types" : [ {

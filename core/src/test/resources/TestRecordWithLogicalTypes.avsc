@@ -2,7 +2,7 @@
   "type" : "record",
   "name" : "TestRecordWithLogicalTypes",
   "doc" : "Schema for TestRecordWithLogicalTypes and TestRecordWithoutLogicalTypes, see TestSpecificLogicalTypes",
-  "namespace" : "org.apache.avro.specific",
+  "namespace" : "org.spf4j.avro.specific",
   "fields" : [ {
     "name" : "b",
     "type" : "boolean"

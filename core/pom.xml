@@ -37,13 +37,13 @@
   <properties>
     <main.basedir>${project.parent.parent.basedir}</main.basedir>
     <osgi.import>
-      !org.apache.avro*,
+      !org.spf4j.avro*,
       com.fasterxml.jackson*,
       org.xerial.snappy;resolution:=optional,
       sun.misc;resolution:=optional,
       *
     </osgi.import>
-    <osgi.export>org.apache.avro*;version="${project.version}"</osgi.export>
+    <osgi.export>org.spf4j.avro*;version="${project.version}"</osgi.export>
   </properties>
 
   <build>
@@ -51,7 +51,7 @@
       <resource>
         <directory>../../../share/schemas</directory>
         <includes>
-          <include>org/apache/avro/data/Json.avsc</include>
+          <include>org/spf4j/avro/data/Json.avsc</include>
         </includes>
       </resource>
       <resource>
@@ -79,7 +79,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Automatic-Module-Name>org.apache.avro</Automatic-Module-Name>
+              <Automatic-Module-Name>org.spf4j.avro</Automatic-Module-Name>
             </manifestEntries>
           </archive>
         </configuration>
@@ -100,7 +100,7 @@
             </goals>
             <configuration>
               <systemPropertyVariables>
-                <org.apache.avro.specific.use_custom_coders>true</org.apache.avro.specific.use_custom_coders>
+                <org.spf4j.avro.specific.use_custom_coders>true</org.spf4j.avro.specific.use_custom_coders>
               </systemPropertyVariables>
             </configuration>
           </execution>
@@ -112,7 +112,7 @@
             </goals>
             <configuration>
               <systemPropertyVariables>
-                <org.apache.avro.fastread>false</org.apache.avro.fastread>
+                <org.spf4j.avro.fastread>false</org.spf4j.avro.fastread>
               </systemPropertyVariables>
             </configuration>
           </execution>
