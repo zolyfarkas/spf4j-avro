@@ -825,7 +825,7 @@ public class TestReflect {
 
     @Stringable
     @AvroEncode(using = DateAsLongEncoding.class)
-    java.util.Date i7 = new java.util.Date(7L);
+    java.util.Date i7 = java.util.Date.from(java.time.Instant.ofEpochMilli(7L));
 
     @Nullable
     @AvroName("j8")
@@ -837,7 +837,7 @@ public class TestReflect {
 
     @AvroName("j10")
     @AvroEncode(using = DateAsLongEncoding.class)
-    java.util.Date i10 = new java.util.Date(10L);
+    java.util.Date i10 = java.util.Date.from(java.time.Instant.ofEpochMilli(10L));
 
     @Stringable
     @Nullable
@@ -855,14 +855,14 @@ public class TestReflect {
     record.i1 = 1;
     record.i2 = 2;
     record.i3 = 3;
-    record.i4 = new java.util.Date(4L);
+    record.i4 = java.util.Date.from(java.time.Instant.ofEpochMilli(4L));
     record.i5 = 5;
     record.i6 = 6;
-    record.i7 = new java.util.Date(7L);
+    record.i7 = java.util.Date.from(java.time.Instant.ofEpochMilli(7L));
     record.i8 = 8;
-    record.i9 = new java.util.Date(9L);
-    record.i10 = new java.util.Date(10L);
-    record.i11 = new java.util.Date(11L);
+    record.i9 = java.util.Date.from(java.time.Instant.ofEpochMilli(9L));
+    record.i10 = java.util.Date.from(java.time.Instant.ofEpochMilli(10L));
+    record.i11 = java.util.Date.from(java.time.Instant.ofEpochMilli(11L));
 
     writer.write(record, factory.directBinaryEncoder(out, null));
     ReflectDatumReader<multipleAnnotationRecord> reader = new ReflectDatumReader<>(schm);
@@ -896,7 +896,7 @@ public class TestReflect {
     ReflectDatumWriter<AvroEncRecord> writer = new ReflectDatumWriter<>(schm);
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     AvroEncRecord record = new AvroEncRecord();
-    record.date = new java.util.Date(948833323L);
+    record.date = java.util.Date.from(java.time.Instant.ofEpochMilli(948833323L));
     writer.write(record, factory.directBinaryEncoder(out, null));
     ReflectDatumReader<AvroEncRecord> reader = new ReflectDatumReader<>(schm);
     AvroEncRecord decoded = reader.read(new AvroEncRecord(),

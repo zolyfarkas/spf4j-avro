@@ -18,6 +18,7 @@
 package org.spf4j.avro.reflect;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Date;
 
 import org.spf4j.avro.Schema;
@@ -46,7 +47,7 @@ public class DateAsLongEncoding extends CustomEncoding<Date> {
       ((Date) reuse).setTime(in.readLong());
       return (Date) reuse;
     } else
-      return new Date(in.readLong());
+      return Date.from(Instant.ofEpochMilli(in.readLong()));
   }
 
 }
