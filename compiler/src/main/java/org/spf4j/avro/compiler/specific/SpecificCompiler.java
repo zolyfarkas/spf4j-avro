@@ -464,7 +464,11 @@ public class SpecificCompiler {
      * Writes output to path destination directory when it is newer than src,
      * creating directories as necessary. Returns the created file.
      */
-    @SuppressFBWarnings(value = {"PATH_TRAVERSAL_IN", "UAC_UNNECESSARY_API_CONVERSION_FILE_TO_PATH", "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS"},
+    @SuppressFBWarnings(value = {
+        "PATH_TRAVERSAL_IN",
+        "UAC_UNNECESSARY_API_CONVERSION_FILE_TO_PATH",
+        "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS"
+        },
         justification = "the output path is the compiler's configured destination directory plus the compiled"
             + "schema's package path; package segments are Java identifiers and cannot traverse out of the"
             + "destination; UAC_UNNECESSARY_API_CONVERSION_FILE_TO_PATH: Files.newBufferedWriter requires a"

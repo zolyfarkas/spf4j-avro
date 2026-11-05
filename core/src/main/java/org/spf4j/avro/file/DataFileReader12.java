@@ -61,7 +61,12 @@ public class DataFileReader12<D> implements FileReader<D>, Closeable {
   private byte[] syncBuffer = new byte[SYNC_SIZE];
 
   /** Construct a reader for a file. */
-  @SuppressFBWarnings(value = {"EI_EXPOSE_REP2", "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS", "RR_NOT_CHECKED", "STT_TOSTRING_STORED_IN_FIELD"},
+  @SuppressFBWarnings(value = {
+      "EI_EXPOSE_REP2",
+      "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
+      "RR_NOT_CHECKED",
+      "STT_TOSTRING_STORED_IN_FIELD"
+      },
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
           + "configuration paths; PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS: construction completes"

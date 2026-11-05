@@ -85,7 +85,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import static java.util.Objects.requireNonNull;
 import java.io.InputStreamReader;
 import java.util.Collections;

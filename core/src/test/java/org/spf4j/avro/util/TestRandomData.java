@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Objects;
-import java.util.Random;
 
 import org.spf4j.avro.JsonSchemaParser;
 import org.spf4j.avro.Schema;

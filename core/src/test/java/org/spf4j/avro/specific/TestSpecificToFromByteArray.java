@@ -36,7 +36,11 @@ import java.time.temporal.ChronoUnit;
 
 public class TestSpecificToFromByteArray {
 
-  @SuppressFBWarnings(value = {"CNT_ROUGH_CONSTANT_VALUE", "SPP_USE_BIGDECIMAL_STRING_CTOR", "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION"},
+  @SuppressFBWarnings(value = {
+      "CNT_ROUGH_CONSTANT_VALUE",
+      "SPP_USE_BIGDECIMAL_STRING_CTOR",
+      "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION"
+      },
       justification = "CNT_ROUGH_CONSTANT_VALUE: 3.14f is a deliberate fixture value for the record's float field,"
           + "not an approximation of pi; SPP_USE_BIGDECIMAL_STRING_CTOR: the inexact double-constructed"
           + "decimal is the fixture under test; the round-trip assertions pin its exact serialized form;"
@@ -95,7 +99,11 @@ public class TestSpecificToFromByteArray {
     });
   }
 
-  @SuppressFBWarnings(value = {"CNT_ROUGH_CONSTANT_VALUE", "SPP_USE_BIGDECIMAL_STRING_CTOR", "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION"},
+  @SuppressFBWarnings(value = {
+      "CNT_ROUGH_CONSTANT_VALUE",
+      "SPP_USE_BIGDECIMAL_STRING_CTOR",
+      "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION"
+      },
       justification = "CNT_ROUGH_CONSTANT_VALUE: 3.14f is a deliberate fixture value for the record's float field,"
           + "not an approximation of pi; SPP_USE_BIGDECIMAL_STRING_CTOR: the inexact double-constructed"
           + "decimal is the fixture under test; the round-trip assertions pin its exact serialized form;"

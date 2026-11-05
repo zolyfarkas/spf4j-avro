@@ -514,7 +514,11 @@ public class JsonDecoder extends ParsingDecoder implements Parser.ActionHandler 
     return n;
   }
 
-  @SuppressFBWarnings(value = {"RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE", "EXS_EXCEPTION_SOFTENING_HAS_CHECKED", "NP_LOAD_OF_KNOWN_NULL_VALUE"},
+  @SuppressFBWarnings(value = {
+      "RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE",
+      "EXS_EXCEPTION_SOFTENING_HAS_CHECKED",
+      "NP_LOAD_OF_KNOWN_NULL_VALUE"
+      },
       justification = "the null check on the buffered-field lookup decides whether the parser is swapped for the"
           + "buffered field's tokens; the flagged redundancy is an artifact of the try-with-resources"
           + "close() desugaring; EXS_EXCEPTION_SOFTENING_HAS_CHECKED: this API's documented error model"

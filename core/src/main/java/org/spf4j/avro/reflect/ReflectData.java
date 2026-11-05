@@ -222,7 +222,9 @@ public class ReflectData extends SpecificData {
     return this.defaultValues.computeIfAbsent(type, this::newDefaultInstance);
   }
 
-  @SuppressFBWarnings(value = "RFI_SET_ACCESSIBLE", justification = "reflective access is this layer's function: the datum layer materializes and inspects the classes it is asked to handle; setAccessible is applied only to those classes' own members")
+  @SuppressFBWarnings(value = "RFI_SET_ACCESSIBLE",
+      justification = "reflective access is this layer's function: the datum layer materializes and inspects"
+          + " the classes it is asked to handle; setAccessible is applied only to those classes' own members")
   private Object newDefaultInstance(Type type) {
     try {
       Constructor constructor = ((Class) type).getDeclaredConstructor();
@@ -646,7 +648,13 @@ public class ReflectData extends SpecificData {
     return defaultValue;
   }
 
-  @SuppressFBWarnings(value = {"CLI_CONSTANT_LIST_INDEX", "PSC_PRESIZE_COLLECTIONS", "CC_CYCLOMATIC_COMPLEXITY", "EXS_EXCEPTION_SOFTENING_NO_CHECKED", "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS"},
+  @SuppressFBWarnings(value = {
+      "CLI_CONSTANT_LIST_INDEX",
+      "PSC_PRESIZE_COLLECTIONS",
+      "CC_CYCLOMATIC_COMPLEXITY",
+      "EXS_EXCEPTION_SOFTENING_NO_CHECKED",
+      "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS"
+      },
       justification = "CLI_CONSTANT_LIST_INDEX: positional access into a fixed-order list (schema fields or "
           + "invocation arguments) whose layout is established by the surrounding code; the constant"
           + "index  names the slot; PSC_PRESIZE_COLLECTIONS: the collection is populated incrementally"

@@ -98,7 +98,11 @@ import static org.spf4j.avro.LogicalType.LOGICAL_TYPE_PROP;
  * property.
  * </ul>
  */
-@SuppressFBWarnings(value = {"SE_NO_SUITABLE_CONSTRUCTOR", "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY", "PIS_POSSIBLE_INCOMPLETE_SERIALIZATION"},
+@SuppressFBWarnings(value = {
+    "SE_NO_SUITABLE_CONSTRUCTOR",
+    "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
+    "PIS_POSSIBLE_INCOMPLETE_SERIALIZATION"
+    },
     justification = "SE_NO_SUITABLE_CONSTRUCTOR: serialization uses writeReplace to substitute the "
         + "SerializableSchema JSON form, so there is no field-deserialization path for a no-arg "
         + "constructor to serve; FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY: the classes of this package form "

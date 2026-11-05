@@ -315,7 +315,12 @@ public class TestSpecificCompiler {
     }
   }
 
-  @SuppressFBWarnings(value = {"DM_DEFAULT_ENCODING", "MDM_STRING_BYTES_ENCODING", "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS", "OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE"},
+  @SuppressFBWarnings(value = {
+      "DM_DEFAULT_ENCODING",
+      "MDM_STRING_BYTES_ENCODING",
+      "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS",
+      "OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE"
+      },
       justification = "the test compares a file written with the platform default encoding against one written with"
           + "an explicit encoding; decoding one side with the platform default charset is the behavior"
           + "under test; MDM_STRING_BYTES_ENCODING: this test verifies output character encodings;"

@@ -65,7 +65,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestSpecificData {
 
-  @SuppressFBWarnings(value = {"INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE", "DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED", "IMC_IMMATURE_CLASS_PRINTSTACKTRACE"},
+  @SuppressFBWarnings(value = {
+      "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
+      "DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED",
+      "IMC_IMMATURE_CLASS_PRINTSTACKTRACE"
+      },
       justification = "test harness: printing the failure stack trace to the console is how this test driver"
           + "reports errors; nothing is exposed to a remote party;"
           + "DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED: the test deliberately exercises"

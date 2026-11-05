@@ -17,7 +17,6 @@
  */
 
 package org.spf4j.avro.file;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
