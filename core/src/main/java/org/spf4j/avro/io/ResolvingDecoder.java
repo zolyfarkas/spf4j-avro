@@ -17,6 +17,8 @@
  */
 package org.spf4j.avro.io;
 
+import edu.umd.cs.findbugs.annotations.Nullable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -48,6 +50,11 @@ import com.fasterxml.jackson.databind.JsonNode;
  * See the <a href="parsing/doc-files/parsing.html">parser documentation</a> for
  * information on how this works.
  */
+@SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
+    justification = "the cycle is the io package's factory pattern: DecoderFactory creates"
+        + " ResolvingDecoder instances, and ResolvingDecoder uses DecoderFactory for buffered"
+        + " sub-decoders; the references are method-body only, so there is no initialization-order"
+        + " hazard, and restructuring the pair is upstream Avro's architecture, not this port's")
 public class ResolvingDecoder extends ValidatingDecoder implements JsonExtensionDecoder {
 
   private Decoder backup;
@@ -177,6 +184,7 @@ public class ResolvingDecoder extends ValidatingDecoder implements JsonExtension
   // ExtendedJsonDecoder.readBigDecimal (the underlying grammar has
   // advanced to the value, so that value is not fallback-readable).
 
+  @Nullable
   private JsonExtensionDecoder extensionDecoder() {
     return in instanceof JsonExtensionDecoder ? (JsonExtensionDecoder) in : null;
   }
@@ -374,11 +382,18 @@ public class ResolvingDecoder extends ValidatingDecoder implements JsonExtension
     }
   }
 
+  @SuppressFBWarnings(value = "WEM_WEAK_EXCEPTION_MESSAGING",
+      justification = "the message intentionally matches upstream ResolvingDecoder's own diagnostics"
+          + " for the grammar-exhausted condition, so error text stays uniform across the decoder")
+  private AvroTypeException newGrammarExhausted() {
+    return new AvroTypeException("Attempt to process a record but the grammar is exhausted.");
+  }
+
   /** Consume the record segment's field-order action and return its fields. */
   private Schema.Field[] advanceToFieldOrder() throws IOException {
     for (;;) {
       if (parser.depth() <= 0) {
-        throw new AvroTypeException("Attempt to process a record but the grammar is exhausted.");
+        throw newGrammarExhausted();
       }
       Symbol top = parser.popSymbol();
       if (top instanceof Symbol.FieldOrderAction) {

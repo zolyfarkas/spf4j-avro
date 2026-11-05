@@ -25,6 +25,7 @@ import static org.junit.Assert.fail;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.Test;
 
 /**
@@ -49,6 +50,10 @@ public class TestAllowUndefinedLogicalTypes {
     } catch (IllegalArgumentException e) {
       assertTrue(e.getMessage(), e.getMessage().startsWith("Undefined logical type undefined-test-lt for "));
     }
+  }
+
+  private static void assertTolerantParses(final Schema.Parser parser) {
+    assertNull(parser.parse(UNDEFINED_LT_SCHEMA).getLogicalType());
   }
 
   @Test
@@ -82,9 +87,9 @@ public class TestAllowUndefinedLogicalTypes {
     Schema.Parser tolerant = new Schema.Parser().setAllowUndefinedLogicalTypes(true);
     // alternating use: each parser keeps its own setting
     assertParseThrows(strict);
-    assertNull(tolerant.parse(UNDEFINED_LT_SCHEMA).getLogicalType());
+    assertTolerantParses(tolerant);
     assertParseThrows(strict);
-    assertNull(tolerant.parse(UNDEFINED_LT_SCHEMA).getLogicalType());
+    assertTolerantParses(tolerant);
     // changing one parser's setting does not touch the other
     tolerant.setAllowUndefinedLogicalTypes(false);
     assertParseThrows(tolerant);
@@ -94,6 +99,10 @@ public class TestAllowUndefinedLogicalTypes {
   }
 
   @Test
+  @SuppressFBWarnings(value = "UTAO_JUNIT_ASSERTION_ODDITIES_NO_ASSERT",
+      justification = "the assertions execute in the two worker threads (each parse outcome is checked"
+          + " there); this thread fails the test via Assertions.fail on any captured worker error --"
+          + " the detector counts neither")
   public void parsersWithDifferentSettingsDoNotInterfereAcrossThreads() throws Exception {
     final int iterations = 50;
     final CountDownLatch start = new CountDownLatch(1);
@@ -131,13 +140,16 @@ public class TestAllowUndefinedLogicalTypes {
     tolerant.start();
     strict.start();
     start.countDown();
-    tolerant.join(TimeUnit.SECONDS.toMillis(30));
-    strict.join(TimeUnit.SECONDS.toMillis(30));
-    if (tolerantError.get() != null) {
-      throw new AssertionError("tolerant thread failed", tolerantError.get());
+    long joinMillis = TimeUnit.SECONDS.toMillis(30);
+    tolerant.join(joinMillis);
+    strict.join(joinMillis);
+    Throwable tolerantFailure = tolerantError.get();
+    if (tolerantFailure != null) {
+      org.junit.jupiter.api.Assertions.fail("tolerant thread failed", tolerantFailure);
     }
-    if (strictError.get() != null) {
-      throw new AssertionError("strict thread failed", strictError.get());
+    Throwable strictFailure = strictError.get();
+    if (strictFailure != null) {
+      org.junit.jupiter.api.Assertions.fail("strict thread failed", strictFailure);
     }
   }
 }

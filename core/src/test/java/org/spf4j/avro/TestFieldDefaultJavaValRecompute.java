@@ -18,8 +18,8 @@
 package org.spf4j.avro;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.nio.charset.StandardCharsets;
 import org.junit.Test;
@@ -55,9 +55,9 @@ public class TestFieldDefaultJavaValRecompute {
     Schema.Field copy = new Schema.Field(original, Schema.create(Schema.Type.LONG));
     // the JSON default is unchanged; its Java form must follow the copy's schema
     assertEquals(original.defaultValue(), copy.defaultValue());
-    assertTrue("expected a Long default for a long field, got " + copy.defaultVal().getClass(),
-        copy.defaultVal() instanceof Long);
-    assertEquals(Long.valueOf(42L), copy.defaultVal());
+    Long copyDefault = assertInstanceOf(Long.class, copy.defaultVal(),
+        "expected a Long default for a long field");
+    assertEquals(Long.valueOf(42L), copyDefault);
     // and the original is unaffected by the copy
     assertEquals(Integer.valueOf(42), original.defaultVal());
   }
@@ -68,18 +68,17 @@ public class TestFieldDefaultJavaValRecompute {
     assertEquals("abc", original.defaultVal());
 
     Schema.Field copy = new Schema.Field(original, Schema.create(Schema.Type.BYTES));
-    Object copyDefault = copy.defaultVal();
-    assertTrue("expected a byte[] default for a bytes field, got " + copyDefault.getClass(),
-        copyDefault instanceof byte[]);
-    assertArrayEquals("abc".getBytes(StandardCharsets.ISO_8859_1), (byte[]) copyDefault);
+    byte[] copyDefault = assertInstanceOf(byte[].class, copy.defaultVal(),
+        "expected a byte[] default for a bytes field");
+    assertArrayEquals("abc".getBytes(StandardCharsets.ISO_8859_1), copyDefault);
   }
 
   @Test
   public void testCopiedFieldDefaultRecomputedIntToDouble() {
     Schema.Field original = new Schema.Field("d", Schema.create(Schema.Type.INT), null, 7);
     Schema.Field copy = new Schema.Field(original, Schema.create(Schema.Type.DOUBLE));
-    assertTrue("expected a Double default for a double field, got " + copy.defaultVal().getClass(),
-        copy.defaultVal() instanceof Double);
-    assertEquals(Double.valueOf(7.0d), copy.defaultVal());
+    Double copyDefault = assertInstanceOf(Double.class, copy.defaultVal(),
+        "expected a Double default for a double field");
+    assertEquals(Double.valueOf(7.0d), copyDefault);
   }
 }

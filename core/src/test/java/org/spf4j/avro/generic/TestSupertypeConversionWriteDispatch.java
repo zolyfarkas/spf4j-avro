@@ -27,6 +27,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -136,7 +137,7 @@ public class TestSupertypeConversionWriteDispatch {
 
   private static Schema recordWith(final Schema fieldType) {
     return Schema.createRecord("R", null, null, false,
-        Arrays.asList(new Schema.Field("f", fieldType, null, null)));
+        Collections.singletonList(new Schema.Field("f", fieldType, null, null)));
   }
 
   private static byte[] write(final GenericData data, final Schema schema, final Object fieldValue) throws IOException {
@@ -165,14 +166,14 @@ public class TestSupertypeConversionWriteDispatch {
     data.addLogicalTypeConversion(schemaConversion);
 
     // datum class is a strict subtype / implementation of the converted type
-    assertSame(objectConversion,
-        data.getConversionByClass(String.class, stringSchemaWith("test_object_lt").getLogicalType()));
-    assertSame(objectConversion,
-        data.getConversionByClass(ArrayList.class, stringSchemaWith("test_object_lt").getLogicalType()));
-    assertSame(mapConversion,
-        data.getConversionByClass(LinkedHashMap.class, bytesSchemaWith("test_map_lt").getLogicalType()));
-    assertSame(schemaConversion, data.getConversionByClass(Schema.create(Schema.Type.DOUBLE).getClass(),
-        stringSchemaWith("test_schema_lt").getLogicalType()));
+    LogicalType objectLt = stringSchemaWith("test_object_lt").getLogicalType();
+    LogicalType mapLt = bytesSchemaWith("test_map_lt").getLogicalType();
+    LogicalType schemaLt = stringSchemaWith("test_schema_lt").getLogicalType();
+    assertSame(objectConversion, data.getConversionByClass(String.class, objectLt));
+    assertSame(objectConversion, data.getConversionByClass(ArrayList.class, objectLt));
+    assertSame(mapConversion, data.getConversionByClass(LinkedHashMap.class, mapLt));
+    assertSame(schemaConversion,
+        data.getConversionByClass(Schema.create(Schema.Type.DOUBLE).getClass(), schemaLt));
     // ... and a datum class the converted type is not assignable from gets none
     assertNull(data.getConversionByClass(Integer.class, bytesSchemaWith("test_map_lt").getLogicalType()));
   }

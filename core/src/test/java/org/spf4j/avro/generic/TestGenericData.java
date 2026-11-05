@@ -188,7 +188,7 @@ public class TestGenericData {
     Schema bytes = Schema.create(Type.BYTES);
     new LogicalType("json_record").addToSchema(bytes);
     Schema schema = Schema.createRecord("lt_record", "doc", "mytest", false);
-    schema.setFields(Arrays.asList(new Field("payload", bytes, null, null)));
+    schema.setFields(Collections.singletonList(new Field("payload", bytes, null, null)));
 
     Map<String, Object> value1 = new LinkedHashMap<>();
     value1.put("a", 3);
@@ -207,10 +207,11 @@ public class TestGenericData {
     Record record3 = new Record(schema);
     record3.put(0, value3);
 
+    GenericData genericData = GenericData.get();
     assertEquals(record1, record2);
-    assertEquals(0, GenericData.get().compare(record1, record2, schema, true));
+    assertEquals(0, genericData.compare(record1, record2, schema, true));
     assertNotEquals(record1, record3);
-    assertNotEquals(0, GenericData.get().compare(record1, record3, schema, true));
+    assertNotEquals(0, genericData.compare(record1, record3, schema, true));
   }
 
   @Test

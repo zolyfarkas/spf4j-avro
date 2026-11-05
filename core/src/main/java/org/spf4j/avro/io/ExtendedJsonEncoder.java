@@ -17,6 +17,7 @@
  */
 package org.spf4j.avro.io;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -73,6 +74,10 @@ public final class ExtendedJsonEncoder extends JsonEncoder implements JsonExtens
     super(sc, out);
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the accessor is the point of this encoder: interleaved writers share the one"
+          + " Jackson parser/generator positioned on the stream being written; the parser is not"
+          + " internal state separable from the output itself")
   public Parser getParser() {
     return parser;
   }

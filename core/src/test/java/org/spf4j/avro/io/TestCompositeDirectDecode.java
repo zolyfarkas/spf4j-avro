@@ -18,12 +18,14 @@
 package org.spf4j.avro.io;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -321,8 +323,8 @@ public class TestCompositeDirectDecode {
           data(fast, new MapValueConversion()));
       Object result = reader.read(null, new ExtendedJsonDecoder(bytes,
           new ByteArrayInputStream("{\"a\":3}".getBytes(StandardCharsets.UTF_8))));
-      assertTrue(result instanceof Map);
-      assertEquals(3, ((Number) ((Map<?, ?>) result).get("a")).intValue());
+      Map<?, ?> resultMap = assertInstanceOf(Map.class, result);
+      assertEquals(3, ((Number) resultMap.get("a")).intValue());
     }
   }
 
@@ -331,7 +333,7 @@ public class TestCompositeDirectDecode {
     // readValueAsTree over a composite value (previously IllegalStateException:
     // no ObjectCodec on the parser)
     Schema record = Schema.createRecord("R", null, null, false,
-        Arrays.asList(new Schema.Field("x", Schema.create(Schema.Type.INT), null, null)));
+        List.of(new Schema.Field("x", Schema.create(Schema.Type.INT), null, null)));
     ExtendedJsonDecoder treeDecoder = new ExtendedJsonDecoder(record,
         new ByteArrayInputStream("{\"x\":1}".getBytes(StandardCharsets.UTF_8)));
     JsonNode tree = treeDecoder.readValueAsTree(record);
@@ -351,6 +353,6 @@ public class TestCompositeDirectDecode {
     @SuppressWarnings("unchecked")
     Map<String, Object> fromString = stringDecoder.readValue(stringSchema, Map.class);
     assertEquals(1, ((Number) fromString.get("a")).intValue());
-    assertTrue(fromString.size() == 1);
+    assertEquals(1, fromString.size());
   }
 }

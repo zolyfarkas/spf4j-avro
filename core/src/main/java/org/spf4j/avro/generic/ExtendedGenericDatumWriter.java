@@ -19,6 +19,7 @@ package org.spf4j.avro.generic;
 
 import static org.spf4j.avro.Schema.Field.NULL_DEFAULT_VALUE;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +84,10 @@ public class ExtendedGenericDatumWriter<D> extends GenericDatumWriter<D> {
     super(root, data);
   }
 
+  @SuppressFBWarnings(value = "ITC_INHERITANCE_TYPE_CHECKING",
+      justification = "the instanceof dispatch over datum types is the algorithm of this ported"
+          + " default-value equality check: enum symbols and char sequences each have their own"
+          + " equality rule, applied in this order")
   public static boolean equals(final Object a, final Object defaultValue) {
     if (a == defaultValue) {
       return true;

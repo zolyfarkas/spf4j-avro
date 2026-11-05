@@ -228,6 +228,23 @@
       <artifactId>jackson-core</artifactId>
     </dependency>
     <dependency>
+      <!-- @SuppressFBWarnings / @Nullable for the ported code; CLASS-retention
+           annotations, not needed at runtime, hence provided scope -->
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-annotations</artifactId>
+      <version>4.7.3</version>
+      <scope>provided</scope>
+      <exclusions>
+        <!-- jsr305 is banned by this build's enforcer (license hygiene
+             inherited from upstream Avro); the annotations used here
+             (@SuppressFBWarnings, @Nullable) do not need it -->
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
     </dependency>

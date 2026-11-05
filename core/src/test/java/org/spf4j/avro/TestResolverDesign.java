@@ -18,6 +18,7 @@
 package org.spf4j.avro;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -31,6 +32,7 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.junit.Test;
 import org.spf4j.avro.generic.GenericData;
 import org.spf4j.avro.util.SchemaVisitor;
@@ -135,16 +137,20 @@ public class TestResolverDesign {
     Schema stamped = new Schema.Parser().setSchemaResolver(stubResolver()).parse(GRAPH);
     Schema unstamped = new Schema.Parser().parse(GRAPH);
     assertEquals(unstamped, stamped);
-    assertEquals(unstamped.toString(), stamped.toString());
+    String unstampedJson = unstamped.toString();
+    assertEquals(unstampedJson, stamped.toString());
     // also through the resolver-aware write entry point with a resolver
     // that assigns no ids: byte-identical, no stamp attribute emitted
     StringWriter writer = new StringWriter();
     JsonGenerator gen = Schema.FACTORY.createGenerator(writer);
     stamped.toJson(SchemaResolver.NONE, gen);
     gen.flush();
-    assertEquals(unstamped.toString(), writer.toString());
+    assertEquals(unstampedJson, writer.toString());
   }
 
+  @SuppressFBWarnings(value = "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS",
+      justification = "each stubResolver() call must return a distinct resolver instance -- telling"
+          + " the stamp and the context resolver apart by identity is the behavior under test")
   @Test
   public void testPrecedenceGenericDataBeatsStampBeatsNamesOnly() {
     SchemaResolver stamp = stubResolver();
@@ -159,15 +165,17 @@ public class TestResolverDesign {
 
     // 2. with no context resolver, the schema stamp beats names-only
     GenericData empty = new GenericData();
-    assertSame(stamp, DatumContext.of(empty).getEffectiveSchemaResolver(stamped));
+    DatumContext emptyContext = DatumContext.of(empty);
+    assertSame(stamp, emptyContext.getEffectiveSchemaResolver(stamped));
     assertSame(stamp, DatumContext.resolveEffectiveSchemaResolver(null, stamped));
 
     // 3. with neither, embedded-names-only: an AvroNamesRefResolver with
     // no external resolver (assigns no ids, resolves no external ids)
-    SchemaResolver namesOnly = DatumContext.of(empty).getEffectiveSchemaResolver(unstamped);
-    assertTrue(namesOnly instanceof AvroNamesRefResolver);
+    SchemaResolver namesOnly = emptyContext.getEffectiveSchemaResolver(unstamped);
+    assertInstanceOf(AvroNamesRefResolver.class, namesOnly);
     assertNull(namesOnly.getId(unstamped));
-    assertTrue(DatumContext.resolveEffectiveSchemaResolver(null, unstamped) instanceof AvroNamesRefResolver);
+    assertInstanceOf(AvroNamesRefResolver.class,
+        DatumContext.resolveEffectiveSchemaResolver(null, unstamped));
   }
 
   private static Schema anySchema(final String resolverName) {
@@ -175,6 +183,9 @@ public class TestResolverDesign {
         + "\",\"fields\":[{\"name\":\"avsc\",\"type\":\"string\"},{\"name\":\"content\",\"type\":\"string\"}]}");
   }
 
+  @SuppressFBWarnings(value = "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS",
+      justification = "each stubResolver() call must return a distinct resolver instance -- telling"
+          + " the named resolvers apart by identity is the behavior under test")
   @Test
   public void testNamedSelectionAmongContextResolvers() {
     SchemaResolver resolverA = stubResolver();
@@ -185,16 +196,20 @@ public class TestResolverDesign {
 
     // a schema carrying resolver=B resolves via B, resolver=A via A,
     // selected from this context's named set only
-    assertSame(resolverB, DatumContext.of(data).getEffectiveSchemaResolver(anySchema("B")));
-    assertSame(resolverA, DatumContext.of(data).getEffectiveSchemaResolver(anySchema("A")));
+    DatumContext context = DatumContext.of(data);
+    assertSame(resolverB, context.getEffectiveSchemaResolver(anySchema("B")));
+    assertSame(resolverA, context.getEffectiveSchemaResolver(anySchema("A")));
 
     // a name the context does not know falls through to the context's
     // default resolver (the next step of the precedence)
     SchemaResolver fallback = stubResolver();
     data.setSchemaResolver(fallback);
-    assertSame(fallback, DatumContext.of(data).getEffectiveSchemaResolver(anySchema("ZZZ")));
+    assertSame(fallback, context.getEffectiveSchemaResolver(anySchema("ZZZ")));
   }
 
+  @SuppressFBWarnings(value = "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS",
+      justification = "each stubResolver() call must return a distinct resolver instance -- telling"
+          + " the two datum models' resolvers apart by identity is the behavior under test")
   @Test
   public void testGenericDataInstancesAreIndependent() {
     SchemaResolver resolver1 = stubResolver();
@@ -212,8 +227,9 @@ public class TestResolverDesign {
     assertNull(data2.getSchemaResolver("x"));
 
     // no static state: the shared singleton was never touched
-    assertNull(GenericData.get().getSchemaResolver());
-    assertNull(GenericData.get().getSchemaResolver("x"));
+    GenericData shared = GenericData.get();
+    assertNull(shared.getSchemaResolver());
+    assertNull(shared.getSchemaResolver("x"));
   }
 
   @Test
@@ -225,8 +241,9 @@ public class TestResolverDesign {
     // instances, into a freshly created record) does not copy the stamp:
     // the new schema instance starts unstamped, while the shared field
     // schema instances keep their own stamps
-    List<Schema.Field> copiedFields = new ArrayList<>();
-    for (Schema.Field field : stamped.getFields()) {
+    List<Schema.Field> stampedFields = stamped.getFields();
+    List<Schema.Field> copiedFields = new ArrayList<>(stampedFields.size());
+    for (Schema.Field field : stampedFields) {
       copiedFields.add(new Schema.Field(field, field.schema()));
     }
     Schema copy = Schema.createRecord(stamped.getName(), stamped.getDoc(), stamped.getNamespace(), false,

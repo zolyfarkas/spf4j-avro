@@ -19,6 +19,7 @@
 package org.spf4j.avro;
 
 import org.spf4j.avro.data.TimeConversions;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.spf4j.avro.generic.GenericData;
 import org.spf4j.avro.generic.GenericEnumSymbol;
 import org.spf4j.avro.generic.GenericFixed;
@@ -176,6 +177,10 @@ public class Conversions {
      * (The fork's {@code Decimal2Converter} direct path, applied to the
      * standard decimal logical type.)
      */
+    @SuppressFBWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE",
+        justification = "the datum framework dispatches this conversion only for schemas whose logical"
+            + " type is decimal (it is registered under the 'decimal' name), so the cast restates the"
+            + " dispatch invariant -- the same pattern upstream DecimalConversion uses")
     @Override
     public Optional<BigDecimal> tryDirectDecode(final Decoder dec, final Schema schema) throws IOException {
       if (dec instanceof JsonExtensionDecoder) {
@@ -207,6 +212,10 @@ public class Conversions {
      * would. (The fork's {@code Decimal2Converter} direct-encode pattern,
      * applied to the standard decimal logical type.)
      */
+    @SuppressFBWarnings(value = "BC_UNCONFIRMED_CAST_OF_RETURN_VALUE",
+        justification = "the datum framework dispatches this conversion only for schemas whose logical"
+            + " type is decimal (it is registered under the 'decimal' name), so the cast restates the"
+            + " dispatch invariant -- the same pattern upstream DecimalConversion uses")
     @Override
     public boolean tryDirectEncode(final BigDecimal object, final Encoder enc, final Schema schema) throws IOException {
       if (enc instanceof JsonExtensionEncoder) {

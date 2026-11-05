@@ -64,7 +64,8 @@ public class TestRegisteredFactoryPrecedence {
       if (schema.getType() == Schema.Type.STRING && schema.getProp("format") != null) {
         return EXTENDED_DATE;
       }
-      throw new IllegalArgumentException("Date can only be used with an underlying int type");
+      throw new IllegalArgumentException(
+          "Date can only be used with an underlying int or string type, got " + schema.getType());
     }
 
     @Override

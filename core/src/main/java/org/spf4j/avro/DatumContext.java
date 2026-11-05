@@ -19,6 +19,8 @@ package org.spf4j.avro;
 
 import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import org.spf4j.avro.generic.GenericData;
 
 /**
@@ -47,6 +49,15 @@ import org.spf4j.avro.generic.GenericData;
  */
 public final class DatumContext {
 
+  /**
+   * The name of the schema property that selects a named schema resolver
+   * registered on a datum model: a schema carrying
+   * {@code "resolver": "<name>"} (written that way by the {@code "any"}
+   * logical type's {@code addToSchema}) selects the resolver registered
+   * under {@code <name>} on the IO context.
+   */
+  public static final String RESOLVER_PROP = "resolver";
+
   private final GenericData data;
 
   private DatumContext(final GenericData data) {
@@ -63,18 +74,14 @@ public final class DatumContext {
    * {@code SpecificData} or {@code ReflectData} instance the conversion was
    * registered on).
    */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "carrying the datum model is this context object's purpose: the GenericData is the"
+          + " caller's own mutable configuration object, shared deliberately (as GenericDatumReader"
+          + " exposes its GenericData); the context holds no state of its own to protect")
   public GenericData getData() {
     return data;
   }
 
-  /**
-   * The name of the schema property that selects a named schema resolver
-   * registered on a datum model: a schema carrying
-   * {@code "resolver": "<name>"} (written that way by the {@code "any"}
-   * logical type's {@code addToSchema}) selects the resolver registered
-   * under {@code <name>} on the IO context.
-   */
-  public static final String RESOLVER_PROP = "resolver";
 
   /**
    * The effective schema resolver for a conversion operating on

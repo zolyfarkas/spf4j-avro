@@ -152,27 +152,15 @@ public class TestUnresolvedSchemaFlows {
   @Test
   public void testForwardReferenceResolvesViaExternalResolverRef() {
     Schema later = new Schema.Parser().parse(LATER);
-    org.spf4j.avro.SchemaResolver resolver = new org.spf4j.avro.SchemaResolver() {
-      @Override
-      public Schema resolveSchema(final String id) {
-        if ("test.Later".equals(id)) {
-          return later;
-        }
-        throw new IllegalArgumentException("Unknown schema with id " + id);
-      }
-
-      @Override
-      public String getId(final Schema schema) {
-        return null;
-      }
-    };
+    org.spf4j.avro.SchemaResolver resolver = new LaterResolver(later);
     String refOuter = "{\"type\":\"record\",\"name\":\"RefOuter\",\"namespace\":\"test\","
         + "\"fields\":[{\"name\":\"later\",\"type\":{\"$ref\":\"test.Later\"}}]}";
 
     Schema parsed = new Schema.Parser().setSchemaResolver(resolver).parse(refOuter);
 
-    assertFalse(SchemaResolver.isUnresolvedSchema(parsed.getField("later").schema()));
-    assertEquals(later, parsed.getField("later").schema());
+    Schema laterFieldSchema = parsed.getField("later").schema();
+    assertFalse(SchemaResolver.isUnresolvedSchema(laterFieldSchema));
+    assertEquals(later, laterFieldSchema);
     assertTrue(SchemaResolver.isFullyResolvedSchema(parsed));
   }
 
@@ -204,10 +192,34 @@ public class TestUnresolvedSchemaFlows {
     Schema resolved = context.resolve(outer);
 
     Schema.Field resolvedKind = resolved.getField("kind");
-    assertEquals(Schema.Type.ENUM, resolvedKind.schema().getType());
-    assertEquals("test.Kind", resolvedKind.schema().getFullName());
+    Schema kindSchema = resolvedKind.schema();
+    assertEquals(Schema.Type.ENUM, kindSchema.getType());
+    assertEquals("test.Kind", kindSchema.getFullName());
     // recomputed against the resolved enum schema
     assertEquals("PLAIN", resolvedKind.defaultVal());
     assertTrue(SchemaResolver.isFullyResolvedSchema(resolved));
+  }
+
+  /** Resolves only {@code test.Later}, to the schema supplied at construction. */
+  private static final class LaterResolver implements org.spf4j.avro.SchemaResolver {
+
+    private final Schema later;
+
+    private LaterResolver(final Schema later) {
+      this.later = later;
+    }
+
+    @Override
+    public Schema resolveSchema(final String id) {
+      if ("test.Later".equals(id)) {
+        return later;
+      }
+      throw new IllegalArgumentException("Unknown schema with id " + id);
+    }
+
+    @Override
+    public String getId(final Schema schema) {
+      return null;
+    }
   }
 }

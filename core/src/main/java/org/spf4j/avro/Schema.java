@@ -1249,7 +1249,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
 
     @Override
     public void addProp(final String name, final Object value) {
-      if ("stringSymbols".equals(name) && value != null) {
+      if (value != null && "stringSymbols".equals(name)) {
         validateStringSymbols(value instanceof JsonNode ? (JsonNode) value : JacksonUtils.toJsonNode(value));
       }
       super.addProp(name, value);

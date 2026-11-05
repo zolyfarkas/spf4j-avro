@@ -54,6 +54,11 @@ public final class MultiConverter<T> extends Conversion<T> {
 
   private final Chooser chooser;
 
+  @Override
+  public String toString() {
+    return "MultiConverter[chooser=" + chooser + ", conversions=" + java.util.Arrays.toString(conversions) + ']';
+  }
+
   @SafeVarargs
   public MultiConverter(final Chooser chooser, final Conversion<T>... conversions) {
     this.conversions = conversions;
