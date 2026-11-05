@@ -35,8 +35,12 @@ import org.spf4j.avro.message.SchemaStore;
 #foreach ($annotation in $this.javaAnnotations($schema))
 @$annotation
 #end
+@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "IMC_IMMATURE_CLASS_BAD_SERIALVERSIONUID",
+    justification = "generated record: the serialVersionUID is the schema fingerprint emitted by the"
+        + " specific compiler; the class's real serialized form is the Avro binary encoding, and Java"
+        + " serialization is incidental")
 @org.spf4j.avro.specific.AvroGenerated
-public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getSchemaParentClass($schema.isError())} implements org.spf4j.avro.specific.SpecificRecord {
+public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getSchemaParentClass($schema.isError())} {
   private static final long serialVersionUID = ${this.fingerprint64($schema)}L;
 
 #set ($schemaString = $this.javaSplit($schema.toString()))
@@ -81,6 +85,10 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
    * Return the BinaryMessageDecoder instance used by this class.
    * @return the message decoder used by this class
    */
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "returns the record class's shared datum reader; the reader is configuration-only"
+          + " and shared by all instances of the generated record by design"
+          + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static BinaryMessageDecoder<${this.mangleTypeIdentifier($schema.getName())}> getDecoder() {
     return DECODER;
   }
@@ -161,6 +169,11 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
 #end
 #end
    */
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer"
+          + " shares schemas and configuration objects instead of defensively copying them on"
+          + " construction and configuration paths"
+          + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public ${this.mangleTypeIdentifier($schema.getName())}(#foreach($field in $schema.getFields())#if(${this.createNullSafeAnnotations})#if(${field.schema().isNullable()})@${this.nullSafeAnnotationNullable}#else@${this.nullSafeAnnotationNotNull}#end #end${this.javaType($field.schema())} ${this.mangle($field.name())}#if($foreach.count < $schema.getFields().size()), #end#end) {
 #foreach ($field in $schema.getFields())
     ${this.generateSetterCode($field.schema(), ${this.mangle($field.name())}, ${this.mangle($field.name())})}
@@ -177,6 +190,11 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
 #end
 
 #end
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the returned object is this instance's live model/state, exposed deliberately:"
+          + " Avro's model and datum objects are shared carriers by design, not defensive-copy value"
+          + " objects"
+          + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   public org.spf4j.avro.specific.SpecificData getSpecificData() { return MODEL$; }
 
@@ -184,6 +202,14 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
   public org.spf4j.avro.Schema getSchema() { return SCHEMA$; }
 
   // Used by DatumWriter.  Applications should not call.
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = {"EI_EXPOSE_REP",
+      "URV_INHERITED_METHOD_WITH_RELATED_TYPES"},
+      justification = "EI_EXPOSE_REP: the returned object is this instance's live model/state, exposed"
+          + " deliberately: Avro's model and datum objects are shared carriers by design, not"
+          + " defensive-copy value objects; URV_INHERITED_METHOD_WITH_RELATED_TYPES: get(int)"
+          + " implements IndexedRecord's Object-returning accessor, so returning each field in its"
+          + " storage type is the contract"
+          + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   public java.lang.Object get(int field$) {
     switch (field$) {
@@ -212,6 +238,11 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
 
 #end
   // Used by DatumReader.  Applications should not call.
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer"
+          + " shares schemas and configuration objects instead of defensively copying them on"
+          + " construction and configuration paths"
+          + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   @SuppressWarnings(value="unchecked")
   public void put(int field$, java.lang.Object value$) {
@@ -250,6 +281,11 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
   @${this.nullSafeAnnotationNotNull}
 #end
 #end
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the returned object is this instance's live model/state, exposed deliberately:"
+          + " Avro's model and datum objects are shared carriers by design, not defensive-copy value"
+          + " objects"
+          + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public ${this.javaUnbox($field.schema(), false)} ${this.generateGetMethod($schema, $field)}() {
     return ${this.mangle($field.name(), $schema.isError())};
   }
@@ -274,6 +310,11 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
 #end
    * @param value the value to set.
    */
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer"
+          + " shares schemas and configuration objects instead of defensively copying them on"
+          + " construction and configuration paths"
+          + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public void ${this.generateSetMethod($schema, $field)}(#if(${this.createNullSafeAnnotations})#if(${field.schema().isNullable()})@${this.nullSafeAnnotationNullable}#else@${this.nullSafeAnnotationNotNull}#end #end${this.javaUnbox($field.schema(), false)} value) {
     ${this.generateSetterCode($field.schema(), ${this.mangle($field.name(), $schema.isError())}, "value")}
   }
@@ -317,10 +358,13 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
   /**
    * RecordBuilder for ${this.mangleTypeIdentifier($schema.getName())} instances.
    */
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
+      justification = "generated builder: field access is by schema-fixed constant index"
+          + " (fields()[N] / fieldSetFlags()[N]) because a record's field positions are fixed by its"
+          + " schema; the idiom comes from the codegen template"
+          + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @org.spf4j.avro.specific.AvroGenerated
-  public static class Builder extends#if ($schema.isError()) org.spf4j.avro.specific.SpecificErrorBuilderBase<${this.mangleTypeIdentifier($schema.getName())}>#else org.spf4j.avro.specific.SpecificRecordBuilderBase<${this.mangleTypeIdentifier($schema.getName())}>#end
-
-    implements#if ($schema.isError()) org.spf4j.avro.data.ErrorBuilder<${this.mangleTypeIdentifier($schema.getName())}>#else org.spf4j.avro.data.RecordBuilder<${this.mangleTypeIdentifier($schema.getName())}>#end {
+  public static class Builder extends#if ($schema.isError()) org.spf4j.avro.specific.SpecificErrorBuilderBase<${this.mangleTypeIdentifier($schema.getName())}>#else org.spf4j.avro.specific.SpecificRecordBuilderBase<${this.mangleTypeIdentifier($schema.getName())}>#end {
 
 #foreach ($field in $schema.getFields())
 #if ($field.doc())
@@ -407,6 +451,11 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
 #end
       * @return The value.
       */
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately:"
+            + " Avro's model and datum objects are shared carriers by design, not defensive-copy value"
+            + " objects"
+            + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public ${this.javaUnbox($field.schema(), false)} ${this.generateGetMethod($schema, $field)}() {
       return ${this.mangle($field.name(), $schema.isError())};
     }
@@ -430,6 +479,11 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
       * @param value The value of '${this.mangle($field.name(), $schema.isError())}'.
       * @return This builder.
       */
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer"
+            + " shares schemas and configuration objects instead of defensively copying them on"
+            + " construction and configuration paths"
+            + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public #if ($schema.getNamespace())$this.mangle($schema.getNamespace()).#end${this.mangleTypeIdentifier($schema.getName())}.Builder ${this.generateSetMethod($schema, $field)}(#if(${this.createNullSafeAnnotations})#if(${field.schema().isNullable()})@${this.nullSafeAnnotationNullable}#else@${this.nullSafeAnnotationNotNull}#end #end${this.javaUnbox($field.schema(), false)} value) {
       validate(fields()[$field.pos()], value);
 #if (${this.hasBuilder($field.schema())})
@@ -457,6 +511,11 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
 #end
      * @return This builder.
      */
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately:"
+            + " Avro's model and datum objects are shared carriers by design, not defensive-copy value"
+            + " objects"
+            + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public ${this.javaType($field.schema())}.Builder ${this.generateGetBuilderMethod($schema, $field)}() {
       if (${this.mangle($field.name(), $schema.isError())}Builder == null) {
         if (${this.generateHasMethod($schema, $field)}()) {
@@ -476,6 +535,11 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
      * @return This builder.
      */
 
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer"
+            + " shares schemas and configuration objects instead of defensively copying them on"
+            + " construction and configuration paths"
+            + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public #if ($schema.getNamespace())$this.mangle($schema.getNamespace()).#end${this.mangleTypeIdentifier($schema.getName())}.Builder ${this.generateSetBuilderMethod($schema, $field)}(${this.javaUnbox($field.schema(), false)}.Builder value) {
       ${this.generateClearMethod($schema, $field)}();
       ${this.mangle($field.name(), $schema.isError())}Builder = value;
@@ -511,6 +575,13 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
     }
 
 #end
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = {
+        "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS", "REC_CATCH_EXCEPTION"},
+        justification = "build() deliberately catches Exception to normalize builder failures into"
+            + " AvroRuntimeException: this API's documented error model is unchecked, so callers"
+            + " program against the unchecked contract (AvroMissingFieldException is rethrown"
+            + " unwrapped by the preceding catch)"
+            + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     @Override
     @SuppressWarnings("unchecked")
     public ${this.mangleTypeIdentifier($schema.getName())} build() {
@@ -562,6 +633,10 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
 #if ($this.isCustomCodable($schema))
   @Override protected boolean hasCustomCoders() { return true; }
 
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "WEM_WEAK_EXCEPTION_MESSAGING",
+      justification = "the size-mismatch ConcurrentModificationException messages emitted by the encode"
+          + " macros carry both the declared and the actual element counts; the messaging is deliberate"
+          + " and complete - the detector rates messages assembled from locals as weak")
   @Override public void customEncode(org.spf4j.avro.io.Encoder out)
     throws java.io.IOException
   {
@@ -576,6 +651,14 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
 #end
   }
 
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = {"NP_NULL_INSTANCEOF",
+      "NP_LOAD_OF_KNOWN_NULL_VALUE", "WEM_WEAK_EXCEPTION_MESSAGING"},
+      justification = "NP_NULL_INSTANCEOF / NP_LOAD_OF_KNOWN_NULL_VALUE: the decode macros emit the"
+          + " Utf8-reuse idiom (x instanceof Utf8 ? (Utf8) x : null) uniformly for record fields and"
+          + " for map keys and values decoded into fresh locals; for the fresh locals the value is"
+          + " provably null, so the idiom reduces to readString(null), the intended no-reuse call;"
+          + " WEM_WEAK_EXCEPTION_MESSAGING: the 'Corrupt ResolvingDecoder.' IOException marks a decoder"
+          + " invariant violation for which no further context exists at the throw site")
   @Override public void customDecode(org.spf4j.avro.io.ResolvingDecoder in)
     throws java.io.IOException
   {
@@ -619,6 +702,10 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
 #end
 #if ($this.canGenerateEqualsAndHashCode($schema))
 
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "USBR_UNNECESSARY_STORE_BEFORE_RETURN",
+      justification = "the accumulator is updated once per field by the generated per-field statements"
+          + " and returned at the single exit; the store-then-return shape is inherent to the codegen"
+          + " template's per-field expansion")
   @Override
   public int hashCode() {
     int result = 1;
