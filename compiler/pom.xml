@@ -103,6 +103,40 @@
           </execution>
         </executions>
       </plugin>
+      <!-- Seed the customized JavaCC skeleton classes into the javacc output
+        directory before generation. JavaCC creates JavaCharStream,
+        ParseException and TokenMgrError from its built-in skeletons ONLY
+        when they do not already exist in the output directory, so the
+        checked-in copies under src/main/javacc-skeletons (stock skeletons
+        plus this project's SpotBugs fixes/suppressions - generated code is
+        not exempt from static analysis) are what actually gets compiled. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>seed-javacc-skeletons</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/generated-sources/javacc/org/spf4j/avro/compiler/idl</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/src/main/javacc-skeletons/org/spf4j/avro/compiler/idl</directory>
+                  <includes>
+                    <include>JavaCharStream.java</include>
+                    <include>ParseException.java</include>
+                    <include>TokenMgrError.java</include>
+                  </includes>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <!-- Avro generates a parser class with javacc. By default, this looks in src/main/javacc
         and outputs to target/generated-sources/javacc See http://mojo.codehaus.org/javacc-maven-plugin/javacc-mojo.html
         for more info on using this plugin. -->
