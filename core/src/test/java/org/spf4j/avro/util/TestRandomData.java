@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.util;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.concurrent.ThreadLocalRandom;
 
 import java.io.File;
@@ -49,6 +50,9 @@ public class TestRandomData {
   private ReflectData reflectData;
   private Schema reflectedSchema;
 
+  @SuppressFBWarnings(value = "PREDICTABLE_RANDOM",
+      justification = "RandomData is a sample-data generator: the values it produces are test/sample payloads, not"
+          + "secrets or tokens, so predictability has no security impact")
   @Before
   public void setUp() throws Exception {
     file = Files.createTempFile("randomData", ".avro").toFile();

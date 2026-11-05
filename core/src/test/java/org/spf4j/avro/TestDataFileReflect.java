@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -53,6 +54,9 @@ public class TestDataFileReflect {
    * Test that using multiple schemas in a file works doing a union before writing
    * any records.
    */
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "test code: the file is built from constant names under the test's own directory; there is no"
+          + "untrusted input")
   @Test
   void multiReflectWithUnionBeforeWriting() throws IOException {
     File file = new File(DIR.getPath(), "testMultiReflectWithUnionBeforeWriting.avro");
@@ -89,6 +93,9 @@ public class TestDataFileReflect {
   /*
    * Test that writing a record with a field that is null.
    */
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "test code: the file is built from constant names under the test's own directory; there is no"
+          + "untrusted input")
   @Test
   void testNull() throws IOException {
     File file = new File(DIR.getPath(), "testNull.avro");
@@ -150,6 +157,9 @@ public class TestDataFileReflect {
   /*
    * Test that writing out and reading in a nested class works
    */
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "test code: the file is built from constant names under the test's own directory; there is no"
+          + "untrusted input")
   @Test
   void nestedClass() throws IOException {
     File file = new File(DIR.getPath(), "testNull.avro");

@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.generic;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -47,6 +48,8 @@ import org.junit.jupiter.api.Test;
 
 public class TestGenericDatumReader {
 
+  @SuppressFBWarnings(value = "PREDICTABLE_RANDOM",
+      justification = "static test-data generator; the values are serialization test payloads, not secrets")
   private static final Random r = new Random(System.currentTimeMillis());
 
   @Test

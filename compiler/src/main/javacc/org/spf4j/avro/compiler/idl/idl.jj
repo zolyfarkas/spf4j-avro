@@ -83,6 +83,8 @@ import com.fasterxml.jackson.databind.node.*;
 
 import org.apache.commons.text.StringEscapeUtils;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Grammar to parse a higher-level language into an Avro Schema.
  *
@@ -129,6 +131,9 @@ public class Idl implements Closeable {
     this.allowUndefinedLogicalTypes = allowUndefinedLogicalTypes;
   }
 
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "the input file is named by the application invoking the IDL compiler; the caller is"
+          + " the trust boundary")
   public Idl(File inputFile) throws IOException {
     this(new FileInputStream(inputFile), "UTF-8");
     this.inputDir = inputFile.getParentFile().toURI();
@@ -150,6 +155,10 @@ public class Idl implements Closeable {
     }
   }
 
+  @SuppressFBWarnings(value = "URLCONNECTION_SSRF_FD",
+      justification = "the URL is the resolved location of an import declared by the IDL source being"
+          + " compiled, or supplied directly by the embedding application; resolving imports from their"
+          + " declared locations is the compiler's function")
   private Idl(URL input, Idl parent) throws IOException {
     this(input.openStream(), "UTF-8");
     this.inputDir = "file".equals(input.getProtocol())
@@ -192,6 +201,16 @@ public class Idl implements Closeable {
     return values;
   }
 
+  @SuppressFBWarnings(value = "URLCONNECTION_SSRF_FD",
+      justification = "opens the resolved location of an import declared by the IDL source being"
+          + " compiled; resolving imports from their declared locations is the compiler's function")
+  private InputStream openImport(String importFile) throws IOException {
+    return findFile(importFile).openStream();
+  }
+
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "resolves an import declared by the IDL source against the including file's"
+          + " location; import resolution is the compiler's function and its input is trusted source")
   private URL findFile(String importFile) throws IOException {
     URI uri = this.inputDir.resolve(importFile);
     File file = "file".equals(uri.getScheme()) ? new File(uri.getPath()) : null;
@@ -1293,7 +1312,7 @@ Protocol ImportProtocol() : {
 {
   <PROTOCOL> importFile = JsonString() ";"
     {
-      try (InputStream stream=findFile(importFile).openStream()) {
+      try (InputStream stream=openImport(importFile)) {
         return Protocol.parse(stream);
       } catch (IOException e) {
         throw error("Error importing "+importFile+": "+e, token);
@@ -1307,7 +1326,7 @@ Schema ImportSchema() : {
 {
   <SCHEMA> importFile = JsonString() ";"
     {
-      try (InputStream stream=findFile(importFile).openStream()){
+      try (InputStream stream=openImport(importFile)){
         // This usage of Schema.Parser should not be changed.
         // Remove this whole (old) IDL parser instead.
         Parser parser = new Schema.Parser();
@@ -1405,7 +1424,7 @@ void VariableDeclarator(Schema type, String defaultDoc, List<Field> fields):
     Field.Order order = Field.Order.ASCENDING;
     for (String key : props.keySet())
       if ("order".equals(key))
-        order = Field.Order.valueOf(getTextProp(key,props,token).toUpperCase());
+        order = Field.Order.valueOf(getTextProp(key,props,token).toUpperCase(java.util.Locale.ROOT));
 
     boolean validate = SchemaResolver.isFullyResolvedSchema(type);
     Schema fieldType = fixOptionalSchema(type, defaultValue);

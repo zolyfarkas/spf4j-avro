@@ -97,6 +97,9 @@ public class TestDataFile {
     LAST_RECORD = lastValue;
   }
 
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "test code: the file is built from constant names under the test's own directory; there is no"
+          + "untrusted input")
   private File makeFile(CodecFactory codec) {
     return new File(DIR, "test-" + codec + ".avro");
   }
@@ -185,9 +188,11 @@ public class TestDataFile {
     }
   }
 
-  @SuppressFBWarnings(value = "DMI_RANDOM_USED_ONLY_ONCE",
+  @SuppressFBWarnings(value = {"DMI_RANDOM_USED_ONLY_ONCE", "PREDICTABLE_RANDOM"},
       justification = "the seeded Random is invoked from the loop body once per split iteration; the detector"
-          + "counts call sites, not executions")
+          + "counts call sites, not executions; PREDICTABLE_RANDOM: the Random is seeded and generates a"
+          + "deterministic test corpus on purpose; reproducibility, not unpredictability, is the"
+          + "requirement")
   private void testSplits(CodecFactory codec) throws IOException {
     File file = makeFile(codec);
     try (DataFileReader<Object> reader = new DataFileReader<>(file, new GenericDatumReader<>())) {

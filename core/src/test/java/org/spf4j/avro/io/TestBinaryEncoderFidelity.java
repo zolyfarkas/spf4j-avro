@@ -36,9 +36,11 @@ public class TestBinaryEncoderFidelity {
   static byte[] complexdata;
   EncoderFactory factory = EncoderFactory.get();
 
-  @SuppressFBWarnings(value = "DMI_RANDOM_USED_ONLY_ONCE",
+  @SuppressFBWarnings(value = {"DMI_RANDOM_USED_ONLY_ONCE", "PREDICTABLE_RANDOM"},
       justification = "the seeded Random generates every value of the deterministic encoder-fidelity corpus; it is"
-          + "used throughout the method, the detector counts call sites")
+          + "used throughout the method, the detector counts call sites; PREDICTABLE_RANDOM: the Random"
+          + "is seeded and generates a deterministic test corpus on purpose; reproducibility, not"
+          + "unpredictability, is the requirement")
   public static void generateData(Encoder e, boolean useReadOnlyByteBuffer) throws IOException {
     // generate a bunch of data that should test the bounds of a BinaryEncoder
     Random r = new Random(665321);

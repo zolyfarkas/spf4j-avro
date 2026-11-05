@@ -62,9 +62,11 @@ public class TestZstandardCodecOptimizations {
     return data;
   }
 
-  @SuppressFBWarnings(value = "DMI_RANDOM_USED_ONLY_ONCE",
+  @SuppressFBWarnings(value = {"DMI_RANDOM_USED_ONLY_ONCE", "PREDICTABLE_RANDOM"},
       justification = "this helper's contract is reproducible bytes for a given seed, so it builds a fresh"
-          + "Random(seed) per call; the single nextBytes call is the whole point of the helper")
+          + "Random(seed) per call; the single nextBytes call is the whole point of the helper;"
+          + "PREDICTABLE_RANDOM: the Random is seeded and generates a deterministic test corpus on"
+          + "purpose; reproducibility, not unpredictability, is the requirement")
   private static byte[] random(int size, long seed) {
     byte[] data = new byte[size];
     new Random(seed).nextBytes(data);

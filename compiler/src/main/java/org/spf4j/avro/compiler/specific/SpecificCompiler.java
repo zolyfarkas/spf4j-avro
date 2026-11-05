@@ -444,6 +444,10 @@ public class SpecificCompiler {
      * Writes output to path destination directory when it is newer than src,
      * creating directories as necessary. Returns the created file.
      */
+    @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+        justification = "the output path is the compiler's configured destination directory plus the compiled"
+            + "schema's package path; package segments are Java identifiers and cannot traverse out of the"
+            + "destination")
     File writeToDestination(File src, File destDir) throws IOException {
       File f = new File(destDir, path);
       if (src != null && f.exists() && f.lastModified() >= src.lastModified())

@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.util.UtfTextUtils;
 
@@ -200,6 +201,10 @@ public class SchemaParser {
    *                              suppressed underlying parse exceptions if
    *                              available
    */
+  @SuppressFBWarnings(value = "URLCONNECTION_SSRF_FD",
+      justification = "resolving schema references from a caller-supplied location is this API's function; the"
+          + "embedding application chooses which locations to read, so the application is the trust"
+          + "boundary")
   public ParseResult parse(URI location, Charset charset) throws IOException, SchemaParseException {
     try (InputStream stream = location.toURL().openStream()) {
       String formattedSchema = UtfTextUtils.readAllBytes(stream, charset);

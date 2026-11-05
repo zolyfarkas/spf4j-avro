@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.reflect;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -1138,6 +1139,8 @@ public class TestReflect {
     testPrimitiveArray(double.class, blocking);
   }
 
+  @SuppressFBWarnings(value = "PREDICTABLE_RANDOM",
+      justification = "the values produced are arbitrary test data; predictability has no security impact here")
   private void testPrimitiveArray(Class<?> c, boolean blocking) throws Exception {
     ReflectData data = new ReflectData();
     Random r = new Random();

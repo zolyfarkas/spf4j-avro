@@ -56,6 +56,9 @@ public class TestByteBuffer {
 
   File content;
 
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "test code: the file is built from constant names under the test's own directory; there is no"
+          + "untrusted input")
   @BeforeEach
   public void before() throws IOException {
     content = new File(DIR.getPath(), "test-content");

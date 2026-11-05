@@ -17,6 +17,7 @@
  * under the License.
  */
 package org.spf4j.avro.file;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -33,6 +34,10 @@ import java.io.IOException;
  *
  * @see FileOutputStream
  */
+@SuppressFBWarnings(value = "PATH_TRAVERSAL_OUT",
+    justification = "this class is a FileOutputStream variant whose entire purpose is opening the caller-named"
+        + "file; the file name is supplied by the application embedding the library, which is the trust"
+        + "boundary")
 public class SyncableFileOutputStream extends FileOutputStream implements Syncable {
 
   /**

@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.util.Locale;
 import java.util.ServiceLoader;
@@ -80,6 +81,9 @@ public interface SchemaFormatter {
    * @return the schema formatter for the specified format
    * @throws AvroRuntimeException if the schema format is not supported
    */
+  @SuppressFBWarnings(value = "IMPROPER_UNICODE",
+      justification = "the case-insensitive comparison runs over ASCII format identifiers only; no locale-sensitive"
+          + "text is involved")
   static SchemaFormatter getInstance(String name) {
     int slashPos = name.indexOf("/");
     // SchemaFormatterFactory.getFormatterForVariant(String) receives the name of

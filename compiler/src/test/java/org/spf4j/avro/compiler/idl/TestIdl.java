@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro.compiler.idl;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -66,6 +67,9 @@ public class TestIdl {
 
   private List<GenTest> tests;
 
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "test code: the file is built from constant names under the test's own directory; there is no"
+          + "untrusted input")
   @BeforeEach
   public void loadTests() {
     assertTrue(TEST_DIR.exists());
@@ -91,6 +95,9 @@ public class TestIdl {
 
   }
 
+  @SuppressFBWarnings(value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
+      justification = "test harness: printing the failure stack trace to the console is how this test driver"
+          + "reports errors; nothing is exposed to a remote party")
   @Test
   void runTests() throws Exception {
     if (!"run".equals(TEST_MODE))

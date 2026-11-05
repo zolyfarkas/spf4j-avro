@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro.generic;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.spf4j.avro.Conversion;
@@ -120,6 +121,8 @@ public class TestGenericLogicalTypes {
         "Should read UUIDs as Strings");
   }
 
+  @SuppressFBWarnings(value = "PREDICTABLE_RANDOM",
+      justification = "the values produced are arbitrary test data; predictability has no security impact here")
   @Test
   public void readWriteDuration() throws IOException {
     Schema fixedSchema = Schema.createFixed("bare.Fixed", null, null, 12);

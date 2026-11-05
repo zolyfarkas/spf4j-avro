@@ -67,7 +67,7 @@ public class NonCopyingByteArrayOutputStreamTest {
     out.close();
     // validate everything successfully written is there
     final ByteBuffer buffer = out.asByteBuffer();
-    for (byte value : "aloz".getBytes()) {
+    for (byte value : "aloz".getBytes(StandardCharsets.UTF_8)) {
       assertEquals(value, buffer.get());
     }
   }

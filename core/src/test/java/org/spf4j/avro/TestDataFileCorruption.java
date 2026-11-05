@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,6 +38,9 @@ public class TestDataFileCorruption {
 
   private static final File DIR = new File(System.getProperty("java.io.tmpdir"));
 
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "test code: the file is built from constant names under the test's own directory; there is no"
+          + "untrusted input")
   private File makeFile(String name) {
     return new File(DIR, "test-" + name + ".avro");
   }

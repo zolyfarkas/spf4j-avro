@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.generic;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -329,6 +330,9 @@ public class GenericData {
   }
 
   public static final String FAST_READER_PROP = "org.spf4j.avro.fastread";
+  @SuppressFBWarnings(value = "IMPROPER_UNICODE",
+      justification = "the comparison is against the ASCII property value 'true'; no locale-sensitive text is"
+          + "involved")
   private boolean fastReaderEnabled = "true".equalsIgnoreCase(System.getProperty(FAST_READER_PROP, "true"));
   private FastReaderBuilder fastReaderBuilder = null;
 

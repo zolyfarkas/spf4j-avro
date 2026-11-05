@@ -18,6 +18,7 @@
  */
 
 package org.spf4j.avro.message;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.Schema;
 import org.spf4j.avro.SchemaParser;
@@ -43,7 +44,11 @@ import java.util.Arrays;
 public class TestInteropSingleObjectEncoding {
   private static final String RESOURCES_FOLDER = System.getProperty("share.dir", "target/test-classes/share")
       + "/test/data/messageV1";
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "test fixture path built from constant names under the test resources folder; there is no untrusted input")
   private static final File SCHEMA_FILE = new File(RESOURCES_FOLDER + "/test_schema.avsc");
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "test fixture path built from constant names under the test resources folder; there is no untrusted input")
   private static final File MESSAGE_FILE = new File(RESOURCES_FOLDER + "/test_message.bin");
   private static Schema SCHEMA;
   private static GenericRecordBuilder BUILDER;

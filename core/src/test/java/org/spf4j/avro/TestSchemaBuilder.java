@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -766,6 +767,9 @@ public class TestSchemaBuilder {
         .endRecord();
   }
 
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "test code: the file is built from constant names under the test's own directory; there is no"
+          + "untrusted input")
   @Test
   void defaults() throws IOException {
     Schema writeSchema = SchemaBuilder.record("r").fields().name("requiredInt").type().intType().noDefault()

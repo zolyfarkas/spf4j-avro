@@ -603,6 +603,9 @@ public class TestSchema {
     assertThrows(SchemaParseException.class, () -> parser.parse(avscFile));
   }
 
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "test code: the file is built from constant names under the test's own directory; there is no"
+          + "untrusted input")
   @Test
   void testParseMultipleFile() throws IOException {
     URL directory = requireNonNull(Thread.currentThread().getContextClassLoader().getResource("multipleFile"));

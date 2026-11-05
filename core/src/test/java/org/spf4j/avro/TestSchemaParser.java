@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import java.security.SecureRandom;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import org.junit.jupiter.api.Test;
@@ -76,7 +77,7 @@ class TestSchemaParser {
   @Test
   void testParseURI() throws IOException {
     Path tempFile = Files.createTempFile("TestSchemaParser", null);
-    Charset charset = UTF_CHARSETS[(int) Math.floor(UTF_CHARSETS.length * Math.random())];
+    Charset charset = UTF_CHARSETS[new SecureRandom().nextInt(UTF_CHARSETS.length)];
     Files.write(tempFile, singletonList(SCHEMA_JSON), charset);
 
     Schema schema = new SchemaParser().parse(tempFile.toUri(), null).mainSchema();

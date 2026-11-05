@@ -681,6 +681,9 @@ public class TestSpecificCompiler {
    * @param dstDirPrefix                   Where to generate the java code before
    *                                       compiling.
    */
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "test code: the file is built from constant names under the test's own directory; there is no"
+          + "untrusted input")
   public void testManglingReservedIdentifiers(String schema, boolean throwsTypeExceptionOnPrimitive,
       String dstDirPrefix) throws IOException {
     Set<String> reservedIdentifiers = new HashSet<>();

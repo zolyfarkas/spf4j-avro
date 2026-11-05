@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -64,6 +65,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestSpecificData {
 
+  @SuppressFBWarnings(value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
+      justification = "test harness: printing the failure stack trace to the console is how this test driver"
+          + "reports errors; nothing is exposed to a remote party")
   @Test
   void separateThreadContextClassLoader() throws Exception {
     Schema schema = new SchemaParser().parse(new File("src/test/resources/foo.Bar.avsc")).mainSchema();
@@ -227,6 +231,10 @@ public class TestSpecificData {
       return res;
     }
 
+    @SuppressFBWarnings(value = "EC_UNRELATED_CLASS_AND_INTERFACE",
+        justification = "test controller heuristic: it compares a source element's simple name against a runtime"
+            + "class name as text; the inputs are names by design and the current tests encode the"
+            + "resulting behavior")
     private static boolean areEquivalent(VariableElement sourceParam, Class<?> typeParam) {
       // sourceParam.getSimpleName()
       // Type type = sourceParam.type;

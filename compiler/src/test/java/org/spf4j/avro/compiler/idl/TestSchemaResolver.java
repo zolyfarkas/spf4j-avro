@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.compiler.idl;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +30,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TestSchemaResolver {
 
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "test code: the file is built from constant names under the test's own directory; there is no"
+          + "untrusted input")
   @Test
   void resolving() throws ParseException, MalformedURLException, IOException {
     File file = new File(".");

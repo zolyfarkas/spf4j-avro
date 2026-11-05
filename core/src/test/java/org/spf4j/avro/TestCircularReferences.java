@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -380,6 +381,9 @@ public class TestCircularReferences {
     return model.createDatumReader(schema);
   }
 
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "test code: the file is built from constant names under the test's own directory; there is no"
+          + "untrusted input")
   @SuppressWarnings("unchecked")
   private <D> File write(GenericData model, Schema schema, D... data) throws IOException {
     File file = File.createTempFile("junit", null, temp);

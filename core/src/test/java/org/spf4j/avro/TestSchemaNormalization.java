@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -89,6 +90,9 @@ public class TestSchemaNormalization {
 
   private static String DATA_FILE = (System.getProperty("share.dir", "../../../share") + "/test/data/schema-tests.txt");
 
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "test code: the file is built from constant names under the test's own directory; there is no"
+          + "untrusted input")
   private static BufferedReader data() throws IOException {
     return Files.newBufferedReader(Paths.get(DATA_FILE), UTF_8);
   }
@@ -109,6 +113,10 @@ public class TestSchemaNormalization {
     return altExtend(SchemaNormalization.EMPTY64, 64, tmp, POSTFIX);
   }
 
+  @SuppressFBWarnings(value = "BIT_IOR",
+      justification = "reference CRC implementation (Broder93) used as the test oracle for SchemaNormalization; the"
+          + "flagged mask combination is the algorithm's shift-register step and its output is"
+          + "cross-checked against the production fingerprint code")
   private static long altExtend(long poly, int degree, long fp, byte[] b) {
     final long overflowBit = 1L << (64 - degree);
     for (byte b1 : b) {
@@ -132,6 +140,8 @@ public class TestSchemaNormalization {
     assertEquals(expected, actual, () -> format("0x%016x != 0x%016x", expected, actual));
   }
 
+  @SuppressFBWarnings(value = "FORMAT_STRING_MANIPULATION",
+      justification = "test-local formatting helper; the format strings are the test's own constants")
   private static String format(String f, Object... args) {
     return (new Formatter()).format(f, args).toString();
   }

@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.compiler.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,6 +66,9 @@ public class ProtocolTask extends Task {
   }
 
   /** Run the compiler. */
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "Ant task: the source files are named by the build file that invokes the task; the build"
+          + "author is the trust boundary")
   @Override
   public void execute() {
     if (src == null && filesets.size() == 0)

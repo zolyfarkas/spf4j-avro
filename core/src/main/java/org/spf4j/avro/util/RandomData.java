@@ -93,6 +93,7 @@ public class RandomData implements Iterable<Object> {
   public Iterator<Object> iterator() {
     return new Iterator<Object>() {
       private int n;
+      @SuppressFBWarnings(value = "PREDICTABLE_RANDOM", justification = "the values produced are reproducible sample/test data generated from a seed; predictability is the feature, not a vulnerability")
       private final Random random = new Random(seed);
 
       @Override
@@ -178,6 +179,9 @@ public class RandomData implements Iterable<Object> {
     return random.nextInt();
   }
 
+  @SuppressFBWarnings(value = "PREDICTABLE_RANDOM",
+      justification = "RandomData is a sample-data generator: the values it produces are test/sample payloads, not"
+          + "secrets or tokens, so predictability has no security impact")
   private long randomLong(Random random, LogicalType type) {
     if (type instanceof LogicalTypes.TimeMicros) {
       return ThreadLocalRandom.current().nextLong(RandomData.MILLIS_IN_DAY * 1000L);

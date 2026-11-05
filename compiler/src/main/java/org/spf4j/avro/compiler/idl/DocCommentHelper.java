@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.compiler.idl;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +102,9 @@ public class DocCommentHelper {
   }
 
   /* Package private to facilitate testing */
+  @SuppressFBWarnings(value = "MODIFICATION_AFTER_VALIDATION",
+      justification = "this helper reformats the doc comments of the IDL source being compiled; compiler input is"
+          + "trusted source code, and matcher-group text is quoted (\\Q...\\E) where it enters a pattern")
   static String stripIndents(String doc) {
     Matcher starMatcher = STAR_INDENT.matcher(doc);
     if (starMatcher.matches()) {

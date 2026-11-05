@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.Schema;
 import org.spf4j.avro.SchemaParser;
@@ -200,6 +201,9 @@ public class TestValidatingIO {
     }
   }
 
+  @SuppressFBWarnings(value = "PREDICTABLE_RANDOM",
+      justification = "the Random is seeded and generates a deterministic test corpus on purpose; reproducibility,"
+          + "not unpredictability, is the requirement")
   public static Object[] randomValues(String calls) {
     Random r = new Random(0L);
     InputScanner cs = new InputScanner(calls.toCharArray());
