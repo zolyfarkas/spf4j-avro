@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.junit.jupiter.api.Test;
 
@@ -158,6 +159,8 @@ public class TestCompare {
     check(SchemaParser.parseSingle(schemaJson), o1, o2, comparable, new GenericDatumWriter<>(), GenericData.get());
   }
 
+  @SuppressFBWarnings(value = "EC_NULL_ARG",
+      justification = "the test passes null deliberately to verify the comparator's null handling")
   private static <T> void check(Schema schema, T o1, T o2, boolean comparable, DatumWriter<T> writer,
       GenericData comparator) throws Exception {
 

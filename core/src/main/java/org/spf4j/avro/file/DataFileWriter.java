@@ -147,6 +147,10 @@ public class DataFileWriter<D> implements Closeable, Flushable {
   }
 
   /** Open a new file for data matching a schema with a random sync. */
+  @SuppressFBWarnings(value = "OBL_UNSATISFIED_OBLIGATION",
+      justification = "the constructed reader/writer is the resource handle: ownership of the underlying stream"
+          + "passes to it and its close() releases it; the obligation transfers to the caller with the"
+          + "returned object")
   public DataFileWriter<D> create(Schema schema, File file) throws IOException {
     SyncableFileOutputStream sfos = new SyncableFileOutputStream(file);
     try {
@@ -220,6 +224,10 @@ public class DataFileWriter<D> implements Closeable, Flushable {
   }
 
   /** Open a writer appending to an existing file. */
+  @SuppressFBWarnings(value = "OBL_UNSATISFIED_OBLIGATION",
+      justification = "the constructed reader/writer is the resource handle: ownership of the underlying stream"
+          + "passes to it and its close() releases it; the obligation transfers to the caller with the"
+          + "returned object")
   public DataFileWriter<D> appendTo(File file) throws IOException {
     try (SeekableInput input = new SeekableFileInput(file)) {
       OutputStream output = new SyncableFileOutputStream(file, true);

@@ -1082,6 +1082,16 @@ public class TestSpecificCompiler {
     assertTrue(validAnnotationEmitted, "Valid annotation missing from generated output");
   }
 
+  private static final String[] MALICIOUS_DOCS = { //
+      "\\u002a\\u002f static { System.exit(1); } \\u002f\\u002a", // basic form
+      "\\uuuu002a\\uuuu002f System.exit(1);", // multiple 'u's are legal (JLS 3.3)
+      "\\u005cu002a\\u005cu002f System.exit(1);", // escape that would decode to a backslash
+      "\\U002A\\u002F", // uppercase hex / uppercase-U decoy
+      "prefix\\\\u002a\\\\u002f even-backslash-run", // even run of backslashes
+      "literal */ static { System.exit(1); } /* comment close", // no escape at all
+      "first line\\u002a\\u002f\nsecond line \\u002f\\u002a end" // spans multiple physical lines
+    };
+
   @Test
   void unicodeEscapesInDocsAreNeutralized() {
     // The Java compiler decodes Unicode escapes (\ uXXXX) across the whole source
@@ -1091,17 +1101,7 @@ public class TestSpecificCompiler {
     // enabling arbitrary code injection. Since a Unicode escape always requires a
     // literal backslash, escapeForJavadoc neutralizes every backslash, which
     // covers all escape variants at once.
-    String[] maliciousDocs = { //
-        "\\u002a\\u002f static { System.exit(1); } \\u002f\\u002a", // basic form
-        "\\uuuu002a\\uuuu002f System.exit(1);", // multiple 'u's are legal (JLS 3.3)
-        "\\u005cu002a\\u005cu002f System.exit(1);", // escape that would decode to a backslash
-        "\\U002A\\u002F", // uppercase hex / uppercase-U decoy
-        "prefix\\\\u002a\\\\u002f even-backslash-run", // even run of backslashes
-        "literal */ static { System.exit(1); } /* comment close", // no escape at all
-        "first line\\u002a\\u002f\nsecond line \\u002f\\u002a end" // spans multiple physical lines
-    };
-
-    for (String maliciousDoc : maliciousDocs) {
+    for (String maliciousDoc : MALICIOUS_DOCS) {
       // Unit-level check on the escaping utility itself.
       String escaped = SpecificCompiler.escapeForJavadoc(maliciousDoc);
       assertFalse(escaped.contains("\\"), "Backslashes must be neutralized: " + escaped);

@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.generic;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -338,6 +339,9 @@ public class TestGenericDatumWriter {
     writeObject(record);
   }
 
+  @SuppressFBWarnings(value = "DCN_NULLPOINTER_EXCEPTION",
+      justification = "the test verifies the NPE-annotation behavior of the datum writers; catching the"
+          + "NullPointerException is the assertion mechanism")
   @Test
   void nestedNPEErrorClarity() throws Exception {
     GenericData.Record topLevelRecord = buildComplexRecord();
@@ -356,6 +360,9 @@ public class TestGenericDatumWriter {
     }
   }
 
+  @SuppressFBWarnings(value = "DCN_NULLPOINTER_EXCEPTION",
+      justification = "the test verifies the NPE-annotation behavior of the datum writers; catching the"
+          + "NullPointerException is the assertion mechanism")
   @Test
   void nPEForMapKeyErrorClarity() throws Exception {
     GenericData.Record topLevelRecord = buildComplexRecord();
@@ -374,6 +381,9 @@ public class TestGenericDatumWriter {
     }
   }
 
+  @SuppressFBWarnings(value = "DCN_NULLPOINTER_EXCEPTION",
+      justification = "the test verifies the NPE-annotation behavior of the datum writers; catching the"
+          + "NullPointerException is the assertion mechanism")
   @Test
   void shortPathNPEErrorClarity() throws Exception {
     try {

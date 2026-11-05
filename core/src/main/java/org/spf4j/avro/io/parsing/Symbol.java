@@ -233,6 +233,9 @@ public abstract class Symbol {
     }
   }
 
+  @SuppressFBWarnings(value = "LII_LIST_INDEXED_ITERATING",
+      justification = "the loop appends to the very list it walks, by index; an iterator or enhanced loop would"
+          + " fail with ConcurrentModificationException - indexed access is the algorithm")
   private static void copyFixups(List<Fixup> fixups, Symbol[] out, int outPos, Symbol[] toCopy) {
     for (int i = 0, n = fixups.size(); i < n; i += 1) {
       Fixup fixup = fixups.get(i);

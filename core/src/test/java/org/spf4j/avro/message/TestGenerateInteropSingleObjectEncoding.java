@@ -71,6 +71,8 @@ public class TestGenerateInteropSingleObjectEncoding {
     BUILDER.set("id", 42L).set("name", "Bill").set("tags", Arrays.asList("dog_lover", "cat_hater")).build();
     ByteBuffer buffer = encoder.encode(
         BUILDER.set("id", 42L).set("name", "Bill").set("tags", Arrays.asList("dog_lover", "cat_hater")).build());
-    new FileOutputStream(MESSAGE_FILE).write(buffer.array());
+    try (FileOutputStream out = new FileOutputStream(MESSAGE_FILE)) {
+      out.write(buffer.array());
+    }
   }
 }

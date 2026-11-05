@@ -69,6 +69,10 @@ public class FastReaderBuilder {
   private final GenericData data;
 
   /** first schema is reader schema, second is writer schema */
+  @SuppressFBWarnings(value = "NMCS_NEEDLESS_MEMBER_COLLECTION_SYNCHRONIZATION",
+      justification = "the weak-key cache semantics are deliberate (entries must not pin schemas/classes); accesses"
+          + "go through the synchronized wrapper, and a computeIfAbsent race can only duplicate"
+          + "idempotent reader/schema construction")
   private final Map<Schema, Map<Schema, RecordReader>> readerCache = Collections
       .synchronizedMap(new WeakIdentityHashMap<>());
 

@@ -491,6 +491,11 @@ public class TestReflectDatumReader {
     }
   }
 
+  @SuppressFBWarnings(value = "OI_OPTIONAL_ISSUES_CHECKING_REFERENCE",
+      justification = "OI_OPTIONAL_ISSUES_CHECKING_REFERENCE: the POJO models user classes whose Optional field can"
+          + "be null; the reflect datum layer's handling of exactly that is under test;"
+          + "OI_OPTIONAL_ISSUES_CHECKING_REFERENCE: the POJO models user classes whose Optional field can"
+          + "be null; the reflect datum layer's handling of exactly that is under test")
   public static class PojoWithOptional {
     private int id;
 

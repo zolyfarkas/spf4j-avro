@@ -150,8 +150,14 @@ public abstract class JsonProperties {
   // The only modifiers are putIfAbsent (via put) and putOverwriting, the latter
   // backing the fork-compatible addProp semantics: a duplicate add stores the
   // new value (at the key's original position) and then throws.
+  @SuppressFBWarnings(value = "EQ_DOESNT_OVERRIDE_EQUALS",
+      justification = "equality inherited from the abstract collection base (content equality) is the intended"
+          + "semantics; the subclass changes storage and notification behavior only")
   private static final class PropsMap extends ConcurrentHashMap<String, JsonNode> {
     private static final long serialVersionUID = 1L;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD",
+        justification = "serialization of the owner goes through writeReplace (the JSON form); this field is runtime"
+            + "state and is never written by Java serialization")
     private final Queue<MapEntry<String, JsonNode>> propOrder = new ConcurrentLinkedQueue<>();
 
     @Override

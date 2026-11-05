@@ -57,6 +57,10 @@ public class DataFileStream<D> implements Iterator<D>, Iterable<D>, Closeable {
   public static final class Header {
     Schema schema;
     Map<String, byte[]> meta = new HashMap<>();
+    @SuppressFBWarnings(value = "FCBL_FIELD_COULD_BE_LOCAL",
+        justification = "the field is instance state: it is written and read at different points of the object's"
+            + "lifecycle (construction, parsing, accessors, or reflective/framework access), not a"
+            + "single-method local")
     private transient List<String> metaKeyList = new ArrayList<>();
     byte[] sync = new byte[DataFileConstants.SYNC_SIZE];
 
@@ -126,6 +130,9 @@ public class DataFileStream<D> implements Iterator<D>, Iterable<D>, Closeable {
   }
 
   /** Initialize the stream by reading from its head. */
+  @SuppressFBWarnings(value = "STT_TOSTRING_STORED_IN_FIELD",
+      justification = "the decoded header key string is stored in the container header map; that storage is the"
+          + "header's purpose")
   void initialize(InputStream in, byte[] magic) throws IOException {
     this.header = new Header();
     this.vin = DecoderFactory.get().binaryDecoder(in, vin);

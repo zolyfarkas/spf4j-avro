@@ -109,7 +109,15 @@ public class TestReflectData {
   }
 
   private static class FooBarReflectiveRecord {
+    @SuppressFBWarnings(value = "FCBL_FIELD_COULD_BE_LOCAL",
+        justification = "the field is instance state: it is written and read at different points of the object's"
+            + "lifecycle (construction, parsing, accessors, or reflective/framework access), not a"
+            + "single-method local")
     private String bar;
+    @SuppressFBWarnings(value = "FCBL_FIELD_COULD_BE_LOCAL",
+        justification = "the field is instance state: it is written and read at different points of the object's"
+            + "lifecycle (construction, parsing, accessors, or reflective/framework access), not a"
+            + "single-method local")
     private int baz;
   }
 

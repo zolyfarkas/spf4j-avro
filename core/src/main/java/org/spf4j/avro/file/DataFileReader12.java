@@ -52,19 +52,25 @@ public class DataFileReader12<D> implements FileReader<D>, Closeable {
 
   private Map<String, byte[]> meta = new HashMap<>();
 
+  @SuppressFBWarnings(value = "IS2_INCONSISTENT_SYNC",
+      justification = "this class is confined to one thread by its contract (a legacy iterator / an InputStream);"
+          + "the field is only touched from the owning thread's call sequence")
   private long blockCount; // # entries in block
   private long blockStart;
   private byte[] sync = new byte[SYNC_SIZE];
   private byte[] syncBuffer = new byte[SYNC_SIZE];
 
   /** Construct a reader for a file. */
-  @SuppressFBWarnings(value = {"EI_EXPOSE_REP2", "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS"},
+  @SuppressFBWarnings(value = {"EI_EXPOSE_REP2", "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS", "RR_NOT_CHECKED", "STT_TOSTRING_STORED_IN_FIELD"},
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
           + "configuration paths; PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS: construction completes"
           + "through the class's own initialization protocol (its template methods and registration with"
           + "the owning model); the access to the partially constructed object stays inside the class's"
-          + "own constructor chain by design")
+          + "own constructor chain by design; RR_NOT_CHECKED: a short read on a truncated file leaves"
+          + "zeroes in the buffer and the magic comparison immediately below rejects the file; the check"
+          + "is the validation; STT_TOSTRING_STORED_IN_FIELD: the decoded header key string is stored in"
+          + "the container header map; that storage is the header's purpose")
   public DataFileReader12(SeekableInput sin, DatumReader<D> reader) throws IOException {
     this.in = new DataFileReader.SeekableInputStream(sin);
 
@@ -144,6 +150,9 @@ public class DataFileReader12<D> implements FileReader<D>, Closeable {
     return this;
   }
 
+  @SuppressFBWarnings(value = "DMI_CALLING_NEXT_FROM_HASNEXT",
+      justification = "hasNext() implements the legacy reader's one-element lookahead: it peeks by advancing and"
+          + "caches the result for next(); the pattern is the class's documented iteration design")
   @Override
   public boolean hasNext() {
     if (peek != null || blockCount != 0)

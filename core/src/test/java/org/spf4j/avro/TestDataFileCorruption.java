@@ -79,9 +79,9 @@ public class TestDataFileCorruption {
 
     File file = makeFile("corrupt");
     file.deleteOnExit();
-    FileOutputStream out = new FileOutputStream(file);
-    out.write(corrupted);
-    out.close();
+    try (FileOutputStream out = new FileOutputStream(file)) {
+      out.write(corrupted);
+    }
 
     // Read the data file
     try (DataFileReader r = new DataFileReader<>(file, new GenericDatumReader<>(schema))) {

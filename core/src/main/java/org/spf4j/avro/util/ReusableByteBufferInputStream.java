@@ -18,6 +18,7 @@
  */
 
 package org.spf4j.avro.util;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +33,9 @@ public class ReusableByteBufferInputStream extends InputStream {
   // due to ByteBuffer overriding several methods
   private ByteBuffer byteBuffer = EMPTY_BUFFER;
   private Buffer buffer = byteBuffer;
+  @SuppressFBWarnings(value = "IS2_INCONSISTENT_SYNC",
+      justification = "this class is confined to one thread by its contract (a legacy iterator / an InputStream);"
+          + "the field is only touched from the owning thread's call sequence")
   private int mark = 0;
 
   public void setByteBuffer(ByteBuffer buf) {

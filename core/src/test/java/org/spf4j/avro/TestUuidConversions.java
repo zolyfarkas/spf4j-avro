@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.generic.GenericFixed;
 
@@ -32,9 +33,17 @@ public class TestUuidConversions {
 
   private Conversions.UUIDConversion uuidConversion = new Conversions.UUIDConversion();
 
+  @SuppressFBWarnings(value = "FCBL_FIELD_COULD_BE_LOCAL",
+      justification = "the field is instance state: it is written and read at different points of the object's"
+          + "lifecycle (construction, parsing, accessors, or reflective/framework access), not a"
+          + "single-method local")
   private Schema fixed = Schema.createFixed("fixed", "doc", "", Long.BYTES * 2);
   private Schema fixedUuid = LogicalTypes.uuid().addToSchema(fixed);
 
+  @SuppressFBWarnings(value = "FCBL_FIELD_COULD_BE_LOCAL",
+      justification = "the field is instance state: it is written and read at different points of the object's"
+          + "lifecycle (construction, parsing, accessors, or reflective/framework access), not a"
+          + "single-method local")
   private Schema string = Schema.createFixed("fixed", "doc", "", Long.BYTES * 2);
   private Schema stringUuid = LogicalTypes.uuid().addToSchema(string);
 

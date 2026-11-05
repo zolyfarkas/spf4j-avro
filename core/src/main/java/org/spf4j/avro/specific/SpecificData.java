@@ -499,6 +499,10 @@ public class SpecificData extends GenericData {
   private final ClassValueCache<Schema> schemaClassCache = new ClassValueCache<>(c -> createSchema(c, new HashMap<>()));
   // for non-class objects, use a WeakHashMap, but this needs a sync block around
   // it
+  @SuppressFBWarnings(value = "NMCS_NEEDLESS_MEMBER_COLLECTION_SYNCHRONIZATION",
+      justification = "the weak-key cache semantics are deliberate (entries must not pin schemas/classes); accesses"
+          + "go through the synchronized wrapper, and a computeIfAbsent race can only duplicate"
+          + "idempotent reader/schema construction")
   private final Map<java.lang.reflect.Type, Schema> schemaTypeCache = Collections.synchronizedMap(new WeakHashMap<>());
 
   /** Find the schema for a Java type. */

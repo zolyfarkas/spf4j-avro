@@ -116,6 +116,9 @@ public class SpecificCompiler {
 
   private final SpecificData specificData = new SpecificData();
 
+  @SuppressFBWarnings(value = "CNC_COLLECTION_NAMING_CONFUSION",
+      justification = "the work list of source files pending compilation is processed FIFO; the name reflects its"
+          + "queue role in the compile pipeline")
   private final Set<Schema> queue = new HashSet<>();
   private Protocol protocol;
   private VelocityEngine velocityEngine;
@@ -751,8 +754,9 @@ public class SpecificCompiler {
 
   // annotate map and string schemas with string type
   private Schema addStringType(Schema s, Map<Schema, Schema> seen) {
-    if (seen.containsKey(s))
-      return seen.get(s); // break loops
+    Schema previouslyAnnotated = seen.get(s);
+    if (previouslyAnnotated != null)
+      return previouslyAnnotated; // break loops
     Schema result = s;
     switch (s.getType()) {
     case STRING:
@@ -1058,6 +1062,9 @@ public class SpecificCompiler {
   /**
    * Utility for template use. Returns the java annotations for a schema.
    */
+  @SuppressFBWarnings(value = "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS",
+      justification = "the repeated invocation is an idempotent accessor over the immutable schema model (or the"
+          + "two calls bracket the state change under test); hoisting a local would not change behavior")
   public String[] javaAnnotations(JsonProperties props) {
     final Object value = props.getObjectProp("javaAnnotation");
     if (value instanceof String && isValidAsAnnotation((String) value))

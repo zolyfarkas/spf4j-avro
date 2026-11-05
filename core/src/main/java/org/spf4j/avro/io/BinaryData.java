@@ -100,7 +100,7 @@ public class BinaryData {
         }
         int c = compare(d, field.schema());
         if (c != 0) {
-          return (field.order() != Field.Order.DESCENDING) ? c : -c;
+          return (field.order() != Field.Order.DESCENDING) ? c : -Integer.signum(c);
         }
       }
       return 0;

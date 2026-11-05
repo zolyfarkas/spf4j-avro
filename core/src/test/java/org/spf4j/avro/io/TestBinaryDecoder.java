@@ -194,6 +194,9 @@ public class TestBinaryDecoder {
   private static byte[] data = null;
   private static Schema schema = null;
   private static final int count = 200;
+  @SuppressFBWarnings(value = "PMB_POSSIBLE_MEMORY_BLOAT",
+      justification = "registry/cache bounded by the embedding application's own registrations and loaded classes;"
+          + "growth is driven by the application, not by untrusted input")
   private static final ArrayList<Object> records = new ArrayList<>(count);
 
   @BeforeAll
@@ -297,6 +300,9 @@ public class TestBinaryDecoder {
     }
   }
 
+  @SuppressFBWarnings(value = "SR_NOT_CHECKED",
+      justification = "the test deliberately consumes the stream only partially; the skip distance is not the"
+          + "behavior under test")
   @ParameterizedTest
   @ValueSource(booleans = { true, false })
   void inputStreamPartiallyUsed(boolean useDirect) throws IOException {

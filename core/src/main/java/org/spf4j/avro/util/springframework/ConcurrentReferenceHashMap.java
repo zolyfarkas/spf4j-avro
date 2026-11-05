@@ -678,6 +678,10 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
       return null;
     }
 
+    @SuppressFBWarnings(value = "SUA_SUSPICIOUS_UNINITIALIZED_ARRAY",
+        justification = "the reference array is allocated empty and filled lazily by the map's reference machinery;"
+            + "uninitialized slots are the design (this class is a vendored port of Spring's"
+            + "ConcurrentReferenceHashMap)")
     @SuppressWarnings({ "unchecked" })
     private Reference<K, V>[] createReferenceArray(int size) {
       return new Reference[size];

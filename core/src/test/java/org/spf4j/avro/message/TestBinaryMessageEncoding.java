@@ -165,6 +165,9 @@ public class TestBinaryMessageEncoding {
     assertEquals(V1_RECORDS.get(2), record);
   }
 
+  @SuppressFBWarnings(value = "EC_BAD_ARRAY_COMPARE",
+      justification = "identity is the assertion: the test verifies the encoder reuses the same backing array, and"
+          + "the subsequent decode assertion depends on that sharing")
   @Test
   void bufferReuse() throws Exception {
     // This test depends on the serialized version of record 1 being smaller or

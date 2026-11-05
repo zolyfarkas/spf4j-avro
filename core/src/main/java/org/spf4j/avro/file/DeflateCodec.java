@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.file;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -57,6 +58,10 @@ public class DeflateCodec extends Codec {
   private Deflater deflater;
   private Inflater inflater;
   // currently only do 'nowrap' -- RFC 1951, not zlib
+  @SuppressFBWarnings(value = "FCBL_FIELD_COULD_BE_LOCAL",
+      justification = "the field is instance state: it is written and read at different points of the object's"
+          + "lifecycle (construction, parsing, accessors, or reflective/framework access), not a"
+          + "single-method local")
   private final boolean nowrap = true;
   private final int compressionLevel;
 

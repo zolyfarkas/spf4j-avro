@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.List;
 import java.util.Random;
 import java.util.Spliterator;
@@ -208,9 +209,10 @@ public class TestValidatingIO {
     }
   }
 
-  @SuppressFBWarnings(value = "PREDICTABLE_RANDOM",
+  @SuppressFBWarnings(value = {"PREDICTABLE_RANDOM", "SF_SWITCH_FALLTHROUGH"},
       justification = "the Random is seeded and generates a deterministic test corpus on purpose; reproducibility,"
-          + "not unpredictability, is the requirement")
+          + "not unpredictability, is the requirement; SF_SWITCH_FALLTHROUGH: the 'e'/'c'/'U' cases"
+          + "consume their integer payload and intentionally fall into the punctuation case group")
   public static Object[] randomValues(String calls) {
     Random r = new Random(0L);
     InputScanner cs = new InputScanner(calls.toCharArray());
@@ -549,6 +551,9 @@ public class TestValidatingIO {
 
       @Override
       public Object[] next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
         Object[][] v = new Object[values.length][];
         for (int i = 0; i < v.length; i++) {
           v[i] = values[i][pos[i]];

@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.util;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.junit.jupiter.api.Test;
 
@@ -174,6 +175,9 @@ class TimePeriodTest {
     assertEquals(localTime.minus(3, MILLIS), localTime.minus(threeMillis));
   }
 
+  @SuppressFBWarnings(value = "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS",
+      justification = "the repeated invocation is an idempotent accessor over the immutable schema model (or the"
+          + "two calls bracket the state change under test); hoisting a local would not change behavior")
   @Test
   void checkEqualityTests() {
     TimePeriod timePeriod1a = TimePeriod.of(1, 2, 3);

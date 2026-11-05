@@ -255,9 +255,11 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
    * @param n The Json node to encode.
    * @throws IOException
    */
-  @SuppressFBWarnings(value = "CC_CYCLOMATIC_COMPLEXITY",
+  @SuppressFBWarnings(value = {"CC_CYCLOMATIC_COMPLEXITY", "LII_LIST_INDEXED_ITERATING"},
       justification = "the method is a decision table over the specification's resolution rules; its complexity is"
-          + "intrinsic to the rule set and it is covered by the resolver and parser test suites")
+          + "intrinsic to the rule set and it is covered by the resolver and parser test suites;"
+          + "LII_LIST_INDEXED_ITERATING: the scan's index is the result: it selects the union branch that is"
+          + "encoded next; indexed access is the algorithm")
   public static void encode(Encoder e, Schema s, JsonNode n) throws IOException {
     switch (s.getType()) {
     case RECORD:

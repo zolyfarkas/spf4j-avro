@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.file;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -118,6 +119,9 @@ public abstract class CodecFactory {
    * Mapping of string names (stored as metas) and codecs. Note that currently
    * options (like compression level) are not recoverable.
    */
+  @SuppressFBWarnings(value = "PMB_POSSIBLE_MEMORY_BLOAT",
+      justification = "registry/cache bounded by the embedding application's own registrations and loaded classes;"
+          + "growth is driven by the application, not by untrusted input")
   private static final Map<String, CodecFactory> REGISTERED = new HashMap<>();
 
   public static final int DEFAULT_DEFLATE_LEVEL = Deflater.DEFAULT_COMPRESSION;

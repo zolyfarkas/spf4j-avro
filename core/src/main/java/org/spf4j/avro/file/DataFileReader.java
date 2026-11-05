@@ -37,12 +37,19 @@ import static org.spf4j.avro.file.DataFileConstants.SYNC_SIZE;
  *
  * @see DataFileWriter
  */
+@SuppressFBWarnings(value = "SCII_SPOILED_CHILD_INTERFACE_IMPLEMENTOR",
+    justification = "the class is the public reader facade over DataFileStream; the implemented interface set is"
+        + "the published reader contract")
 public class DataFileReader<D> extends DataFileStream<D> implements FileReader<D> {
   private final SeekableInputStream sin;
   private long blockStart;
   private int[] partialMatchTable;
 
   /** Open a reader for a file. */
+  @SuppressFBWarnings(value = "OBL_UNSATISFIED_OBLIGATION",
+      justification = "the constructed reader/writer is the resource handle: ownership of the underlying stream"
+          + "passes to it and its close() releases it; the obligation transfers to the caller with the"
+          + "returned object")
   public static <D> FileReader<D> openReader(File file, DatumReader<D> reader) throws IOException {
     SeekableFileInput input = new SeekableFileInput(file);
     try {
@@ -111,6 +118,10 @@ public class DataFileReader<D> extends DataFileStream<D> implements FileReader<D
    *
    * <pre/>
    */
+  @SuppressFBWarnings(value = "OBL_UNSATISFIED_OBLIGATION",
+      justification = "the constructed reader/writer is the resource handle: ownership of the underlying stream"
+          + "passes to it and its close() releases it; the obligation transfers to the caller with the"
+          + "returned object")
   public DataFileReader(File file, DatumReader<D> reader) throws IOException {
     this(new SeekableFileInput(file), reader, true, null);
   }

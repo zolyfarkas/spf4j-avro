@@ -85,6 +85,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import static java.util.Objects.requireNonNull;
 import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.HashMap;
@@ -516,9 +517,9 @@ public class TestSchemaCompatibility {
   }
 
   private Schema readSchemaFromResources(String name) throws IOException {
-    try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(name)) {
-      final String result = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines()
-          .collect(Collectors.joining("\n"));
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+        requireNonNull(getClass().getClassLoader().getResourceAsStream(name)), StandardCharsets.UTF_8))) {
+      final String result = reader.lines().collect(Collectors.joining("\n"));
 
       return SchemaParser.parseSingle(result);
     }

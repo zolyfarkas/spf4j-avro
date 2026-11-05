@@ -320,9 +320,11 @@ public class Conversions {
       return "big-decimal";
     }
 
-    @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+    @SuppressFBWarnings(value = {"EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS", "NP_NULL_PARAM_DEREF"},
         justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract;"
+            + "NP_NULL_PARAM_DEREF: the conversion contract is invoked by the datum readers only with a"
+            + "non-null buffer for a present bytes value; null data never reaches a conversion")
     @Override
     public BigDecimal fromBytes(final ByteBuffer value, final Schema schema, final LogicalType type) {
       BinaryDecoder decoder = DecoderFactory.get().binaryDecoder(value.array(), null);

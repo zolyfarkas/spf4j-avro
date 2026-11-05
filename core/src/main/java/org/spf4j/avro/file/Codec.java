@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.file;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -26,6 +27,11 @@ import java.nio.ByteBuffer;
  * Note that Codec objects may maintain internal state (e.g. buffers) and are
  * not thread safe.
  */
+@SuppressFBWarnings(value = "AOM_ABSTRACT_OVERRIDDEN_METHOD",
+    justification = "AOM_ABSTRACT_OVERRIDDEN_METHOD: Codec deliberately re-declares equals and hashCode abstract"
+        + "so that every codec defines value equality over its class and its options;"
+        + "AOM_ABSTRACT_OVERRIDDEN_METHOD: Codec deliberately re-declares equals and hashCode abstract"
+        + "so that every codec defines value equality over its class and its options")
 public abstract class Codec {
   /** Name of the codec; written to the file's metadata. */
   public abstract String getName();

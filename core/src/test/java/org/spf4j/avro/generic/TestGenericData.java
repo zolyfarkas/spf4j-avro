@@ -567,9 +567,11 @@ public class TestGenericData {
     mapper.readTree(parser);
   }
 
-  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+  @SuppressFBWarnings(value = {"NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION", "CRF_CONFLATING_RESOURCES_AND_FILES"},
       justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
-          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design;"
+          + "CRF_CONFLATING_RESOURCES_AND_FILES: the test reads a packaged test resource through the file"
+          + "API; the resource/file duality is the fixture's nature")
   @Test
   void mapWithNonStringKeyToStringIsJson() throws Exception {
     Schema intMapSchema = SchemaParser

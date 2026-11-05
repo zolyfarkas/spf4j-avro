@@ -56,6 +56,9 @@ public class LogicalTypes {
     }
   }
 
+  @SuppressFBWarnings(value = "PMB_POSSIBLE_MEMORY_BLOAT",
+      justification = "registry/cache bounded by the embedding application's own registrations and loaded classes;"
+          + "growth is driven by the application, not by untrusted input")
   private static final Map<String, LogicalTypeFactory> REGISTERED_TYPES = new ConcurrentHashMap<>();
 
   static {

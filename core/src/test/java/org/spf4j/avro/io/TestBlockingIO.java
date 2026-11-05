@@ -322,6 +322,9 @@ public class TestBlockingIO {
     }
   }
 
+  @SuppressFBWarnings(value = "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS",
+      justification = "the repeated invocation is an idempotent accessor over the immutable schema model (or the"
+          + "two calls bracket the state change under test); hoisting a local would not change behavior")
   public static Stream<Arguments> data() {
     return Stream.of(new Object[][] { { 64, 0, "" }, { 64, 0, jss(0, 'a') }, { 64, 0, jss(3, 'a') },
         { 64, 0, jss(64, 'a') }, { 64, 0, jss(65, 'a') }, { 64, 0, jss(100, 'a') }, { 64, 1, "[]" },

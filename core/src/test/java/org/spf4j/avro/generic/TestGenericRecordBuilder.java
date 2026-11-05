@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.generic;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,6 +36,9 @@ import org.junit.jupiter.api.Test;
  * Unit test for the GenericRecordBuilder class.
  */
 public class TestGenericRecordBuilder {
+  @SuppressFBWarnings(value = "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS",
+      justification = "the repeated invocation is an idempotent accessor over the immutable schema model (or the"
+          + "two calls bracket the state change under test); hoisting a local would not change behavior")
   @Test
   void genericBuilder() {
     Schema schema = recordSchema();

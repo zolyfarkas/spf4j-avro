@@ -22,7 +22,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -32,11 +31,8 @@ import org.junit.jupiter.api.Test;
 
 public class TestCustomCodec {
 
-  @SuppressFBWarnings(value = "IMC_IMMATURE_CLASS_PRINTSTACKTRACE",
-      justification = "test harness: the stack trace is printed inside the worker thread so the failure context"
-          + "survives in the test output; the test itself asserts on the outcome")
   @Test
-  void customCodec() {
+  void customCodec() throws IOException {
     CustomCodec customCodec = new CustomCodec();
     Codec snappyCodec = new SnappyCodec.Option().createInstance();
     assertEquals(customCodec, new CustomCodec());
@@ -46,14 +42,9 @@ public class TestCustomCodec {
     ByteBuffer original = ByteBuffer.allocate(testString.getBytes(UTF_8).length);
     original.put(testString.getBytes(UTF_8));
     original.rewind();
-    ByteBuffer decompressed = null;
-    try {
-      ByteBuffer compressed = customCodec.compress(original);
-      compressed.rewind();
-      decompressed = customCodec.decompress(compressed);
-    } catch (IOException e) {
-      fail(e);
-    }
+    ByteBuffer compressed = customCodec.compress(original);
+    compressed.rewind();
+    ByteBuffer decompressed = customCodec.decompress(compressed);
 
     assertEquals(testString, new String(decompressed.array(), UTF_8));
 

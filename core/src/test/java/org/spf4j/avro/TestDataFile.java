@@ -306,10 +306,10 @@ public class TestDataFile {
       // get a header for this file
       DataFileStream.Header header = reader.getHeader();
       // re-open to an arbitrary position near the middle, with sync == true
-      SeekableFileInput sin = new SeekableFileInput(file);
-      sin.seek(sin.length() / 2);
-      try (DataFileReader<Object> readerTrue = DataFileReader.openReader(sin, new GenericDatumReader<>(), header,
-          true);) {
+      try (SeekableFileInput sin = new SeekableFileInput(file)) {
+        sin.seek(sin.length() / 2);
+        try (DataFileReader<Object> readerTrue = DataFileReader.openReader(sin, new GenericDatumReader<>(), header,
+            true)) {
 
         assertNotNull(readerTrue.next(), "Should be able to reopen from arbitrary point");
         long validPos = readerTrue.previousSync();
@@ -320,6 +320,7 @@ public class TestDataFile {
           assertEquals(validPos, sin.tell(), "Should not move from sync point on reopen");
           assertNotNull(readerFalse.next(), "Should be able to reopen at sync point");
         }
+      }
       }
     }
   }

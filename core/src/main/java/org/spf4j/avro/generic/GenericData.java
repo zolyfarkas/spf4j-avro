@@ -1378,6 +1378,9 @@ public class GenericData {
     return compare(o1, o2, s, false);
   }
 
+  @SuppressFBWarnings(value = "DCN_NULLPOINTER_EXCEPTION",
+      justification = "the catch is the error-annotation mechanism: NullPointerException from the datum walk is"
+          + "caught to attach the data path and is rethrown as a tracing exception carrying that context")
   protected int compareMaps(final Map<?, ?> m1, final Map<?, ?> m2) {
     if (m1 == m2) {
       return 0;
@@ -1487,7 +1490,7 @@ public class GenericData {
         String name = f.name();
         int compare = compare(getField(o1, name, pos), getField(o2, name, pos), f.schema(), equals);
         if (compare != 0) // not equal
-          return f.order() == Field.Order.DESCENDING ? -compare : compare;
+          return f.order() == Field.Order.DESCENDING ? -Integer.signum(compare) : compare;
       }
       return 0;
     case ENUM:

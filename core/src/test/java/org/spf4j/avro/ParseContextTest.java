@@ -32,16 +32,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ParseContextTest {
-  Schema fooRecord, fooRecordCopy, barEnum, bazFixed, mehRecord;
+  Schema fooRecord, barEnum, bazFixed;
   ParseContext fooBarBaz;
 
   @BeforeEach
   public void setUp() throws Exception {
     fooRecord = SchemaBuilder.record("ns.Foo").fields().endRecord();
-    fooRecordCopy = SchemaBuilder.record("ns.Foo").fields().endRecord();
     barEnum = SchemaBuilder.enumeration("ns.Bar").symbols();
     bazFixed = SchemaBuilder.fixed("ns.Baz").size(8);
-    mehRecord = SchemaBuilder.record("ns.Meh").fields().endRecord();
 
     fooBarBaz = new ParseContext();
     fooBarBaz.put(fooRecord);

@@ -82,8 +82,8 @@ public class TestDataFileReflect {
     }
     // new File(DIR.getRoot().getPath(), "test.avro");
     ReflectDatumReader<Object> din = new ReflectDatumReader<>();
-    SeekableFileInput sin = new SeekableFileInput(file);
-    try (DataFileReader<Object> reader = new DataFileReader<>(sin, din)) {
+    try (SeekableFileInput sin = new SeekableFileInput(file);
+        DataFileReader<Object> reader = new DataFileReader<>(sin, din)) {
       int count = 0;
       for (Object datum : reader) {
         check.assertEquals(datum, count++);

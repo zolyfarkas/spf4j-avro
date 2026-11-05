@@ -143,6 +143,9 @@ public class ReflectDatumWriter<T> extends SpecificDatumWriter<T> {
       super.writeBytes(datum, out);
   }
 
+  @SuppressFBWarnings(value = "DCN_NULLPOINTER_EXCEPTION",
+      justification = "the catch is the error-annotation mechanism: NullPointerException from the datum walk is"
+          + "caught to attach the data path and is rethrown as a tracing exception carrying that context")
   @Override
   protected void write(Schema schema, Object datum, Encoder out) throws IOException {
     if (datum instanceof Byte)

@@ -165,9 +165,12 @@ public class GenericDatumWriter<D> implements DatumWriter<D> {
   }
 
   /** Called to write data. */
-  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+  @SuppressFBWarnings(value = {"EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS", "DCN_NULLPOINTER_EXCEPTION"},
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract;"
+          + "DCN_NULLPOINTER_EXCEPTION: the catch is the error-annotation mechanism: NullPointerException"
+          + "from the datum walk is caught to attach the data path and is rethrown as a tracing exception"
+          + "carrying that context")
   protected void writeWithoutConversion(Schema schema, Object datum, Encoder out) throws IOException {
     int unionIndex = -1;
     Schema.Type schemaType = schema.getType();
@@ -269,9 +272,12 @@ public class GenericDatumWriter<D> implements DatumWriter<D> {
    * Called to write a single field of a record. May be overridden for more
    * efficient or alternate implementations.
    */
-  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+  @SuppressFBWarnings(value = {"EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS", "DCN_NULLPOINTER_EXCEPTION"},
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract;"
+          + "DCN_NULLPOINTER_EXCEPTION: the catch is the error-annotation mechanism: NullPointerException"
+          + "from the datum walk is caught to attach the data path and is rethrown as a tracing exception"
+          + "carrying that context")
   protected void writeField(Object datum, Field f, Encoder out, Object state) throws IOException {
     Object value = data.getField(datum, f.name(), f.pos(), state);
     try {
@@ -359,6 +365,9 @@ public class GenericDatumWriter<D> implements DatumWriter<D> {
   /**
    * Called to write a map. May be overridden for alternate map representations.
    */
+  @SuppressFBWarnings(value = "DCN_NULLPOINTER_EXCEPTION",
+      justification = "the catch is the error-annotation mechanism: NullPointerException from the datum walk is"
+          + "caught to attach the data path and is rethrown as a tracing exception carrying that context")
   protected void writeMap(Schema schema, Object datum, Encoder out) throws IOException {
     Schema value = schema.getValueType();
     int size = getMapSize(datum);

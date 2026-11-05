@@ -166,6 +166,9 @@ public class TestCircularReferences {
     LogicalTypes.register(Reference.REFERENCE, new ReferenceTypeFactory());
   }
 
+  @SuppressFBWarnings(value = "DMC_DUBIOUS_MAP_COLLECTION",
+      justification = "the maps key the circular-reference fixtures by the ids the test assigns; the keying is the"
+          + "fixture's design")
   public static class ReferenceManager {
     private interface Callback {
       void set(Object referenceable);
@@ -255,8 +258,9 @@ public class TestCircularReferences {
 
         Long id = (Long) record.get(refField.pos());
         if (id != null) {
-          if (references.containsKey(id)) {
-            record.put(refField.pos(), references.get(id));
+          Object referenced = references.get(id);
+          if (referenced != null) {
+            record.put(refField.pos(), referenced);
 
           } else {
             List<Callback> callbacks = callbacksById.computeIfAbsent(id, k -> new ArrayList<>());

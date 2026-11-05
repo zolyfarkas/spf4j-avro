@@ -98,17 +98,22 @@ import static org.spf4j.avro.LogicalType.LOGICAL_TYPE_PROP;
  * property.
  * </ul>
  */
-@SuppressFBWarnings(value = { "SE_NO_SUITABLE_CONSTRUCTOR", "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY" },
-    justification = "SE_NO_SUITABLE_CONSTRUCTOR: serialization uses writeReplace to substitute the"
-        + " SerializableSchema JSON form, so there is no field-deserialization path for a no-arg"
-        + " constructor to serve; FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY: the classes of this package form"
-        + " one cohesive unit mirroring the Avro type system: model, builders, readers and writers are"
-        + " mutually referential by design")
+@SuppressFBWarnings(value = {"SE_NO_SUITABLE_CONSTRUCTOR", "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY", "PIS_POSSIBLE_INCOMPLETE_SERIALIZATION"},
+    justification = "SE_NO_SUITABLE_CONSTRUCTOR: serialization uses writeReplace to substitute the "
+        + "SerializableSchema JSON form, so there is no field-deserialization path for a no-arg "
+        + "constructor to serve; FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY: the classes of this package form "
+        + "one cohesive unit mirroring the Avro type system: model, builders, readers and writers are "
+        + "mutually referential by design; PIS_POSSIBLE_INCOMPLETE_SERIALIZATION: writeReplace"
+        + "substitutes the schema's JSON string, which is by definition the complete serialized form of"
+        + "a schema")
 @SuppressWarnings("unused")
 public abstract class Schema extends JsonProperties implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressFBWarnings(value = "STT_TOSTRING_STORED_IN_FIELD",
+      justification = "the serialized form of a schema is its JSON string; storing it in the replacement object is"
+          + "the writeReplace contract")
   protected Object writeReplace() {
     SerializableSchema ss = new SerializableSchema();
     ss.schemaString = toString();
@@ -668,6 +673,10 @@ public abstract class Schema extends JsonProperties implements Serializable {
     public enum Order {
       ASCENDING, DESCENDING, IGNORE;
 
+      @SuppressFBWarnings(value = "FCBL_FIELD_COULD_BE_LOCAL",
+          justification = "the field is instance state: it is written and read at different points of the object's"
+              + "lifecycle (construction, parsing, accessors, or reflective/framework access), not a"
+              + "single-method local")
       private final String name;
 
       Order() {
@@ -1056,7 +1065,13 @@ public abstract class Schema extends JsonProperties implements Serializable {
   private static final ThreadLocal<Map<Schema, Schema>> SEEN_HASHCODE = ThreadLocalWithInitial.of(IdentityHashMap::new);
 
   private static class RecordSchema extends NamedSchema {
+    @SuppressFBWarnings(value = "SE_BAD_FIELD",
+        justification = "serialization of the owner goes through writeReplace (the JSON form); this field is runtime"
+            + "state and is never written by Java serialization")
     private List<Field> fields;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD",
+        justification = "serialization of the owner goes through writeReplace (the JSON form); this field is runtime"
+            + "state and is never written by Java serialization")
     private Map<String, Field> fieldMap;
     private final boolean isError;
 
@@ -2429,8 +2444,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
    * ParseContext model.
    */
   private static void registerResolved(ParseContext context, Schema resolved) {
-    if (resolved != null && resolved instanceof NamedSchema
-        && context.getNamedSchema(resolved.getFullName()) == null) {
+    if (resolved instanceof NamedSchema && context.getNamedSchema(resolved.getFullName()) == null) {
       context.put(resolved);
     }
   }
@@ -2687,10 +2701,12 @@ public abstract class Schema extends JsonProperties implements Serializable {
     Schema result = s;
     switch (s.getType()) {
     case RECORD:
-      if (seen.containsKey(s))
-        return seen.get(s); // break loops
-      if (aliases.containsKey(name))
-        name = aliases.get(name);
+      Schema previous = seen.get(s);
+      if (previous != null)
+        return previous; // break loops
+      Name aliasedName = aliases.get(name);
+      if (aliasedName != null)
+        name = aliasedName;
       result = Schema.createRecord(name.full, s.getDoc(), null, s.isError());
       seen.put(s, result);
       List<Field> newFields = new ArrayList<>();
@@ -2704,8 +2720,9 @@ public abstract class Schema extends JsonProperties implements Serializable {
       result.setFields(newFields);
       break;
     case ENUM:
-      if (aliases.containsKey(name))
-        result = Schema.createEnum(aliases.get(name).full, s.getDoc(), null, s.getEnumSymbols(), s.getEnumDefault());
+      Name enumAliased = aliases.get(name);
+      if (enumAliased != null)
+        result = Schema.createEnum(enumAliased.full, s.getDoc(), null, s.getEnumSymbols(), s.getEnumDefault());
       break;
     case ARRAY:
       Schema e = applyAliases(s.getElementType(), seen, aliases, fieldAliases);
@@ -2724,8 +2741,9 @@ public abstract class Schema extends JsonProperties implements Serializable {
       result = Schema.createUnion(types);
       break;
     case FIXED:
-      if (aliases.containsKey(name))
-        result = Schema.createFixed(aliases.get(name).full, s.getDoc(), null, s.getFixedSize());
+      Name fixedAliased = aliases.get(name);
+      if (fixedAliased != null)
+        result = Schema.createFixed(fixedAliased.full, s.getDoc(), null, s.getFixedSize());
       break;
     default:
       // NO-OP
@@ -2761,9 +2779,10 @@ public abstract class Schema extends JsonProperties implements Serializable {
           }
         getAliases(field.schema, seen, aliases, fieldAliases);
       }
-      if (record.aliases != null && fieldAliases.containsKey(record.name))
+      Map<String, String> aliasedFields = fieldAliases.get(record.name);
+      if (record.aliases != null && aliasedFields != null)
         for (Name recordAlias : record.aliases)
-          fieldAliases.put(recordAlias, fieldAliases.get(record.name));
+          fieldAliases.put(recordAlias, aliasedFields);
       break;
     case ARRAY:
       getAliases(schema.getElementType(), seen, aliases, fieldAliases);
@@ -2804,6 +2823,9 @@ public abstract class Schema extends JsonProperties implements Serializable {
    * <tt>IllegalStateException</tt>. Since modifications through iterator also use
    * the list's mutating operations, this effectively blocks all modifications.
    */
+  @SuppressFBWarnings(value = "EQ_DOESNT_OVERRIDE_EQUALS",
+      justification = "equality inherited from the abstract collection base (content equality) is the intended"
+          + "semantics; the subclass changes storage and notification behavior only")
   @SuppressWarnings("unused")
   static class LockableArrayList<E> extends ArrayList<E> {
     private static final long serialVersionUID = 1L;

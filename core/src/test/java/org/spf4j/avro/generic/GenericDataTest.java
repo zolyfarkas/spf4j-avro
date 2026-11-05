@@ -174,6 +174,9 @@ class GenericDataTest {
     return data.stream();
   }
 
+  @SuppressFBWarnings(value = "UMTP_UNBOUND_METHOD_TEMPLATE_PARAMETER",
+      justification = "the generic helper is a test scaffold; its type parameter is intentionally unbound at the"
+          + "declaration")
   private static <T> List<Conversion<?>> singleConversion(Schema.Type targetKey) {
     return Collections.singletonList(new Conversion<T>() {
 

@@ -82,6 +82,9 @@ public class TestReflectLogicalTypes {
   }
 
   // this can be static because the schema only comes from reflection
+  @SuppressFBWarnings(value = "MDM_BIGDECIMAL_EQUALS",
+      justification = "scale-sensitive equality is intended: these test records assert exact decimal round-trips"
+          + "including scale")
   public static class DecimalRecordBytes {
     // scale is required and will not be set by the conversion
     @AvroSchema("{" + "\"type\": \"bytes\"," + "\"logicalType\": \"decimal\"," + "\"precision\": 9," + "\"scale\": 2"
@@ -130,6 +133,9 @@ public class TestReflectLogicalTypes {
   }
 
   // this can be static because the schema only comes from reflection
+  @SuppressFBWarnings(value = "MDM_BIGDECIMAL_EQUALS",
+      justification = "scale-sensitive equality is intended: these test records assert exact decimal round-trips"
+          + "including scale")
   public static class DecimalRecordFixed {
     // scale is required and will not be set by the conversion
     @AvroSchema("{" + "\"name\": \"decimal_9\"," + "\"type\": \"fixed\"," + "\"size\": 4,"
@@ -281,9 +287,6 @@ public class TestReflectLogicalTypes {
 
     PairRecord record = new PairRecord();
     record.pair = Pair.of(34L, 35L);
-    List<PairRecord> expected = new ArrayList<>();
-    expected.add(record);
-
     File test = write(model, schema, record);
     Pair<Long, Long> actual = ((PairRecord) TestReflectLogicalTypes
         .<PairRecord>read(model.createDatumReader(schema), test).get(0)).pair;

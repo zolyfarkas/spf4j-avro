@@ -455,6 +455,9 @@ public class ReflectData extends SpecificData {
     return null;
   }
 
+  @SuppressFBWarnings(value = "PMB_POSSIBLE_MEMORY_BLOAT",
+      justification = "registry/cache bounded by the embedding application's own registrations and loaded classes;"
+          + "growth is driven by the application, not by untrusted input")
   private static final Map<String, Class> CLASS_CACHE = new ConcurrentHashMap<>();
 
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
@@ -643,17 +646,18 @@ public class ReflectData extends SpecificData {
     return defaultValue;
   }
 
-  @SuppressFBWarnings(value = { "CLI_CONSTANT_LIST_INDEX", "PSC_PRESIZE_COLLECTIONS", "CC_CYCLOMATIC_COMPLEXITY",
-      "EXS_EXCEPTION_SOFTENING_NO_CHECKED" },
-      justification = "CLI_CONSTANT_LIST_INDEX: positional access into a fixed-order list (schema fields or"
-          + " invocation arguments) whose layout is established by the surrounding code; the constant index"
-          + " names the slot; PSC_PRESIZE_COLLECTIONS: the collection is populated incrementally from the"
-          + " schema/data being processed; its final size is not known when it is created;"
-          + " CC_CYCLOMATIC_COMPLEXITY: the method is a decision table over the specification's resolution"
-          + " rules; its complexity is intrinsic to the rule set and it is covered by the resolver and"
-          + " parser test suites; EXS_EXCEPTION_SOFTENING_NO_CHECKED: this API's documented error model is"
-          + " unchecked: exceptions are wrapped in AvroRuntimeException at the boundary so callers program"
-          + " against the unchecked contract")
+  @SuppressFBWarnings(value = {"CLI_CONSTANT_LIST_INDEX", "PSC_PRESIZE_COLLECTIONS", "CC_CYCLOMATIC_COMPLEXITY", "EXS_EXCEPTION_SOFTENING_NO_CHECKED", "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS"},
+      justification = "CLI_CONSTANT_LIST_INDEX: positional access into a fixed-order list (schema fields or "
+          + "invocation arguments) whose layout is established by the surrounding code; the constant"
+          + "index  names the slot; PSC_PRESIZE_COLLECTIONS: the collection is populated incrementally"
+          + "from the  schema/data being processed; its final size is not known when it is created; "
+          + "CC_CYCLOMATIC_COMPLEXITY: the method is a decision table over the specification's resolution"
+          + "rules; its complexity is intrinsic to the rule set and it is covered by the resolver and "
+          + "parser test suites; EXS_EXCEPTION_SOFTENING_NO_CHECKED: this API's documented error model is"
+          + "unchecked: exceptions are wrapped in AvroRuntimeException at the boundary so callers program"
+          + "against the unchecked contract; PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS: the repeated"
+          + "invocation is an idempotent accessor over the immutable schema model (or the two calls"
+          + "bracket the state change under test); hoisting a local would not change behavior")
   @Override
   protected Schema createSchema(Type type, Map<String, Schema> names) {
     if (type instanceof GenericArrayType) { // generic array
@@ -899,6 +903,9 @@ public class ReflectData extends SpecificData {
     return FIELDS_CACHE.computeIfAbsent(recordClass, rc -> getFields(rc, true));
   }
 
+  @SuppressFBWarnings(value = "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS",
+      justification = "the repeated invocation is an idempotent accessor over the immutable schema model (or the"
+          + "two calls bracket the state change under test); hoisting a local would not change behavior")
   private static Field[] getFields(Class<?> recordClass, boolean excludeJava) {
     Map<String, Field> fields = new LinkedHashMap<>();
     Class<?> c = recordClass;

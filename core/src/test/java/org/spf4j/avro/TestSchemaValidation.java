@@ -16,6 +16,7 @@
  * permissions and limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.spf4j.avro.TestSchemas.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -222,7 +223,13 @@ public class TestSchemaValidation {
   }
 
   public static class Point {
+    @SuppressFBWarnings(value = "UUF_UNUSED_FIELD",
+        justification = "reflect datum fixture: the fields are read and written reflectively by the datum layer under"
+            + "test")
     double x;
+    @SuppressFBWarnings(value = "UUF_UNUSED_FIELD",
+        justification = "reflect datum fixture: the fields are read and written reflectively by the datum layer under"
+            + "test")
     double y;
   }
 

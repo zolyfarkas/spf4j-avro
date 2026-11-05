@@ -75,6 +75,9 @@ public class TestSchemaNormalization {
       return CaseFinder.find(data(), "fingerprint", new ArrayList<>());
     }
 
+    @SuppressFBWarnings(value = "MDM_SETDEFAULTLOCALE",
+        justification = "the test's purpose is verifying that canonicalization is locale-independent; it sets and"
+            + "restores the default locale deliberately")
     @ParameterizedTest
     @MethodSource("cases")
     void canonicalization(String input, String expectedOutput) {

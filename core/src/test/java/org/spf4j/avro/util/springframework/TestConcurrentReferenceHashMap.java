@@ -544,6 +544,9 @@ class TestConcurrentReferenceHashMap {
     assertTrue(cacheTime.getTotalTimeSeconds() < (mapTime.getTotalTimeSeconds() / 4.0));
   }
 
+  @SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT",
+      justification = "the call is made to verify it completes without throwing (or for its visibility side effect"
+          + "in the concurrency harness); its return value is not the behavior under test")
   @Test
   void shouldSupportNullReference() {
     // GC could happen during restructure so we must be able to create a reference
@@ -566,16 +569,7 @@ class TestConcurrentReferenceHashMap {
     Thread[] threads = new Thread[30];
     stopWatch.start("Running threads");
     for (int threadIndex = 0; threadIndex < threads.length; threadIndex++) {
-      threads[threadIndex] = new Thread("Cache access thread " + threadIndex) {
-        @Override
-        public void run() {
-          for (int j = 0; j < 1000; j++) {
-            for (int i = 0; i < 1000; i++) {
-              map.get(i);
-            }
-          }
-        }
-      };
+      threads[threadIndex] = new CacheAccessThread("Cache access thread " + threadIndex, map);
     }
     for (Thread thread : threads) {
       thread.start();
@@ -702,4 +696,26 @@ class TestConcurrentReferenceHashMap {
     }
   }
 
+
+  /** Worker thread for the cache timing harness: the map lookups are the workload being timed. */
+  private static class CacheAccessThread extends Thread {
+    private final Map<Integer, ?> map;
+
+    CacheAccessThread(String name, Map<Integer, ?> map) {
+      super(name);
+      this.map = map;
+    }
+
+    @SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT",
+        justification = "the lookups are the workload of the concurrency timing harness; their return values"
+            + " are intentionally unused")
+    @Override
+    public void run() {
+      for (int j = 0; j < 1000; j++) {
+        for (int i = 0; i < 1000; i++) {
+          map.get(i);
+        }
+      }
+    }
+  }
 }

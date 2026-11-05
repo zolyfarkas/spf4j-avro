@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,6 +60,9 @@ public class TestSchemaWarnings {
     return stderr;
   }
 
+  @SuppressFBWarnings(value = "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS",
+      justification = "the repeated invocation is an idempotent accessor over the immutable schema model (or the"
+          + "two calls bracket the state change under test); hoisting a local would not change behavior")
   @Test
   // FIXME: Find a different way of capturing the output
   @DisabledIfEnvironmentVariable(named = "WithinInvokerPlugin", matches = "true", disabledReason = "Redirecting stderr does not work within the invoker plugin")

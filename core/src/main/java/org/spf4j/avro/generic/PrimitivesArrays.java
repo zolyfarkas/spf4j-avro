@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.generic;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.Schema;
 
@@ -383,6 +384,11 @@ public class PrimitivesArrays {
 
     }
 
+    @SuppressFBWarnings(value = {"NP_BOOLEAN_RETURN_NULL", "TBP_TRISTATE_BOOLEAN_PATTERN"},
+        justification = "NP_BOOLEAN_RETURN_NULL: the array stores Boolean objects; null is a legitimate element value"
+            + "meaning 'unset', and the accessors expose exactly that tri-state;"
+            + "TBP_TRISTATE_BOOLEAN_PATTERN: the array stores Boolean objects; null is a legitimate element"
+            + "value meaning 'unset', and the accessors expose exactly that tri-state")
     @Override
     public Boolean set(int i, Boolean o) {
       if (o == null) {
@@ -430,6 +436,9 @@ public class PrimitivesArrays {
       return result;
     }
 
+    @SuppressFBWarnings(value = "NP_BOOLEAN_RETURN_NULL",
+        justification = "the array stores Boolean objects; null is a legitimate element value meaning 'unset', and"
+            + "the accessors expose exactly that tri-state")
     @Override
     public Boolean peek() {
       return (size < elements.length * Byte.SIZE) ? (elements[(size / 8)] & (1 << (size % 8))) > 0 : null;

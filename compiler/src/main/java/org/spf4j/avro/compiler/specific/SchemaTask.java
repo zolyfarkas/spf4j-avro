@@ -37,9 +37,11 @@ public class SchemaTask extends ProtocolTask {
     }
   }
 
-  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+  @SuppressFBWarnings(value = {"PATH_TRAVERSAL_IN", "PCAIL_POSSIBLE_CONSTANT_ALLOCATION_IN_LOOP"},
       justification = "the paths are this command-line tool's own arguments; the operator who invokes it is the"
-          + "trust boundary and there is no untrusted input source to sanitize against")
+          + "trust boundary and there is no untrusted input source to sanitize against;"
+          + "PCAIL_POSSIBLE_CONSTANT_ALLOCATION_IN_LOOP: command-line driver: the per-argument objects"
+          + "are the processing model of the tool's main loop")
   public static void main(String[] args) throws IOException {
     if (args.length < 2) {
       System.err.println("Usage: SchemaTask <schema.avsc>... <output-folder>");

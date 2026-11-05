@@ -81,6 +81,9 @@ public class SpecificDatumWriter<T> extends GenericDatumWriter<T> {
     writeString(datum, out);
   }
 
+  @SuppressFBWarnings(value = "DCN_NULLPOINTER_EXCEPTION",
+      justification = "the catch is the error-annotation mechanism: NullPointerException from the datum walk is"
+          + "caught to attach the data path and is rethrown as a tracing exception carrying that context")
   @Override
   protected void writeRecord(Schema schema, Object datum, Encoder out) throws IOException {
     if (datum instanceof SpecificRecordBase && this.getSpecificData().useCustomCoders()) {

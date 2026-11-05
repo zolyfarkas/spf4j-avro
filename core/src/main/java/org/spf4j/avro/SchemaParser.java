@@ -183,7 +183,7 @@ public class SchemaParser {
    *                              available
    */
   public ParseResult parse(Path file, Charset charset) throws IOException, SchemaParseException {
-    URI inputDir = file.getParent().toUri();
+    URI inputDir = file.toAbsolutePath().getParent().toUri();
     try (InputStream stream = Files.newInputStream(file)) {
       String formattedSchema = UtfTextUtils.readAllBytes(stream, charset);
       return parse(inputDir, formattedSchema);

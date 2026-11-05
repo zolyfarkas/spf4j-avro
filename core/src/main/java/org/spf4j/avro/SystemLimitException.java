@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,7 +131,15 @@ public class SystemLimitException extends AvroRuntimeException {
    * nested) collection in between.
    */
   private static final class CollectionAllocationScope {
+    @SuppressFBWarnings(value = "FCBL_FIELD_COULD_BE_LOCAL",
+        justification = "the field is instance state: it is written and read at different points of the object's"
+            + "lifecycle (construction, parsing, accessors, or reflective/framework access), not a"
+            + "single-method local")
     private int depth;
+    @SuppressFBWarnings(value = "FCBL_FIELD_COULD_BE_LOCAL",
+        justification = "the field is instance state: it is written and read at different points of the object's"
+            + "lifecycle (construction, parsing, accessors, or reflective/framework access), not a"
+            + "single-method local")
     private long allocated;
   }
 

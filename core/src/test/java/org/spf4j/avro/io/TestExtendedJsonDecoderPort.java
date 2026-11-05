@@ -72,7 +72,7 @@ public class TestExtendedJsonDecoderPort {
     assertEquals(5L, rec.get("u"));
     GenericRecord recNull = reader.read(null,
         new ExtendedJsonDecoder(schema, new ByteArrayInputStream("{\"u\":null}".getBytes(StandardCharsets.UTF_8))));
-    assertEquals(null, recNull.get("u"));
+    assertNull(recNull.get("u"));
   }
 
   @Test

@@ -133,7 +133,7 @@ class StopWatch {
    * @see #start(String)
    * @see #stop()
    */
-  public void start() throws IllegalStateException {
+  public void start() {
     start("");
   }
 
