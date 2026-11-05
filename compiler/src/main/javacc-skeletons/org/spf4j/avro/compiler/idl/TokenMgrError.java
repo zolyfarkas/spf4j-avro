@@ -12,8 +12,9 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * existing skeleton file in its output directory, so the compiler build
  * copies this file into the javacc output directory before generation (see
  * compiler/pom.xml) and the copy is what gets compiled. Local changes vs
- * the stock JavaCC 7.0 skeleton: the SpotBugs suppressions on addEscapes
- * and LexicalErr below. Everything else is stock.
+ * the stock JavaCC 7.0 skeleton: the SpotBugs suppression on LexicalErr
+ * below, and addEscapes caches the padded string's length in a local
+ * instead of calling length() twice. Everything else is stock.
  */
 @SuppressWarnings("all") 
 public class TokenMgrError extends Error
@@ -60,9 +61,6 @@ public class TokenMgrError extends Error
    * Replaces unprintable characters by their escaped (or unicode escaped)
    * equivalents in the given string
    */
-  @SuppressFBWarnings(value = "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS",
-      justification = "JavaCC skeleton escape builder: the repeated length() calls are on successive"
-          + " intermediate strings while zero-padding a hex escape, not redundant calls on one value")
   protected static final String addEscapes(String str) {
     StringBuilder retval = new StringBuilder();
     char ch;
@@ -96,7 +94,8 @@ public class TokenMgrError extends Error
         default:
           if ((ch = str.charAt(i)) < 0x20 || ch > 0x7e) {
             String s = "0000" + Integer.toString(ch, 16);
-            retval.append("\\u" + s.substring(s.length() - 4, s.length()));
+            int len = s.length();
+            retval.append("\\u" + s.substring(len - 4, len));
           } else {
             retval.append(ch);
           }

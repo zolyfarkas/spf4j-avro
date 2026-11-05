@@ -97,7 +97,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @SuppressFBWarnings(value = {"CC_CYCLOMATIC_COMPLEXITY", "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
     "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS", "STT_STRING_PARSING_A_FIELD",
     "BED_BOGUS_EXCEPTION_DECLARATION", "USBR_UNNECESSARY_STORE_BEFORE_RETURN",
-    "PSC_PRESIZE_COLLECTIONS", "OCP_OVERLY_CONCRETE_PARAMETER", "IMPROPER_UNICODE"},
+    "PSC_PRESIZE_COLLECTIONS", "IMPROPER_UNICODE"},
     justification = "findings in the parts of this class JavaCC generates from the grammar below,"
         + " which cannot carry annotations of their own: CC_CYCLOMATIC_COMPLEXITY - the ProtocolBody"
         + " and AnyIdentifier productions generate decision tables whose branch count is the grammar's;"
@@ -113,11 +113,10 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
         + " generates for productions that return a sub-production's result (Type, PrimitiveType,"
         + " ResultType); restructuring the expansions would change lookahead dispatch;"
         + " PSC_PRESIZE_COLLECTIONS - UnionDefinition's list is built incrementally from the input,"
-        + " whose member count is not known in advance; OCP_OVERLY_CONCRETE_PARAMETER - EnumConstant's"
-        + " List parameter is the production signature declared by this grammar;"
-        + " IMPROPER_UNICODE - VariableDeclarator case-maps the field-order keyword with"
-        + " java.util.Locale.ROOT explicitly, which is the locale-insensitive behavior the pattern"
-        + " exists to require; the detector flags the call form anyway")
+        + " whose member count is not known in advance; IMPROPER_UNICODE - VariableDeclarator matches"
+        + " the field-order keyword case-insensitively: the value space is the two ASCII Field.Order"
+        + " names and the conversion already pins java.util.Locale.ROOT; an equalsIgnoreCase rewrite"
+        + " was tried and the detector flags that form identically, so no source form clears it")
 public class Idl implements Closeable {
   static JsonNodeFactory FACTORY = JsonNodeFactory.instance;
   private static final String OPTIONAL_NULLABLE_TYPE_PROPERTY = "org.spf4j.avro.compiler.idl.Idl.NullableType.optional";
@@ -155,12 +154,11 @@ public class Idl implements Closeable {
     this.allowUndefinedLogicalTypes = allowUndefinedLogicalTypes;
   }
 
-  @SuppressFBWarnings(value = {"PATH_TRAVERSAL_IN", "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS"},
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
       justification = "the input file is named by the application invoking the IDL compiler; the caller is"
-          + " the trust boundary, and opening that file with a FileInputStream is this constructor's"
-          + " entire function")
+          + " the trust boundary")
   public Idl(File inputFile) throws IOException {
-    this(new FileInputStream(inputFile), "UTF-8");
+    this(java.nio.file.Files.newInputStream(inputFile.toPath()), "UTF-8");
     this.inputDir = inputFile.getParentFile().toURI();
   }
 
@@ -1270,7 +1268,7 @@ List<String> EnumBody():
   }
 }
 
-void EnumConstant(List<String> symbols):
+void EnumConstant(java.util.Collection<String> symbols):
 {
   String sym;
 }

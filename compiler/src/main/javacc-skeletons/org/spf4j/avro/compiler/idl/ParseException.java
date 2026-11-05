@@ -2,8 +2,6 @@
 /* JavaCCOptions:KEEP_LINE_COLUMN=true */
 package org.spf4j.avro.compiler.idl;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 /**
  * This exception is thrown when parse errors are encountered.
  * You can explicitly create objects of this exception type by
@@ -19,8 +17,9 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * copies this file into the javacc output directory before generation (see
  * compiler/pom.xml) and the copy is what gets compiled. Local changes vs
  * the stock JavaCC 7.0 skeleton: EOL is final (it is initialized once from
- * a system property and never reassigned), and the suppression on
- * add_escapes below. Everything else is stock.
+ * a system property and never reassigned), and add_escapes caches the
+ * padded string's length in a local instead of calling length() twice.
+ * Everything else is stock.
  */
 public class ParseException extends Exception {
 
@@ -159,9 +158,6 @@ public class ParseException extends Exception {
    * when these raw version cannot be used as part of an ASCII
    * string literal.
    */
-  @SuppressFBWarnings(value = "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS",
-      justification = "JavaCC skeleton escape builder: the repeated length() calls are on successive"
-          + " intermediate strings while zero-padding a hex escape, not redundant calls on one value")
   static String add_escapes(String str) {
       StringBuilder retval = new StringBuilder();
       char ch;
@@ -195,7 +191,8 @@ public class ParseException extends Exception {
            default:
               if ((ch = str.charAt(i)) < 0x20 || ch > 0x7e) {
                  String s = "0000" + Integer.toString(ch, 16);
-                 retval.append("\\u" + s.substring(s.length() - 4, s.length()));
+                 int len = s.length();
+                 retval.append("\\u" + s.substring(len - 4, len));
               } else {
                  retval.append(ch);
               }
