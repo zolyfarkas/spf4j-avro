@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.lang.reflect.Constructor;
 
@@ -111,11 +112,18 @@ abstract public class SpecificErrorBuilderBase<T extends SpecificExceptionBase> 
     return this;
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+          + "and datum objects are shared carriers by design, not defensive-copy value objects")
   @Override
   public Throwable getCause() {
     return cause;
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + "schemas and configuration objects instead of defensively copying them on construction and"
+          + "configuration paths")
   @Override
   public SpecificErrorBuilderBase<T> setCause(Throwable cause) {
     this.cause = cause;

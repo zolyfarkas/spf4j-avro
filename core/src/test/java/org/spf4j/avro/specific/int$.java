@@ -4,6 +4,7 @@
  * DO NOT EDIT DIRECTLY
  */
 package org.spf4j.avro.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
 import org.spf4j.avro.JsonSchemaParser;
@@ -42,6 +43,9 @@ public class int$ extends SpecificRecordBase implements SpecificRecord {
    *
    * @return the message decoder used by this class
    */
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "returns the record class's shared datum reader; the reader is configuration-only"
+          + " and shared by all instances of the generated record by design")
   public static BinaryMessageDecoder<int$> getDecoder() {
     return DECODER;
   }
@@ -80,6 +84,10 @@ public class int$ extends SpecificRecordBase implements SpecificRecord {
     return DECODER.decode(b);
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the returned object is this instance's live model/state, exposed deliberately:"
+          + " Avro's model and datum objects are shared carriers by design, not defensive-copy"
+          + " value objects")
   public SpecificData getSpecificData() {
     return MODEL$;
   }

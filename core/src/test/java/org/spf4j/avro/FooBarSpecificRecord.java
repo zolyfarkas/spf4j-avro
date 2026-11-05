@@ -20,6 +20,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.message.BinaryMessageDecoder;
 import org.spf4j.avro.message.BinaryMessageEncoder;
@@ -48,6 +49,9 @@ public class FooBarSpecificRecord extends org.spf4j.avro.specific.SpecificRecord
    *
    * @return the message decoder used by this class
    */
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "returns the record class's shared datum reader; the reader is configuration-only and shared"
+          + "by all instances of the generated record by design")
   public static BinaryMessageDecoder<FooBarSpecificRecord> getDecoder() {
     return DECODER;
   }
@@ -305,6 +309,23 @@ public class FooBarSpecificRecord extends org.spf4j.avro.specific.SpecificRecord
   /**
    * RecordBuilder for FooBarSpecificRecord instances.
    */
+  @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
+      justification = "CLI_CONSTANT_LIST_INDEX: checked-in output of the specific compiler: builder field access is"
+          + "by schema-fixed constant index (fields()[N]) because a record's field positions are fixed by"
+          + "its schema; the idiom comes from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in"
+          + "output of the specific compiler: builder field access is by schema-fixed constant index"
+          + "(fields()[N]) because a record's field positions are fixed by its schema; the idiom comes"
+          + "from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in output of the specific"
+          + "compiler: builder field access is by schema-fixed constant index (fields()[N]) because a"
+          + "record's field positions are fixed by its schema; the idiom comes from the codegen template;"
+          + "CLI_CONSTANT_LIST_INDEX: checked-in output of the specific compiler: builder field access is"
+          + "by schema-fixed constant index (fields()[N]) because a record's field positions are fixed by"
+          + "its schema; the idiom comes from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in"
+          + "output of the specific compiler: builder field access is by schema-fixed constant index"
+          + "(fields()[N]) because a record's field positions are fixed by its schema; the idiom comes"
+          + "from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in output of the specific"
+          + "compiler: builder field access is by schema-fixed constant index (fields()[N]) because a"
+          + "record's field positions are fixed by its schema; the idiom comes from the codegen template")
   public static class Builder extends org.spf4j.avro.specific.SpecificRecordBuilderBase<FooBarSpecificRecord>
       implements org.spf4j.avro.data.RecordBuilder<FooBarSpecificRecord> {
 
@@ -465,6 +486,9 @@ public class FooBarSpecificRecord extends org.spf4j.avro.specific.SpecificRecord
      *
      * @return The value.
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     public java.util.List<java.lang.String> getNicknames() {
       return nicknames;
     }
@@ -475,6 +499,10 @@ public class FooBarSpecificRecord extends org.spf4j.avro.specific.SpecificRecord
      * @param value The value of 'nicknames'.
      * @return This builder.
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+            + "schemas and configuration objects instead of defensively copying them on construction and"
+            + "configuration paths")
     public org.spf4j.avro.FooBarSpecificRecord.Builder setNicknames(java.util.List<java.lang.String> value) {
       validate(fields()[2], value);
       this.nicknames = value;
@@ -507,6 +535,9 @@ public class FooBarSpecificRecord extends org.spf4j.avro.specific.SpecificRecord
      *
      * @return The value.
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     public java.util.List<java.lang.Integer> getRelatedids() {
       return relatedids;
     }
@@ -517,6 +548,10 @@ public class FooBarSpecificRecord extends org.spf4j.avro.specific.SpecificRecord
      * @param value The value of 'relatedids'.
      * @return This builder.
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+            + "schemas and configuration objects instead of defensively copying them on construction and"
+            + "configuration paths")
     public org.spf4j.avro.FooBarSpecificRecord.Builder setRelatedids(java.util.List<java.lang.Integer> value) {
       validate(fields()[3], value);
       this.relatedids = value;

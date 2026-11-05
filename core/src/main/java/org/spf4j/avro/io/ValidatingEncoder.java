@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -64,6 +65,10 @@ public class ValidatingEncoder extends ParsingEncoder implements Parser.ActionHa
    * @param encoder The Encoder to wrap for validation.
    * @return This ValidatingEncoder.
    */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + "schemas and configuration objects instead of defensively copying them on construction and"
+          + "configuration paths")
   public ValidatingEncoder configure(Encoder encoder) {
     this.parser.reset();
     this.out = encoder;

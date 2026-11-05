@@ -4,6 +4,7 @@
  * DO NOT EDIT DIRECTLY
  */
 package org.spf4j.avro.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.nio.ByteBuffer;
 
@@ -61,6 +62,10 @@ public class TestRecordWithoutLogicalTypes extends org.spf4j.avro.specific.Speci
   /**
    * All-args constructor.
    */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + "schemas and configuration objects instead of defensively copying them on construction and"
+          + "configuration paths")
   public TestRecordWithoutLogicalTypes(java.lang.Boolean b, java.lang.Integer i32, java.lang.Long i64,
       java.lang.Float f32, java.lang.Double f64, java.lang.String s, java.lang.Integer d, java.lang.Integer t,
       java.lang.Long ts, java.nio.ByteBuffer dec) {
@@ -81,6 +86,9 @@ public class TestRecordWithoutLogicalTypes extends org.spf4j.avro.specific.Speci
   }
 
   // Used by DatumWriter. Applications should not call.
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+          + "and datum objects are shared carriers by design, not defensive-copy value objects")
   public java.lang.Object get(int field$) {
     switch (field$) {
     case 0:
@@ -109,6 +117,10 @@ public class TestRecordWithoutLogicalTypes extends org.spf4j.avro.specific.Speci
   }
 
   // Used by DatumReader. Applications should not call.
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + "schemas and configuration objects instead of defensively copying them on construction and"
+          + "configuration paths")
   @SuppressWarnings(value = "unchecked")
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
@@ -213,6 +225,9 @@ public class TestRecordWithoutLogicalTypes extends org.spf4j.avro.specific.Speci
   /**
    * Gets the value of the 'ts' field.
    */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+          + "and datum objects are shared carriers by design, not defensive-copy value objects")
   public java.nio.ByteBuffer getDec() {
     return dec;
   }
@@ -241,6 +256,26 @@ public class TestRecordWithoutLogicalTypes extends org.spf4j.avro.specific.Speci
   /**
    * RecordBuilder for TestRecordWithoutLogicalTypes instances.
    */
+  @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
+      justification = "CLI_CONSTANT_LIST_INDEX: checked-in output of the specific compiler: builder field access is"
+          + "by schema-fixed constant index (fields()[N]) because a record's field positions are fixed by"
+          + "its schema; the idiom comes from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in"
+          + "output of the specific compiler: builder field access is by schema-fixed constant index"
+          + "(fields()[N]) because a record's field positions are fixed by its schema; the idiom comes"
+          + "from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in output of the specific"
+          + "compiler: builder field access is by schema-fixed constant index (fields()[N]) because a"
+          + "record's field positions are fixed by its schema; the idiom comes from the codegen template;"
+          + "CLI_CONSTANT_LIST_INDEX: checked-in output of the specific compiler: builder field access is"
+          + "by schema-fixed constant index (fields()[N]) because a record's field positions are fixed by"
+          + "its schema; the idiom comes from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in"
+          + "output of the specific compiler: builder field access is by schema-fixed constant index"
+          + "(fields()[N]) because a record's field positions are fixed by its schema; the idiom comes"
+          + "from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in output of the specific"
+          + "compiler: builder field access is by schema-fixed constant index (fields()[N]) because a"
+          + "record's field positions are fixed by its schema; the idiom comes from the codegen template;"
+          + "CLI_CONSTANT_LIST_INDEX: checked-in output of the specific compiler: builder field access is"
+          + "by schema-fixed constant index (fields()[N]) because a record's field positions are fixed by"
+          + "its schema; the idiom comes from the codegen template")
   public static class Builder extends org.spf4j.avro.specific.SpecificRecordBuilderBase<TestRecordWithoutLogicalTypes>
       implements org.spf4j.avro.data.RecordBuilder<TestRecordWithoutLogicalTypes> {
 
@@ -571,11 +606,18 @@ public class TestRecordWithoutLogicalTypes extends org.spf4j.avro.specific.Speci
     }
 
     /** Gedec the value of the 'dec' field */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     public java.nio.ByteBuffer getDec() {
       return dec;
     }
 
     /** Sedec the value of the 'dec' field */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+            + "schemas and configuration objects instead of defensively copying them on construction and"
+            + "configuration paths")
     public TestRecordWithoutLogicalTypes.Builder setDec(java.nio.ByteBuffer value) {
       validate(fields()[9], value);
       this.dec = value;

@@ -65,9 +65,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestSpecificData {
 
-  @SuppressFBWarnings(value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
+  @SuppressFBWarnings(value = {"INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE", "DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED"},
       justification = "test harness: printing the failure stack trace to the console is how this test driver"
-          + "reports errors; nothing is exposed to a remote party")
+          + "reports errors; nothing is exposed to a remote party;"
+          + "DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED: the test deliberately exercises"
+          + "context-classloader handling; creating the classloader is the behavior under test")
   @Test
   void separateThreadContextClassLoader() throws Exception {
     Schema schema = new SchemaParser().parse(new File("src/test/resources/foo.Bar.avsc")).mainSchema();

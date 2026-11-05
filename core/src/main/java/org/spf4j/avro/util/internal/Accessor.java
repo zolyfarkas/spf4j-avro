@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.util.internal;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 
@@ -59,6 +60,9 @@ public class Accessor {
 
   private static volatile ResolvingGrammarGeneratorAccessor resolvingGrammarGeneratorAccessor;
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_STATIC_REP2",
+      justification = "the accessor registry is an explicit extension point: setAccessor adopts the implementation"
+          + "the embedding application installs")
   public static void setAccessor(JsonPropertiesAccessor accessor) {
     if (jsonPropertiesAccessor != null)
       throw new IllegalStateException("JsonPropertiesAccessor already initialized");

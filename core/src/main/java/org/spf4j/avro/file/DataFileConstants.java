@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro.file;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Constants used in data files.
@@ -26,6 +27,9 @@ public class DataFileConstants {
   } // no public ctor
 
   public static final byte VERSION = 1;
+  @SuppressFBWarnings(value = "MS_MUTABLE_ARRAY",
+      justification = "the magic header bytes are a published constant of the container file format; the array is"
+          + "part of the public API and existing callers read it directly")
   public static final byte[] MAGIC = new byte[] { (byte) 'O', (byte) 'b', (byte) 'j', VERSION };
   public static final int SYNC_SIZE = 16;
   public static final int DEFAULT_SYNC_INTERVAL = 4000 * SYNC_SIZE;

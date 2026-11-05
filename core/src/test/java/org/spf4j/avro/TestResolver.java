@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -73,6 +74,9 @@ class TestResolver {
     Assertions.assertNotNull(promoteAction.logicalType);
   }
 
+  @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
+      justification = "positional access into a fixed-order list (schema fields or invocation arguments) whose"
+          + "layout is established by the surrounding code; the constant index names the slot")
   @Test
   void resolveEnum() throws IOException {
     final Schema writeSchema = Schema.createEnum("myEnum", "", "n1", Arrays.asList("e1", "e3", "e4"));

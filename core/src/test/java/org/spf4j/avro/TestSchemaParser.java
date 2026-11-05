@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.security.SecureRandom;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -121,6 +122,9 @@ class TestSchemaParser {
     assertEquals(0, parseException.getSuppressed().length);
   }
 
+  @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
+      justification = "positional access into a fixed-order list (schema fields or invocation arguments) whose"
+          + "layout is established by the surrounding code; the constant index names the slot")
   @Test
   void testMultipleParseErrors() {
     SchemaParseException parseException = assertThrows(SchemaParseException.class,

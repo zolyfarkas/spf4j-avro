@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro.reflect;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -290,10 +291,17 @@ public class TestReflectDatumReader {
       this.id = id;
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     public List<Integer> getRelatedIds() {
       return relatedIds;
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+            + "schemas and configuration objects instead of defensively copying them on construction and"
+            + "configuration paths")
     public void setRelatedIds(List<Integer> relatedIds) {
       this.relatedIds = relatedIds;
     }
@@ -337,10 +345,17 @@ public class TestReflectDatumReader {
       this.id = id;
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     public int[] getRelatedIds() {
       return relatedIds;
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+            + "schemas and configuration objects instead of defensively copying them on construction and"
+            + "configuration paths")
     public void setRelatedIds(int[] relatedIds) {
       this.relatedIds = relatedIds;
     }
@@ -381,10 +396,17 @@ public class TestReflectDatumReader {
       this.id = id;
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     public Set<Integer> getRelatedIds() {
       return relatedIds;
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+            + "schemas and configuration objects instead of defensively copying them on construction and"
+            + "configuration paths")
     public void setRelatedIds(Set<Integer> relatedIds) {
       this.relatedIds = relatedIds;
     }
@@ -428,10 +450,17 @@ public class TestReflectDatumReader {
       this.id = id;
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     public Map<Integer, Integer> getRelatedIds() {
       return relatedIds;
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+            + "schemas and configuration objects instead of defensively copying them on construction and"
+            + "configuration paths")
     public void setRelatedIds(Map<Integer, Integer> relatedIds) {
       this.relatedIds = relatedIds;
     }

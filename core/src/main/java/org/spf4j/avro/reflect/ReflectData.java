@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.reflect;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.AvroRuntimeException;
 import org.spf4j.avro.AvroTypeException;
@@ -91,6 +92,9 @@ public class ReflectData extends SpecificData {
     private static final AllowNull INSTANCE = new AllowNull();
 
     /** Return the singleton instance. */
+    @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+        justification = "returns the shared default model instance; the configurable datum-model singleton is the"
+            + "documented access pattern")
     public static AllowNull get() {
       return INSTANCE;
     }
@@ -123,6 +127,9 @@ public class ReflectData extends SpecificData {
   }
 
   /** Return the singleton instance. */
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "returns the shared default model instance; the configurable datum-model singleton is the"
+          + "documented access pattern")
   public static ReflectData get() {
     return INSTANCE;
   }
@@ -621,6 +628,9 @@ public class ReflectData extends SpecificData {
     return defaultValue;
   }
 
+  @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
+      justification = "positional access into a fixed-order list (schema fields or invocation arguments) whose"
+          + "layout is established by the surrounding code; the constant index names the slot")
   @Override
   protected Schema createSchema(Type type, Map<String, Schema> names) {
     if (type instanceof GenericArrayType) { // generic array

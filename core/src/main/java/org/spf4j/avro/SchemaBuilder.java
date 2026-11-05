@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.nio.Buffer;
@@ -853,6 +854,10 @@ public class SchemaBuilder {
     private final Completion<R> context;
     private final NameContext names;
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+            + "schemas and configuration objects instead of defensively copying them on construction and"
+            + "configuration paths")
     public ArrayBuilder(Completion<R> context, NameContext names) {
       this.context = context;
       this.names = names;

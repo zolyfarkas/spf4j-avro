@@ -17,12 +17,17 @@
  */
 
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /** Thrown when the expected contents of a union cannot be resolved. */
 public class UnresolvedUnionException extends AvroRuntimeException {
   private Object unresolvedDatum;
   private Schema unionSchema;
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + "schemas and configuration objects instead of defensively copying them on construction and"
+          + "configuration paths")
   public UnresolvedUnionException(Schema unionSchema, Object unresolvedDatum) {
     super("Not in union " + unionSchema + ": " + datumTypeDescription(unresolvedDatum));
     this.unionSchema = unionSchema;
@@ -40,6 +45,9 @@ public class UnresolvedUnionException extends AvroRuntimeException {
     return unresolvedDatum;
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+          + "and datum objects are shared carriers by design, not defensive-copy value objects")
   public Schema getUnionSchema() {
     return unionSchema;
   }

@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.generic;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -69,10 +70,17 @@ public class GenericDatumWriter<D> implements DatumWriter<D> {
   }
 
   /** Return the {@link GenericData} implementation. */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+          + "and datum objects are shared carriers by design, not defensive-copy value objects")
   public GenericData getData() {
     return data;
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + "schemas and configuration objects instead of defensively copying them on construction and"
+          + "configuration paths")
   public void setSchema(Schema root) {
     this.root = root;
   }

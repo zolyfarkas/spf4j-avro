@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io.parsing;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -75,6 +76,9 @@ public class TestResolvingGrammarGenerator2 {
     });
   }
 
+  @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
+      justification = "positional access into a fixed-order list (schema fields or invocation arguments) whose"
+          + "layout is established by the surrounding code; the constant index names the slot")
   @Test
   void unionResolutionFirstStructureMatch2d() throws Exception {
     // multiple structure matches with no short or full name matches
@@ -88,6 +92,9 @@ public class TestResolvingGrammarGenerator2 {
     assertEquals(2, action.rindex);
   }
 
+  @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
+      justification = "positional access into a fixed-order list (schema fields or invocation arguments) whose"
+          + "layout is established by the surrounding code; the constant index names the slot")
   @Test
   void unionResolutionFirstStructureMatch3d() throws Exception {
     // multiple structure matches with no short or full name matches
@@ -101,6 +108,9 @@ public class TestResolvingGrammarGenerator2 {
     assertEquals(2, action.rindex);
   }
 
+  @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
+      justification = "positional access into a fixed-order list (schema fields or invocation arguments) whose"
+          + "layout is established by the surrounding code; the constant index names the slot")
   @Test
   void unionResolutionNamedStructureMatch() throws Exception {
     // multiple structure matches with a short name match
@@ -114,6 +124,9 @@ public class TestResolvingGrammarGenerator2 {
     assertEquals(2, action.rindex);
   }
 
+  @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
+      justification = "positional access into a fixed-order list (schema fields or invocation arguments) whose"
+          + "layout is established by the surrounding code; the constant index names the slot")
   @Test
   void unionResolutionFullNameMatch() throws Exception {
     // there is a full name match, so it should be chosen

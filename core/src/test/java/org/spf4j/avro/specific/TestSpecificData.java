@@ -133,6 +133,9 @@ public class TestSpecificData {
       throw new RuntimeException();
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     @Override
     public Schema getSchema() {
       return SCHEMA;

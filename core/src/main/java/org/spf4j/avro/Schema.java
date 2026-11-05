@@ -216,6 +216,9 @@ public abstract class Schema extends JsonProperties implements Serializable {
     hashCode = NO_HASHCODE;
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+          + "and datum objects are shared carriers by design, not defensive-copy value objects")
   public LogicalType getLogicalType() {
     return logicalType;
   }
@@ -747,6 +750,9 @@ public abstract class Schema extends JsonProperties implements Serializable {
     }
 
     /** This field's {@link Schema}. */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     public Schema schema() {
       return schema;
     }
@@ -1634,6 +1640,10 @@ public abstract class Schema extends JsonProperties implements Serializable {
       context = new ParseContext(this.validate);
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+            + "schemas and configuration objects instead of defensively copying them on construction and"
+            + "configuration paths")
     public Parser(final ParseContext context) {
       this.validate = context.nameValidator;
       this.context = context;

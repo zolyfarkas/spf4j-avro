@@ -106,6 +106,9 @@ public class Protocol extends JsonProperties {
     }
 
     /** The parameters of this message. */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     public Schema getRequest() {
       return request;
     }
@@ -339,6 +342,9 @@ public class Protocol extends JsonProperties {
   }
 
   /** The messages of this protocol. */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+          + "and datum objects are shared carriers by design, not defensive-copy value objects")
   public Map<String, Message> getMessages() {
     return messages;
   }
@@ -462,10 +468,12 @@ public class Protocol extends JsonProperties {
   }
 
   /** Return the MD5 hash of the text of this protocol. */
-  @SuppressFBWarnings(value = "WEAK_MESSAGE_DIGEST_MD5",
+  @SuppressFBWarnings(value = {"WEAK_MESSAGE_DIGEST_MD5", "EI_EXPOSE_REP"},
       justification = "MD5 is the protocol fingerprint the Avro specification defines for the RPC handshake and it"
           + "is compared against the peer's value; it is an interoperability checksum, not a security"
-          + "control, and changing the digest would break wire compatibility")
+          + "control, and changing the digest would break wire compatibility; EI_EXPOSE_REP: the returned"
+          + "object is this instance's live model/state, exposed deliberately: Avro's model and datum"
+          + "objects are shared carriers by design, not defensive-copy value objects")
   public byte[] getMD5() {
     if (md5 == null)
       try {

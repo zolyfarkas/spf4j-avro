@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.file;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.AvroRuntimeException;
 import org.spf4j.avro.Schema;
@@ -81,6 +82,10 @@ public class DataFileWriter<D> implements Closeable, Flushable {
   private boolean flushOnEveryBlock = true;
 
   /** Construct a writer, not yet open. */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + "schemas and configuration objects instead of defensively copying them on construction and"
+          + "configuration paths")
   public DataFileWriter(DatumWriter<D> dout) {
     this.dout = dout;
   }
@@ -158,6 +163,10 @@ public class DataFileWriter<D> implements Closeable, Flushable {
   }
 
   /** Open a new file for data matching a schema with an explicit sync. */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + "schemas and configuration objects instead of defensively copying them on construction and"
+          + "configuration paths")
   public DataFileWriter<D> create(Schema schema, OutputStream outs, byte[] sync) throws IOException {
     assertNotOpen();
 

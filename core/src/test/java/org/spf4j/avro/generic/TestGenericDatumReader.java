@@ -521,6 +521,9 @@ public class TestGenericDatumReader {
    * carry a >=1-byte key so they fall in the latter group regardless of the value
    * type.
    */
+  @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
+      justification = "positional access into a fixed-order list (schema fields or invocation arguments) whose"
+          + "layout is established by the surrounding code; the constant index names the slot")
   @Test
   void hugeCollectionsRejectedOnBothReaderPaths() throws Exception {
     // element/value type -> expected exception when the count is huge and no data

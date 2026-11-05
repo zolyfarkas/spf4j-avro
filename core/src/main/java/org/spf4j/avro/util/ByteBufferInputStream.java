@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro.util;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +29,10 @@ public class ByteBufferInputStream extends InputStream {
   private final List<ByteBuffer> buffers;
   private int current;
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + "schemas and configuration objects instead of defensively copying them on construction and"
+          + "configuration paths")
   public ByteBufferInputStream(List<ByteBuffer> buffers) {
     this.buffers = buffers;
   }

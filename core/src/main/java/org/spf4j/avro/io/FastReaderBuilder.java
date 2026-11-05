@@ -13,6 +13,7 @@
  * the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -87,6 +88,10 @@ public class FastReaderBuilder {
     return data.getClass() == GenericData.class || data.getClass() == SpecificData.class;
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + "schemas and configuration objects instead of defensively copying them on construction and"
+          + "configuration paths")
   public FastReaderBuilder(GenericData parentData) {
     this.data = parentData;
   }
@@ -634,6 +639,10 @@ public class FastReaderBuilder {
       this.stage = Stage.INITIALIZING;
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+            + "schemas and configuration objects instead of defensively copying them on construction and"
+            + "configuration paths")
     public void finishInitialization(ExecutionStep[] readSteps, Schema schema, InstanceSupplier supp) {
       this.readSteps = readSteps;
       this.schema = schema;
@@ -661,6 +670,10 @@ public class FastReaderBuilder {
     private final FieldReader keyReader;
     private final FieldReader valueReader;
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+            + "schemas and configuration objects instead of defensively copying them on construction and"
+            + "configuration paths")
     public MapReader(FieldReader keyReader, FieldReader valueReader) {
       this.keyReader = keyReader;
       this.valueReader = valueReader;

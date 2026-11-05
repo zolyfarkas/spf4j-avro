@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro.util;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -40,6 +41,9 @@ public class ByteBufferOutputStream extends OutputStream {
   }
 
   /** Returns all data written and resets the stream to be empty. */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+          + "and datum objects are shared carriers by design, not defensive-copy value objects")
   public List<ByteBuffer> getBufferList() {
     List<ByteBuffer> result = buffers;
     reset();

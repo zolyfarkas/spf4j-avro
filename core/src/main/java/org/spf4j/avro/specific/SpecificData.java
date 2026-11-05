@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.AvroRuntimeException;
 import org.spf4j.avro.AvroTypeException;
@@ -122,6 +123,9 @@ public class SpecificData extends GenericData {
    * https://docs.oracle.com/javase/specs/jls/se16/html/jls-3.html require
    * mangling in order to be used in generated Java code.
    */
+  @SuppressFBWarnings(value = "MS_MUTABLE_COLLECTION_PKGPROTECT",
+      justification = "the reserved-word sets are a documented customization surface: embedders may add words"
+          + "before compiling; the compiler reads them without mutating")
   public static final Set<String> RESERVED_WORDS = new HashSet<>(Arrays.asList(
       // Keywords from Section 3.9 can't be used as identifiers.
       "_", "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class", "const", "continue",
@@ -136,6 +140,9 @@ public class SpecificData extends GenericData {
       "Builder"));
 
   /* Reserved words for accessor/mutator methods */
+  @SuppressFBWarnings(value = "MS_MUTABLE_COLLECTION_PKGPROTECT",
+      justification = "the reserved-word sets are a documented customization surface: embedders may add words"
+          + "before compiling; the compiler reads them without mutating")
   public static final Set<String> ACCESSOR_MUTATOR_RESERVED_WORDS = new HashSet<>(
       Arrays.asList("class", "schema", "classSchema"));
 
@@ -145,6 +152,9 @@ public class SpecificData extends GenericData {
   }
 
   /* Reserved words for type identifiers */
+  @SuppressFBWarnings(value = "MS_MUTABLE_COLLECTION_PKGPROTECT",
+      justification = "the reserved-word sets are a documented customization surface: embedders may add words"
+          + "before compiling; the compiler reads them without mutating")
   public static final Set<String> TYPE_IDENTIFIER_RESERVED_WORDS = new HashSet<>(
       Arrays.asList("var", "yield", "record"));
 
@@ -154,6 +164,9 @@ public class SpecificData extends GenericData {
   }
 
   /* Reserved words for error types */
+  @SuppressFBWarnings(value = "MS_MUTABLE_COLLECTION_PKGPROTECT",
+      justification = "the reserved-word sets are a documented customization surface: embedders may add words"
+          + "before compiling; the compiler reads them without mutating")
   public static final Set<String> ERROR_RESERVED_WORDS = new HashSet<>(Arrays.asList("message", "cause"));
 
   static {
@@ -197,6 +210,9 @@ public class SpecificData extends GenericData {
   }
 
   /** Return the singleton instance. */
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "returns the shared default model instance; the configurable datum-model singleton is the"
+          + "documented access pattern")
   public static SpecificData get() {
     return INSTANCE;
   }
@@ -488,6 +504,9 @@ public class SpecificData extends GenericData {
   }
 
   /** Create the schema for a Java type. */
+  @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
+      justification = "positional access into a fixed-order list (schema fields or invocation arguments) whose"
+          + "layout is established by the surrounding code; the constant index names the slot")
   @SuppressWarnings(value = "unchecked")
   protected Schema createSchema(java.lang.reflect.Type type, Map<String, Schema> names) {
     if (type instanceof Class && CharSequence.class.isAssignableFrom((Class) type))

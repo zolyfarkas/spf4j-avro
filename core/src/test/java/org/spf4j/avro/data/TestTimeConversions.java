@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro.data;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -40,11 +41,23 @@ import org.junit.jupiter.api.Test;
 
 public class TestTimeConversions {
 
+  @SuppressFBWarnings(value = "MS_PKGPROTECT",
+      justification = "test fixture schemas, initialized once in class setup and shared by the test methods")
   public static Schema DATE_SCHEMA;
+  @SuppressFBWarnings(value = "MS_PKGPROTECT",
+      justification = "test fixture schemas, initialized once in class setup and shared by the test methods")
   public static Schema TIME_MILLIS_SCHEMA;
+  @SuppressFBWarnings(value = "MS_PKGPROTECT",
+      justification = "test fixture schemas, initialized once in class setup and shared by the test methods")
   public static Schema TIME_MICROS_SCHEMA;
+  @SuppressFBWarnings(value = "MS_PKGPROTECT",
+      justification = "test fixture schemas, initialized once in class setup and shared by the test methods")
   public static Schema TIMESTAMP_MILLIS_SCHEMA;
+  @SuppressFBWarnings(value = "MS_PKGPROTECT",
+      justification = "test fixture schemas, initialized once in class setup and shared by the test methods")
   public static Schema TIMESTAMP_MICROS_SCHEMA;
+  @SuppressFBWarnings(value = "MS_PKGPROTECT",
+      justification = "test fixture schemas, initialized once in class setup and shared by the test methods")
   public static Schema TIMESTAMP_NANOS_SCHEMA;
 
   @BeforeAll

@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -593,6 +594,9 @@ public class SchemaCompatibility {
      * @return a list of {@link Incompatibility Incompatibilities}, may be empty,
      *         never null.
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     public List<Incompatibility> getIncompatibilities() {
       return mIncompatibilities;
     }
@@ -665,6 +669,9 @@ public class SchemaCompatibility {
      *
      * @return a Schema instance (fragment of the reader schema).
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     public Schema getReaderFragment() {
       return mReaderFragment;
     }
@@ -674,6 +681,9 @@ public class SchemaCompatibility {
      *
      * @return a Schema instance (fragment of the writer schema).
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     public Schema getWriterFragment() {
       return mWriterFragment;
     }
@@ -806,6 +816,10 @@ public class SchemaCompatibility {
      * @param writer      schema that was validated.
      * @param description of this compatibility result.
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+            + "schemas and configuration objects instead of defensively copying them on construction and"
+            + "configuration paths")
     public SchemaPairCompatibility(SchemaCompatibilityResult result, Schema reader, Schema writer, String description) {
       mResult = result;
       mReader = reader;
@@ -837,6 +851,9 @@ public class SchemaCompatibility {
      *
      * @return reader schema that was validated.
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     public Schema getReader() {
       return mReader;
     }
@@ -846,6 +863,9 @@ public class SchemaCompatibility {
      *
      * @return writer schema that was validated.
      */
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     public Schema getWriter() {
       return mWriter;
     }

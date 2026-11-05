@@ -93,6 +93,10 @@ public class TestValidatingIO {
     private final char[] chars;
     private int cpos = 0;
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+            + "schemas and configuration objects instead of defensively copying them on construction and"
+            + "configuration paths")
     public InputScanner(char[] chars) {
       this.chars = chars;
     }

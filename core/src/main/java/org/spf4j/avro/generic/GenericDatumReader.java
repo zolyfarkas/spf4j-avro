@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.generic;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -72,6 +73,10 @@ public class GenericDatumReader<D> implements DatumReader<D> {
     this(writer, reader, GenericData.get());
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + "schemas and configuration objects instead of defensively copying them on construction and"
+          + "configuration paths")
   public GenericDatumReader(Schema writer, Schema reader, GenericData data) {
     this(data);
     this.actual = writer;
@@ -84,15 +89,25 @@ public class GenericDatumReader<D> implements DatumReader<D> {
   }
 
   /** Return the {@link GenericData} implementation. */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+          + "and datum objects are shared carriers by design, not defensive-copy value objects")
   public GenericData getData() {
     return data;
   }
 
   /** Return the writer's schema. */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+          + "and datum objects are shared carriers by design, not defensive-copy value objects")
   public Schema getSchema() {
     return actual;
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + "schemas and configuration objects instead of defensively copying them on construction and"
+          + "configuration paths")
   @Override
   public void setSchema(Schema writer) {
     this.actual = writer;
@@ -104,11 +119,18 @@ public class GenericDatumReader<D> implements DatumReader<D> {
   }
 
   /** Get the reader's schema. */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+          + "and datum objects are shared carriers by design, not defensive-copy value objects")
   public Schema getExpected() {
     return expected;
   }
 
   /** Set the reader's schema. */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + "schemas and configuration objects instead of defensively copying them on construction and"
+          + "configuration paths")
   public void setExpected(Schema reader) {
     this.expected = reader;
     creatorResolver = null;

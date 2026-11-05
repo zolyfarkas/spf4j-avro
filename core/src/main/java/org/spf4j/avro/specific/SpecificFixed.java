@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.Externalizable;
 import java.io.ObjectOutput;
@@ -39,10 +40,16 @@ public abstract class SpecificFixed implements GenericFixed, Comparable<Specific
     bytes(bytes);
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "Fixed.bytes() returns the backing array by design; the zero-copy contract is documented and"
+          + "callers must not modify the returned bytes")
   public void bytes(byte[] bytes) {
     this.bytes = bytes;
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "Fixed.bytes() returns the backing array by design; the zero-copy contract is documented and"
+          + "callers must not modify the returned bytes")
   @Override
   public byte[] bytes() {
     return bytes;

@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -282,72 +283,96 @@ public class LogicalTypes {
   private static final BigDecimal BIG_DECIMAL_TYPE = new BigDecimal();
 
   /** Create a Big Decimal LogicalType that can accept any precision and scale */
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "the logical-type singletons are stateless and expose no mutators; sharing them is the design")
   public static BigDecimal bigDecimal() {
     return BIG_DECIMAL_TYPE;
   }
 
   private static final LogicalType UUID_TYPE = new Uuid();
 
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "the logical-type singletons are stateless and expose no mutators; sharing them is the design")
   public static LogicalType uuid() {
     return UUID_TYPE;
   }
 
   private static final LogicalType DURATION_TYPE = new Duration();
 
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "the logical-type singletons are stateless and expose no mutators; sharing them is the design")
   public static LogicalType duration() {
     return DURATION_TYPE;
   }
 
   private static final Date DATE_TYPE = new Date();
 
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "the logical-type singletons are stateless and expose no mutators; sharing them is the design")
   public static Date date() {
     return DATE_TYPE;
   }
 
   private static final TimeMillis TIME_MILLIS_TYPE = new TimeMillis();
 
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "the logical-type singletons are stateless and expose no mutators; sharing them is the design")
   public static TimeMillis timeMillis() {
     return TIME_MILLIS_TYPE;
   }
 
   private static final TimeMicros TIME_MICROS_TYPE = new TimeMicros();
 
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "the logical-type singletons are stateless and expose no mutators; sharing them is the design")
   public static TimeMicros timeMicros() {
     return TIME_MICROS_TYPE;
   }
 
   private static final TimestampMillis TIMESTAMP_MILLIS_TYPE = new TimestampMillis();
 
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "the logical-type singletons are stateless and expose no mutators; sharing them is the design")
   public static TimestampMillis timestampMillis() {
     return TIMESTAMP_MILLIS_TYPE;
   }
 
   private static final TimestampMicros TIMESTAMP_MICROS_TYPE = new TimestampMicros();
 
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "the logical-type singletons are stateless and expose no mutators; sharing them is the design")
   public static TimestampMicros timestampMicros() {
     return TIMESTAMP_MICROS_TYPE;
   }
 
   private static final TimestampNanos TIMESTAMP_NANOS_TYPE = new TimestampNanos();
 
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "the logical-type singletons are stateless and expose no mutators; sharing them is the design")
   public static TimestampNanos timestampNanos() {
     return TIMESTAMP_NANOS_TYPE;
   }
 
   private static final LocalTimestampMillis LOCAL_TIMESTAMP_MILLIS_TYPE = new LocalTimestampMillis();
 
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "the logical-type singletons are stateless and expose no mutators; sharing them is the design")
   public static LocalTimestampMillis localTimestampMillis() {
     return LOCAL_TIMESTAMP_MILLIS_TYPE;
   }
 
   private static final LocalTimestampMicros LOCAL_TIMESTAMP_MICROS_TYPE = new LocalTimestampMicros();
 
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "the logical-type singletons are stateless and expose no mutators; sharing them is the design")
   public static LocalTimestampMicros localTimestampMicros() {
     return LOCAL_TIMESTAMP_MICROS_TYPE;
   }
 
   private static final LocalTimestampNanos LOCAL_TIMESTAMP_NANOS_TYPE = new LocalTimestampNanos();
 
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "the logical-type singletons are stateless and expose no mutators; sharing them is the design")
   public static LocalTimestampNanos localTimestampNanos() {
     return LOCAL_TIMESTAMP_NANOS_TYPE;
   }

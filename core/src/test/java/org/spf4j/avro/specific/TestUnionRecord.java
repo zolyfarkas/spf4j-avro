@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.message.BinaryMessageDecoder;
 import org.spf4j.avro.message.BinaryMessageEncoder;
@@ -59,6 +60,9 @@ public class TestUnionRecord extends SpecificRecordBase implements SpecificRecor
    *
    * @return the message decoder used by this class
    */
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "returns the record class's shared datum reader; the reader is configuration-only and shared"
+          + "by all instances of the generated record by design")
   public static BinaryMessageDecoder<TestUnionRecord> getDecoder() {
     return DECODER;
   }
@@ -116,6 +120,9 @@ public class TestUnionRecord extends SpecificRecordBase implements SpecificRecor
     this.amount = amount;
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+          + "and datum objects are shared carriers by design, not defensive-copy value objects")
   @Override
   public SpecificData getSpecificData() {
     return MODEL$;

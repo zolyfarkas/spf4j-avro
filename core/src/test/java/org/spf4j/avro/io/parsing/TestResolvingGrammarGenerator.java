@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io.parsing;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -110,15 +111,20 @@ public class TestResolvingGrammarGenerator {
     final JsonFactory factory = new JsonFactory();
     final ObjectMapper mapper = new ObjectMapper(factory);
 
-    return ret.stream().map((String[] args) -> {
-      Schema schema = SchemaParser.parseSingle(args[0]);
-      try {
-        JsonNode data = mapper.readTree(new StringReader(args[1]));
-        return Arguments.of(schema, data);
-      } catch (IOException ex) {
-        throw new UncheckedIOException(ex);
-      }
-    });
+    return ret.stream().map(args -> toArguments(mapper, args));
+  }
+
+  @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
+      justification = "the argument array is a (schema, data) pair built by this provider; indices 0 and 1"
+          + " name the two slots")
+  private static Arguments toArguments(ObjectMapper mapper, String[] args) {
+    Schema schema = SchemaParser.parseSingle(args[0]);
+    try {
+      JsonNode data = mapper.readTree(new StringReader(args[1]));
+      return Arguments.of(schema, data);
+    } catch (IOException ex) {
+      throw new UncheckedIOException(ex);
+    }
   }
 
   private byte[] writeRecord(Schema schema, GenericData.Record record) throws Exception {

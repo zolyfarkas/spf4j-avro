@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -66,6 +67,10 @@ public class LegacyBinaryEncoder extends Encoder {
    * Create a writer that sends its output to the underlying stream
    * <code>out</code>.
    */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + "schemas and configuration objects instead of defensively copying them on construction and"
+          + "configuration paths")
   public LegacyBinaryEncoder(OutputStream out) {
     this.out = out;
     this.byteWriter = new SimpleByteWriter(out);

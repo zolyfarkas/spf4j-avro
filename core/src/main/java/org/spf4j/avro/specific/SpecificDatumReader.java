@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.Conversion;
 import org.spf4j.avro.Schema;
@@ -40,6 +41,9 @@ public class SpecificDatumReader<T> extends GenericDatumReader<T> {
    * @deprecated Use {@link SystemPropertiesPredicate} instead.
    * @see ClassSecurityValidator
    */
+  @SuppressFBWarnings(value = "MS_PKGPROTECT",
+      justification = "public configuration surface populated from system properties at class initialization and"
+          + "treated as read-only by the library; it is part of the published API")
   @Deprecated
   public static final String[] SERIALIZABLE_PACKAGES = SystemPropertiesPredicate.SERIALIZABLE_PACKAGES
       .toArray(new String[0]);
@@ -48,6 +52,9 @@ public class SpecificDatumReader<T> extends GenericDatumReader<T> {
    * @deprecated Use {@link SystemPropertiesPredicate} instead.
    * @see ClassSecurityValidator
    */
+  @SuppressFBWarnings(value = "MS_PKGPROTECT",
+      justification = "public configuration surface populated from system properties at class initialization and"
+          + "treated as read-only by the library; it is part of the published API")
   @Deprecated
   public static final String[] SERIALIZABLE_CLASSES = SystemPropertiesPredicate.SERIALIZABLE_CLASSES
       .toArray(new String[0]);

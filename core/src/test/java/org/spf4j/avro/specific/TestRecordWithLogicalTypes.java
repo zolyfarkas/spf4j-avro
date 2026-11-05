@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.Conversions;
 import org.spf4j.avro.data.TimeConversions;
@@ -46,6 +47,8 @@ public class TestRecordWithLogicalTypes extends org.spf4j.avro.specific.Specific
   /**
    * Return the BinaryMessageDecoder instance used by this class.
    */
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "the logical-type singletons are stateless and expose no mutators; sharing them is the design")
   public static BinaryMessageDecoder<TestRecordWithLogicalTypes> getDecoder() {
     return DECODER;
   }
@@ -450,6 +453,26 @@ public class TestRecordWithLogicalTypes extends org.spf4j.avro.specific.Specific
   /**
    * RecordBuilder for TestRecordWithLogicalTypes instances.
    */
+  @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
+      justification = "CLI_CONSTANT_LIST_INDEX: checked-in output of the specific compiler: builder field access is"
+          + "by schema-fixed constant index (fields()[N]) because a record's field positions are fixed by"
+          + "its schema; the idiom comes from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in"
+          + "output of the specific compiler: builder field access is by schema-fixed constant index"
+          + "(fields()[N]) because a record's field positions are fixed by its schema; the idiom comes"
+          + "from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in output of the specific"
+          + "compiler: builder field access is by schema-fixed constant index (fields()[N]) because a"
+          + "record's field positions are fixed by its schema; the idiom comes from the codegen template;"
+          + "CLI_CONSTANT_LIST_INDEX: checked-in output of the specific compiler: builder field access is"
+          + "by schema-fixed constant index (fields()[N]) because a record's field positions are fixed by"
+          + "its schema; the idiom comes from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in"
+          + "output of the specific compiler: builder field access is by schema-fixed constant index"
+          + "(fields()[N]) because a record's field positions are fixed by its schema; the idiom comes"
+          + "from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in output of the specific"
+          + "compiler: builder field access is by schema-fixed constant index (fields()[N]) because a"
+          + "record's field positions are fixed by its schema; the idiom comes from the codegen template;"
+          + "CLI_CONSTANT_LIST_INDEX: checked-in output of the specific compiler: builder field access is"
+          + "by schema-fixed constant index (fields()[N]) because a record's field positions are fixed by"
+          + "its schema; the idiom comes from the codegen template")
   public static class Builder extends org.spf4j.avro.specific.SpecificRecordBuilderBase<TestRecordWithLogicalTypes>
       implements org.spf4j.avro.data.RecordBuilder<TestRecordWithLogicalTypes> {
 

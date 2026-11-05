@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.file;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.AvroRuntimeException;
 import org.spf4j.avro.InvalidAvroMagicException;
@@ -87,6 +88,10 @@ public class DataFileStream<D> implements Iterator<D>, Iterable<D>, Closeable {
    * {@link DataFileReader}. This will buffer, wrapping with a
    * {@link java.io.BufferedInputStream} is not necessary.
    */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + "schemas and configuration objects instead of defensively copying them on construction and"
+          + "configuration paths")
   public DataFileStream(InputStream in, DatumReader<D> reader) throws IOException {
     this.reader = reader;
     initialize(in, null);
@@ -284,6 +289,9 @@ public class DataFileStream<D> implements Iterator<D>, Iterable<D>, Closeable {
   }
 
   /** Expert: Return the next block in the file, as binary-encoded data. */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+          + "and datum objects are shared carriers by design, not defensive-copy value objects")
   public ByteBuffer nextBlock() throws IOException {
     if (!hasNext())
       throw new NoSuchElementException();

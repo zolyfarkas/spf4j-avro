@@ -18,6 +18,7 @@
  */
 
 package org.spf4j.avro.util;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.ByteArrayInputStream;
 
@@ -26,6 +27,10 @@ public class ReusableByteArrayInputStream extends ByteArrayInputStream {
     super(new byte[0]);
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + "schemas and configuration objects instead of defensively copying them on construction and"
+          + "configuration paths")
   public void setByteArray(byte[] buf, int offset, int length) {
     this.buf = buf;
     this.pos = offset;

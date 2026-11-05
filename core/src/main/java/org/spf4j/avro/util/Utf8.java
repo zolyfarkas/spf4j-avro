@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.util;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -62,6 +63,9 @@ public class Utf8 implements Comparable<Utf8>, CharSequence, Externalizable {
     this.hash = other.hash;
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "returns the internal byte array by design for zero-copy access to the UTF-8 bytes; the"
+          + "contract is documented on the class")
   public Utf8(byte[] bytes) {
     int length = bytes.length;
     SystemLimitException.checkMaxStringLength(length);
@@ -82,6 +86,9 @@ public class Utf8 implements Comparable<Utf8>, CharSequence, Externalizable {
    * @see #setByteLength(int)
    * @return a reference to the underlying byte array
    */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "returns the internal byte array by design for zero-copy access to the UTF-8 bytes; the"
+          + "contract is documented on the class")
   public byte[] getBytes() {
     return bytes;
   }

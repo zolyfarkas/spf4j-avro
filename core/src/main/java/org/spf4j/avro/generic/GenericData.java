@@ -110,6 +110,9 @@ public class GenericData {
   }
 
   /** Return the singleton instance. */
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP",
+      justification = "returns the shared default model instance; the configurable datum-model singleton is the"
+          + "documented access pattern")
   public static GenericData get() {
     return INSTANCE;
   }
@@ -126,6 +129,9 @@ public class GenericData {
   }
 
   /** Return the class loader that's used (by subclasses). */
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+      justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+          + "and datum objects are shared carriers by design, not defensive-copy value objects")
   public ClassLoader getClassLoader() {
     return classLoader;
   }
@@ -363,6 +369,10 @@ public class GenericData {
     private final Schema schema;
     private final Object[] values;
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+            + "schemas and configuration objects instead of defensively copying them on construction and"
+            + "configuration paths")
     public Record(Schema schema) {
       if (schema == null || !Type.RECORD.equals(schema.getType()))
         throw new AvroRuntimeException("Not a record schema: " + schema);
@@ -382,6 +392,9 @@ public class GenericData {
       }
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     @Override
     public Schema getSchema() {
       return schema;
@@ -450,12 +463,19 @@ public class GenericData {
 
     protected int size = 0;
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+            + "schemas and configuration objects instead of defensively copying them on construction and"
+            + "configuration paths")
     public AbstractArray(Schema schema) {
       if (schema == null || !Type.ARRAY.equals(schema.getType()))
         throw new AvroRuntimeException("Not an array schema: " + schema);
       this.schema = schema;
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     @Override
     public Schema getSchema() {
       return schema;
@@ -622,6 +642,9 @@ public class GenericData {
     private Schema schema;
     private byte[] bytes;
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "Fixed.bytes() returns the backing array by design; the zero-copy contract is documented and"
+            + "callers must not modify the returned bytes")
     public Fixed(Schema schema) {
       setSchema(schema);
     }
@@ -639,11 +662,19 @@ public class GenericData {
       this.bytes = new byte[schema.getFixedSize()];
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "Fixed.bytes() returns the backing array by design; the zero-copy contract is documented and"
+            + "callers must not modify the returned bytes")
     @Override
     public Schema getSchema() {
       return schema;
     }
 
+    @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
+        justification = "EI_EXPOSE_REP: Fixed.bytes() returns the backing array by design; the zero-copy contract is"
+            + "documented and callers must not modify the returned bytes; EI_EXPOSE_REP2: Fixed.bytes()"
+            + "returns the backing array by design; the zero-copy contract is documented and callers must"
+            + "not modify the returned bytes")
     public void bytes(byte[] bytes) {
       this.bytes = bytes;
     }
@@ -681,6 +712,10 @@ public class GenericData {
     private final Schema schema;
     private final String symbol;
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+        justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+            + "schemas and configuration objects instead of defensively copying them on construction and"
+            + "configuration paths")
     public EnumSymbol(Schema schema, String symbol) {
       this.schema = schema;
       this.symbol = symbol;
@@ -694,6 +729,9 @@ public class GenericData {
       this(schema, symbol.toString());
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + "and datum objects are shared carriers by design, not defensive-copy value objects")
     @Override
     public Schema getSchema() {
       return schema;

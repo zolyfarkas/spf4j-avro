@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.compiler.idl;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
@@ -42,6 +43,10 @@ public final class ResolvingVisitor implements SchemaVisitor<Schema> {
 
   private final Schema root;
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + "schemas and configuration objects instead of defensively copying them on construction and"
+          + "configuration paths")
   public ResolvingVisitor(final Schema root, final IdentityHashMap<Schema, Schema> replace,
       final Function<String, Schema> symbolTable) {
     this.replace = replace;
