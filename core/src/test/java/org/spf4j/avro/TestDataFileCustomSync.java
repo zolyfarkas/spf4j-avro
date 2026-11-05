@@ -57,7 +57,8 @@ public class TestDataFileCustomSync {
           + "the digest is a file-format marker, not a security mechanism;"
           + "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS: this API's documented error model is unchecked:"
           + "exceptions are wrapped in AvroRuntimeException at the boundary so callers program against"
-          + "the unchecked contract")
+          + "the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   private static byte[] generateSync() {
     try {
       MessageDigest digester = MessageDigest.getInstance("MD5");

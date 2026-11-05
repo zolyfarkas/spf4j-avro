@@ -27,7 +27,8 @@ public class UnresolvedUnionException extends AvroRuntimeException {
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public UnresolvedUnionException(Schema unionSchema, Object unresolvedDatum) {
     super("Not in union " + unionSchema + ": " + datumTypeDescription(unresolvedDatum));
     this.unionSchema = unionSchema;
@@ -37,7 +38,8 @@ public class UnresolvedUnionException extends AvroRuntimeException {
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + " schemas and configuration objects instead of defensively copying them on construction and"
-          + " configuration paths")
+          + " configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public UnresolvedUnionException(Schema unionSchema, Schema.Field field, Object unresolvedDatum) {
     super(
         "Not in union " + unionSchema + ": " + datumTypeDescription(unresolvedDatum) + " (field=" + field.name() + ")");
@@ -51,7 +53,8 @@ public class UnresolvedUnionException extends AvroRuntimeException {
 
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public Schema getUnionSchema() {
     return unionSchema;
   }

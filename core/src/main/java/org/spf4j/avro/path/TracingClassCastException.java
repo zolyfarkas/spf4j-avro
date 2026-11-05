@@ -38,7 +38,8 @@ public class TracingClassCastException extends ClassCastException implements Pat
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public TracingClassCastException(ClassCastException cause, Object datum, Schema expected, boolean customCoderUsed) {
     this.cause = cause;
     this.datum = datum;
@@ -54,7 +55,8 @@ public class TracingClassCastException extends ClassCastException implements Pat
 
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   public synchronized ClassCastException getCause() {
     return cause;

@@ -65,7 +65,8 @@ public class Utf8 implements Comparable<Utf8>, CharSequence, Externalizable {
 
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "returns the internal byte array by design for zero-copy access to the UTF-8 bytes; the"
-          + "contract is documented on the class")
+          + "contract is documented on the class"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public Utf8(byte[] bytes) {
     int length = bytes.length;
     SystemLimitException.checkMaxStringLength(length);
@@ -88,7 +89,8 @@ public class Utf8 implements Comparable<Utf8>, CharSequence, Externalizable {
    */
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "returns the internal byte array by design for zero-copy access to the UTF-8 bytes; the"
-          + "contract is documented on the class")
+          + "contract is documented on the class"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public byte[] getBytes() {
     return bytes;
   }

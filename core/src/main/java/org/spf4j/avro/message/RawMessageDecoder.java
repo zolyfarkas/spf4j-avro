@@ -84,7 +84,8 @@ public class RawMessageDecoder<D> extends MessageDecoder.BaseDecoder<D> {
 
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_HAS_CHECKED",
       justification = "this API's documented error model is unchecked: checked exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   public D decode(InputStream stream, D reuse) {
     BinaryDecoder decoder = DecoderFactory.get().directBinaryDecoder(stream, DECODER.get());

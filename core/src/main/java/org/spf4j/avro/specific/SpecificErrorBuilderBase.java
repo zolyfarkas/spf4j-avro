@@ -77,7 +77,8 @@ abstract public class SpecificErrorBuilderBase<T extends SpecificExceptionBase> 
   @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
       justification = "construction completes through the class's own initialization protocol (its template methods"
           + "and registration with the owning model); the access to the partially constructed object"
-          + "stays inside the class's own constructor chain by design")
+          + "stays inside the class's own constructor chain by design"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   protected SpecificErrorBuilderBase(T other) {
     super(other.getSchema(), SpecificData.get());
 
@@ -118,7 +119,8 @@ abstract public class SpecificErrorBuilderBase<T extends SpecificExceptionBase> 
 
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   public Throwable getCause() {
     return cause;
@@ -127,7 +129,8 @@ abstract public class SpecificErrorBuilderBase<T extends SpecificExceptionBase> 
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   public SpecificErrorBuilderBase<T> setCause(Throwable cause) {
     this.cause = cause;

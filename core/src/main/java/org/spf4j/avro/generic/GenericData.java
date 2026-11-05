@@ -75,7 +75,8 @@ import static org.spf4j.avro.util.springframework.ConcurrentReferenceHashMap.Ref
  */
 @SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
     justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
-        + "builders, readers and writers are mutually referential by design")
+        + "builders, readers and writers are mutually referential by design"
+    + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
 public class GenericData {
 
   private static final GenericData INSTANCE = new GenericData();
@@ -115,7 +116,8 @@ public class GenericData {
   /** Return the singleton instance. */
   @SuppressFBWarnings(value = "MS_EXPOSE_REP",
       justification = "returns the shared default model instance; the configurable datum-model singleton is the"
-          + "documented access pattern")
+          + "documented access pattern"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static GenericData get() {
     return INSTANCE;
   }
@@ -134,7 +136,8 @@ public class GenericData {
   /** Return the class loader that's used (by subclasses). */
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public ClassLoader getClassLoader() {
     return classLoader;
   }
@@ -372,7 +375,8 @@ public class GenericData {
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
         justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
             + "schemas and configuration objects instead of defensively copying them on construction and"
-            + "configuration paths")
+            + "configuration paths"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public Record(Schema schema) {
       if (schema == null || Type.RECORD != schema.getType())
         throw new AvroRuntimeException("Not a record schema: " + schema);
@@ -394,7 +398,8 @@ public class GenericData {
 
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + "and datum objects are shared carriers by design, not defensive-copy value objects")
+            + "and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     @Override
     public Schema getSchema() {
       return schema;
@@ -466,7 +471,8 @@ public class GenericData {
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
         justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
             + "schemas and configuration objects instead of defensively copying them on construction and"
-            + "configuration paths")
+            + "configuration paths"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public AbstractArray(Schema schema) {
       if (schema == null || Type.ARRAY != schema.getType())
         throw new AvroRuntimeException("Not an array schema: " + schema);
@@ -475,7 +481,8 @@ public class GenericData {
 
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + "and datum objects are shared carriers by design, not defensive-copy value objects")
+            + "and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     @Override
     public Schema getSchema() {
       return schema;
@@ -650,7 +657,8 @@ public class GenericData {
             + "callers must not modify the returned bytes; PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS:"
             + "construction completes through the class's own initialization protocol (its template methods"
             + "and registration with the owning model); the access to the partially constructed object"
-            + "stays inside the class's own constructor chain by design")
+            + "stays inside the class's own constructor chain by design"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public Fixed(Schema schema) {
       setSchema(schema);
     }
@@ -661,7 +669,8 @@ public class GenericData {
             + "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS: construction completes through the class's own"
             + "initialization protocol (its template methods and registration with the owning model); the"
             + "access to the partially constructed object stays inside the class's own constructor chain by"
-            + "design")
+            + "design"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public Fixed(Schema schema, byte[] bytes) {
       this.schema = schema;
       this.bytes = bytes;
@@ -677,7 +686,8 @@ public class GenericData {
 
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + " and datum objects are shared carriers by design, not defensive-copy value objects")
+            + " and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     @Override
     public Schema getSchema() {
       return schema;
@@ -685,14 +695,16 @@ public class GenericData {
 
     @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
         justification = "Fixed.bytes() returns the backing array by design; the zero-copy contract is documented"
-            + " and callers must not modify the returned bytes")
+            + " and callers must not modify the returned bytes"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public void bytes(byte[] bytes) {
       this.bytes = bytes;
     }
 
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "Fixed.bytes() returns the backing array by design; the zero-copy contract is documented and"
-            + " callers must not modify the returned bytes")
+            + " callers must not modify the returned bytes"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     @Override
     public byte[] bytes() {
       return bytes;
@@ -729,7 +741,8 @@ public class GenericData {
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
         justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
             + "schemas and configuration objects instead of defensively copying them on construction and"
-            + "configuration paths")
+            + "configuration paths"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public EnumSymbol(Schema schema, String symbol) {
       this.schema = schema;
       this.symbol = symbol;
@@ -745,7 +758,8 @@ public class GenericData {
 
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + "and datum objects are shared carriers by design, not defensive-copy value objects")
+            + "and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     @Override
     public Schema getSchema() {
       return schema;

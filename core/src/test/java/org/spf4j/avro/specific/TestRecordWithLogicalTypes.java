@@ -52,7 +52,8 @@ public class TestRecordWithLogicalTypes extends org.spf4j.avro.specific.Specific
    * Return the BinaryMessageDecoder instance used by this class.
    */
   @SuppressFBWarnings(value = "MS_EXPOSE_REP",
-      justification = "the logical-type singletons are stateless and expose no mutators; sharing them is the design")
+      justification = "the logical-type singletons are stateless and expose no mutators; sharing them is the design"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static BinaryMessageDecoder<TestRecordWithLogicalTypes> getDecoder() {
     return DECODER;
   }
@@ -463,7 +464,8 @@ public class TestRecordWithLogicalTypes extends org.spf4j.avro.specific.Specific
   @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
       justification = "checked-in output of the specific compiler: builder field access is by schema-fixed"
           + " constant index (fields()[N]) because a record's field positions are fixed by its schema;"
-          + " the idiom comes from the codegen template")
+          + " the idiom comes from the codegen template"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static class Builder extends org.spf4j.avro.specific.SpecificRecordBuilderBase<TestRecordWithLogicalTypes>
       implements org.spf4j.avro.data.RecordBuilder<TestRecordWithLogicalTypes> {
 
@@ -1005,7 +1007,8 @@ public class TestRecordWithLogicalTypes extends org.spf4j.avro.specific.Specific
 
     @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
         justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     @Override
     @SuppressWarnings("unchecked")
     public TestRecordWithLogicalTypes build() {

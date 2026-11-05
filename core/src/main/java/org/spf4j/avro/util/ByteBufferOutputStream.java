@@ -39,7 +39,8 @@ public class ByteBufferOutputStream extends OutputStream {
   @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
       justification = "construction completes through the class's own initialization protocol (its template methods"
           + "and registration with the owning model); the access to the partially constructed object"
-          + "stays inside the class's own constructor chain by design")
+          + "stays inside the class's own constructor chain by design"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public ByteBufferOutputStream() {
     reset();
   }
@@ -47,7 +48,8 @@ public class ByteBufferOutputStream extends OutputStream {
   /** Returns all data written and resets the stream to be empty. */
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public List<ByteBuffer> getBufferList() {
     List<ByteBuffer> result = buffers;
     reset();

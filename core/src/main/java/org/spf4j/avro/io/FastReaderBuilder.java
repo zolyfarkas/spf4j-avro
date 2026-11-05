@@ -95,7 +95,8 @@ public class FastReaderBuilder {
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public FastReaderBuilder(GenericData parentData) {
     this.data = parentData;
   }
@@ -655,7 +656,8 @@ public class FastReaderBuilder {
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
         justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
             + "schemas and configuration objects instead of defensively copying them on construction and"
-            + "configuration paths")
+            + "configuration paths"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public void finishInitialization(ExecutionStep[] readSteps, Schema schema, InstanceSupplier supp) {
       this.readSteps = readSteps;
       this.schema = schema;
@@ -686,7 +688,8 @@ public class FastReaderBuilder {
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
         justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
             + "schemas and configuration objects instead of defensively copying them on construction and"
-            + "configuration paths")
+            + "configuration paths"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public MapReader(FieldReader keyReader, FieldReader valueReader) {
       this.keyReader = keyReader;
       this.valueReader = valueReader;

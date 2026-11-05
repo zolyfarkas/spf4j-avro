@@ -866,7 +866,8 @@ public class SchemaBuilder {
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
         justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
             + "schemas and configuration objects instead of defensively copying them on construction and"
-            + "configuration paths")
+            + "configuration paths"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public ArrayBuilder(Completion<R> context, NameContext names) {
       this.context = context;
       this.names = names;
@@ -2731,7 +2732,8 @@ public class SchemaBuilder {
   // create default value JsonNodes from objects
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   private static JsonNode toJsonNode(Object o) {
     try {
       String s;

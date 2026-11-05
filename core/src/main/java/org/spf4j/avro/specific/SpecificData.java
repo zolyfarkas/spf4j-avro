@@ -97,7 +97,8 @@ public class SpecificData extends GenericData {
           + "classes it is asked to handle; setAccessible is applied only to those classes' own members;"
           + "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS: this API's documented error model is unchecked:"
           + "exceptions are wrapped in AvroRuntimeException at the boundary so callers program against"
-          + "the unchecked contract")
+          + "the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   private static Constructor<?> findConstructor(Class<?> c) {
     boolean useSchema = SchemaConstructable.class.isAssignableFrom(c);
     try {
@@ -114,7 +115,8 @@ public class SpecificData extends GenericData {
           + "classes it is asked to handle; setAccessible is applied only to those classes' own members;"
           + "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS: this API's documented error model is unchecked:"
           + "exceptions are wrapped in AvroRuntimeException at the boundary so callers program against"
-          + "the unchecked contract")
+          + "the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   private static SpecificData findModel(Class<?> c) {
     Field specificDataField;
     try {
@@ -142,7 +144,8 @@ public class SpecificData extends GenericData {
    */
   @SuppressFBWarnings(value = "MS_MUTABLE_COLLECTION_PKGPROTECT",
       justification = "the reserved-word sets are a documented customization surface: embedders may add words"
-          + "before compiling; the compiler reads them without mutating")
+          + "before compiling; the compiler reads them without mutating"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static final Set<String> RESERVED_WORDS = new HashSet<>(Arrays.asList(
       // Keywords from Section 3.9 can't be used as identifiers.
       "_", "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class", "const", "continue",
@@ -159,7 +162,8 @@ public class SpecificData extends GenericData {
   /* Reserved words for accessor/mutator methods */
   @SuppressFBWarnings(value = "MS_MUTABLE_COLLECTION_PKGPROTECT",
       justification = "the reserved-word sets are a documented customization surface: embedders may add words"
-          + "before compiling; the compiler reads them without mutating")
+          + "before compiling; the compiler reads them without mutating"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static final Set<String> ACCESSOR_MUTATOR_RESERVED_WORDS = new HashSet<>(
       Arrays.asList("class", "schema", "classSchema"));
 
@@ -171,7 +175,8 @@ public class SpecificData extends GenericData {
   /* Reserved words for type identifiers */
   @SuppressFBWarnings(value = "MS_MUTABLE_COLLECTION_PKGPROTECT",
       justification = "the reserved-word sets are a documented customization surface: embedders may add words"
-          + "before compiling; the compiler reads them without mutating")
+          + "before compiling; the compiler reads them without mutating"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static final Set<String> TYPE_IDENTIFIER_RESERVED_WORDS = new HashSet<>(
       Arrays.asList("var", "yield", "record"));
 
@@ -183,7 +188,8 @@ public class SpecificData extends GenericData {
   /* Reserved words for error types */
   @SuppressFBWarnings(value = "MS_MUTABLE_COLLECTION_PKGPROTECT",
       justification = "the reserved-word sets are a documented customization surface: embedders may add words"
-          + "before compiling; the compiler reads them without mutating")
+          + "before compiling; the compiler reads them without mutating"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static final Set<String> ERROR_RESERVED_WORDS = new HashSet<>(Arrays.asList("message", "cause"));
 
   static {
@@ -229,7 +235,8 @@ public class SpecificData extends GenericData {
   /** Return the singleton instance. */
   @SuppressFBWarnings(value = "MS_EXPOSE_REP",
       justification = "returns the shared default model instance; the configurable datum-model singleton is the"
-          + "documented access pattern")
+          + "documented access pattern"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static SpecificData get() {
     return INSTANCE;
   }
@@ -518,7 +525,8 @@ public class SpecificData extends GenericData {
   /** Find the schema for a Java type. */
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public Schema getSchema(java.lang.reflect.Type type) {
     try {
       if (type instanceof Class) {
@@ -536,7 +544,8 @@ public class SpecificData extends GenericData {
           + " invocation arguments) whose layout is established by the surrounding code; the constant index"
           + " names the slot; EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS: this API's documented error model is"
           + " unchecked: exceptions are wrapped in AvroRuntimeException at the boundary so callers program"
-          + " against the unchecked contract")
+          + " against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @SuppressWarnings(value = "unchecked")
   protected Schema createSchema(java.lang.reflect.Type type, Map<String, Schema> names) {
     if (type instanceof Class && CharSequence.class.isAssignableFrom((Class) type))
@@ -621,7 +630,8 @@ public class SpecificData extends GenericData {
   /** Return the protocol for a Java interface. */
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public Protocol getProtocol(Class iface) {
     try {
       Protocol p = (Protocol) (iface.getDeclaredField("PROTOCOL").get(null));
@@ -654,7 +664,8 @@ public class SpecificData extends GenericData {
    */
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @SuppressWarnings("unchecked")
   public static Object newInstance(Class c, Schema s) {
     boolean useSchema = SchemaConstructable.class.isAssignableFrom(c);

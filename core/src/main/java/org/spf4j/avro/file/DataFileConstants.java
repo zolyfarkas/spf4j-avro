@@ -29,7 +29,8 @@ public class DataFileConstants {
   public static final byte VERSION = 1;
   @SuppressFBWarnings(value = "MS_MUTABLE_ARRAY",
       justification = "the magic header bytes are a published constant of the container file format; the array is"
-          + "part of the public API and existing callers read it directly")
+          + "part of the public API and existing callers read it directly"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static final byte[] MAGIC = new byte[] { (byte) 'O', (byte) 'b', (byte) 'j', VERSION };
   public static final int SYNC_SIZE = 16;
   public static final int DEFAULT_SYNC_INTERVAL = 4000 * SYNC_SIZE;

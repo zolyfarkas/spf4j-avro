@@ -600,7 +600,8 @@ public class SchemaCompatibility {
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + "and datum objects are shared carriers by design, not defensive-copy value objects")
+            + "and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public List<Incompatibility> getIncompatibilities() {
       return mIncompatibilities;
     }
@@ -674,7 +675,8 @@ public class SchemaCompatibility {
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + "and datum objects are shared carriers by design, not defensive-copy value objects")
+            + "and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public Schema getReaderFragment() {
       return mReaderFragment;
     }
@@ -686,7 +688,8 @@ public class SchemaCompatibility {
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + "and datum objects are shared carriers by design, not defensive-copy value objects")
+            + "and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public Schema getWriterFragment() {
       return mWriterFragment;
     }
@@ -821,7 +824,8 @@ public class SchemaCompatibility {
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
         justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
             + "schemas and configuration objects instead of defensively copying them on construction and"
-            + "configuration paths")
+            + "configuration paths"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public SchemaPairCompatibility(SchemaCompatibilityResult result, Schema reader, Schema writer, String description) {
       mResult = result;
       mReader = reader;
@@ -855,7 +859,8 @@ public class SchemaCompatibility {
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + "and datum objects are shared carriers by design, not defensive-copy value objects")
+            + "and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public Schema getReader() {
       return mReader;
     }
@@ -867,7 +872,8 @@ public class SchemaCompatibility {
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + "and datum objects are shared carriers by design, not defensive-copy value objects")
+            + "and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public Schema getWriter() {
       return mWriter;
     }

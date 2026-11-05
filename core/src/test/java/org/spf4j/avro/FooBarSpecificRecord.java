@@ -55,7 +55,8 @@ public class FooBarSpecificRecord extends org.spf4j.avro.specific.SpecificRecord
    */
   @SuppressFBWarnings(value = "MS_EXPOSE_REP",
       justification = "returns the record class's shared datum reader; the reader is configuration-only and shared"
-          + "by all instances of the generated record by design")
+          + "by all instances of the generated record by design"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static BinaryMessageDecoder<FooBarSpecificRecord> getDecoder() {
     return DECODER;
   }
@@ -319,7 +320,8 @@ public class FooBarSpecificRecord extends org.spf4j.avro.specific.SpecificRecord
   @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
       justification = "checked-in output of the specific compiler: builder field access is by schema-fixed"
           + " constant index (fields()[N]) because a record's field positions are fixed by its schema;"
-          + " the idiom comes from the codegen template")
+          + " the idiom comes from the codegen template"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static class Builder extends org.spf4j.avro.specific.SpecificRecordBuilderBase<FooBarSpecificRecord>
       implements org.spf4j.avro.data.RecordBuilder<FooBarSpecificRecord> {
 
@@ -482,7 +484,8 @@ public class FooBarSpecificRecord extends org.spf4j.avro.specific.SpecificRecord
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + "and datum objects are shared carriers by design, not defensive-copy value objects")
+            + "and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public java.util.List<java.lang.String> getNicknames() {
       return nicknames;
     }
@@ -496,7 +499,8 @@ public class FooBarSpecificRecord extends org.spf4j.avro.specific.SpecificRecord
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
         justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
             + "schemas and configuration objects instead of defensively copying them on construction and"
-            + "configuration paths")
+            + "configuration paths"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public org.spf4j.avro.FooBarSpecificRecord.Builder setNicknames(java.util.List<java.lang.String> value) {
       validate(fields()[2], value);
       this.nicknames = value;
@@ -531,7 +535,8 @@ public class FooBarSpecificRecord extends org.spf4j.avro.specific.SpecificRecord
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + "and datum objects are shared carriers by design, not defensive-copy value objects")
+            + "and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public java.util.List<java.lang.Integer> getRelatedids() {
       return relatedids;
     }
@@ -545,7 +550,8 @@ public class FooBarSpecificRecord extends org.spf4j.avro.specific.SpecificRecord
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
         justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
             + "schemas and configuration objects instead of defensively copying them on construction and"
-            + "configuration paths")
+            + "configuration paths"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public org.spf4j.avro.FooBarSpecificRecord.Builder setRelatedids(java.util.List<java.lang.Integer> value) {
       validate(fields()[3], value);
       this.relatedids = value;
@@ -617,7 +623,8 @@ public class FooBarSpecificRecord extends org.spf4j.avro.specific.SpecificRecord
 
     @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
         justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     @Override
     @SuppressWarnings("unchecked")
     public FooBarSpecificRecord build() {

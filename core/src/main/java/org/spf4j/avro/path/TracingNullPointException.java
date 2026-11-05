@@ -30,7 +30,8 @@ import java.util.List;
  */
 @SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
     justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
-        + "builders, readers and writers are mutually referential by design")
+        + "builders, readers and writers are mutually referential by design"
+    + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
 public class TracingNullPointException extends NullPointerException
     implements PathTracingException<NullPointerException> {
   private final NullPointerException cause;
@@ -41,7 +42,8 @@ public class TracingNullPointException extends NullPointerException
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public TracingNullPointException(NullPointerException cause, Schema expected, boolean customCoderUsed) {
     this.cause = cause;
     this.expected = expected;
@@ -56,7 +58,8 @@ public class TracingNullPointException extends NullPointerException
 
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   public synchronized NullPointerException getCause() {
     return cause;

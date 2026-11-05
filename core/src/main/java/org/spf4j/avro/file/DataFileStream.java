@@ -98,7 +98,8 @@ public class DataFileStream<D> implements Iterator<D>, Iterable<D>, Closeable {
           + "configuration paths; PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS: construction completes"
           + "through the class's own initialization protocol (its template methods and registration with"
           + "the owning model); the access to the partially constructed object stays inside the class's"
-          + "own constructor chain by design")
+          + "own constructor chain by design"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public DataFileStream(InputStream in, DatumReader<D> reader) throws IOException {
     this.reader = reader;
     initialize(in, null);
@@ -301,7 +302,8 @@ public class DataFileStream<D> implements Iterator<D>, Iterable<D>, Closeable {
   /** Expert: Return the next block in the file, as binary-encoded data. */
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public ByteBuffer nextBlock() throws IOException {
     if (!hasNext())
       throw new NoSuchElementException();
@@ -329,7 +331,8 @@ public class DataFileStream<D> implements Iterator<D>, Iterable<D>, Closeable {
 
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   boolean hasNextBlock() {
     try {
       if (availableBlock)

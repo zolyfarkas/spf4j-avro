@@ -62,7 +62,8 @@ public class Accessor {
 
   @SuppressFBWarnings(value = "EI_EXPOSE_STATIC_REP2",
       justification = "the accessor registry is an explicit extension point: setAccessor adopts the implementation"
-          + "the embedding application installs")
+          + "the embedding application installs"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static void setAccessor(JsonPropertiesAccessor accessor) {
     if (jsonPropertiesAccessor != null)
       throw new IllegalStateException("JsonPropertiesAccessor already initialized");

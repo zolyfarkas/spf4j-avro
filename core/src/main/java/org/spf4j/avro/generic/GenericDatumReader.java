@@ -76,7 +76,8 @@ public class GenericDatumReader<D> implements DatumReader<D> {
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public GenericDatumReader(Schema writer, Schema reader, GenericData data) {
     this(data);
     this.actual = writer;
@@ -91,7 +92,8 @@ public class GenericDatumReader<D> implements DatumReader<D> {
   /** Return the {@link GenericData} implementation. */
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public GenericData getData() {
     return data;
   }
@@ -99,7 +101,8 @@ public class GenericDatumReader<D> implements DatumReader<D> {
   /** Return the writer's schema. */
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public Schema getSchema() {
     return actual;
   }
@@ -107,7 +110,8 @@ public class GenericDatumReader<D> implements DatumReader<D> {
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   public void setSchema(Schema writer) {
     this.actual = writer;
@@ -121,7 +125,8 @@ public class GenericDatumReader<D> implements DatumReader<D> {
   /** Get the reader's schema. */
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public Schema getExpected() {
     return expected;
   }
@@ -130,7 +135,8 @@ public class GenericDatumReader<D> implements DatumReader<D> {
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public void setExpected(Schema reader) {
     this.expected = reader;
     creatorResolver = null;
@@ -769,7 +775,8 @@ public class GenericDatumReader<D> implements DatumReader<D> {
             + "exceptions are wrapped in AvroRuntimeException at the boundary so callers program against"
             + "the unchecked contract; RFI_SET_ACCESSIBLE: reflective field access is this class's function"
             + "(the reflect datum layer); setAccessible is applied to the fields the layer itself reads and"
-            + "writes")
+            + "writes"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     private Function<String, Object> buildFunction(Class c) {
       final Constructor ctor;
       try {

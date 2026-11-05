@@ -75,7 +75,8 @@ public class DataFileReader12<D> implements FileReader<D>, Closeable {
           + "own constructor chain by design; RR_NOT_CHECKED: a short read on a truncated file leaves"
           + "zeroes in the buffer and the magic comparison immediately below rejects the file; the check"
           + "is the validation; STT_TOSTRING_STORED_IN_FIELD: the decoded header key string is stored in"
-          + "the container header map; that storage is the header's purpose")
+          + "the container header map; that storage is the header's purpose"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public DataFileReader12(SeekableInput sin, DatumReader<D> reader) throws IOException {
     this.in = new DataFileReader.SeekableInputStream(sin);
 
@@ -141,7 +142,8 @@ public class DataFileReader12<D> implements FileReader<D>, Closeable {
   /** Return the schema used in this file. */
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   public Schema getSchema() {
     return schema;

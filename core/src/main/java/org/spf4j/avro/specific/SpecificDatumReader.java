@@ -43,7 +43,8 @@ public class SpecificDatumReader<T> extends GenericDatumReader<T> {
    */
   @SuppressFBWarnings(value = "MS_PKGPROTECT",
       justification = "public configuration surface populated from system properties at class initialization and"
-          + "treated as read-only by the library; it is part of the published API")
+          + "treated as read-only by the library; it is part of the published API"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Deprecated
   public static final String[] SERIALIZABLE_PACKAGES = SystemPropertiesPredicate.SERIALIZABLE_PACKAGES
       .toArray(new String[0]);
@@ -54,7 +55,8 @@ public class SpecificDatumReader<T> extends GenericDatumReader<T> {
    */
   @SuppressFBWarnings(value = "MS_PKGPROTECT",
       justification = "public configuration surface populated from system properties at class initialization and"
-          + "treated as read-only by the library; it is part of the published API")
+          + "treated as read-only by the library; it is part of the published API"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Deprecated
   public static final String[] SERIALIZABLE_CLASSES = SystemPropertiesPredicate.SERIALIZABLE_CLASSES
       .toArray(new String[0]);
@@ -67,7 +69,8 @@ public class SpecificDatumReader<T> extends GenericDatumReader<T> {
   @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
       justification = "construction completes through the class's own initialization protocol (its template methods"
           + "and registration with the owning model); the access to the partially constructed object"
-          + "stays inside the class's own constructor chain by design")
+          + "stays inside the class's own constructor chain by design"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public SpecificDatumReader(Class<T> c) {
     this(SpecificData.getForClass(c));
     setSchema(getSpecificData().getSchema(c));
@@ -133,7 +136,8 @@ public class SpecificDatumReader<T> extends GenericDatumReader<T> {
 
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   private Class getPropAsClass(Schema schema, String prop) {
     String name = schema.getProp(prop);
     if (name == null)

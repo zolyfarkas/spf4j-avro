@@ -84,7 +84,8 @@ public class RandomData implements Iterable<Object> {
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public RandomData(GenericData genericData, Schema schema, int count, long seed, boolean utf8ForString) {
     this.genericData = genericData;
     this.root = schema;

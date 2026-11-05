@@ -37,7 +37,8 @@ import java.util.function.Function;
  */
 @SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
     justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
-        + "builders, readers and writers are mutually referential by design")
+        + "builders, readers and writers are mutually referential by design"
+    + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
 final class SchemaResolver {
 
   private SchemaResolver() {

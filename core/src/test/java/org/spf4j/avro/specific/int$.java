@@ -49,7 +49,8 @@ public class int$ extends SpecificRecordBase implements SpecificRecord {
    */
   @SuppressFBWarnings(value = "MS_EXPOSE_REP",
       justification = "returns the record class's shared datum reader; the reader is configuration-only"
-          + " and shared by all instances of the generated record by design")
+          + " and shared by all instances of the generated record by design"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static BinaryMessageDecoder<int$> getDecoder() {
     return DECODER;
   }
@@ -91,7 +92,8 @@ public class int$ extends SpecificRecordBase implements SpecificRecord {
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately:"
           + " Avro's model and datum objects are shared carriers by design, not defensive-copy"
-          + " value objects")
+          + " value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public SpecificData getSpecificData() {
     return MODEL$;
   }
@@ -191,7 +193,8 @@ public class int$ extends SpecificRecordBase implements SpecificRecord {
             + " the record, applies builder state and returns it; the store-then-return shape is the codegen"
             + " template's output; EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS: this API's documented error model"
             + " is unchecked: exceptions are wrapped in AvroRuntimeException at the boundary so callers"
-            + " program against the unchecked contract")
+            + " program against the unchecked contract"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public int$ build() {
       try {
         int$ record = new int$();

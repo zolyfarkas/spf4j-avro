@@ -94,7 +94,8 @@ public class ReflectData extends SpecificData {
     /** Return the singleton instance. */
     @SuppressFBWarnings(value = "MS_EXPOSE_REP",
         justification = "returns the shared default model instance; the configurable datum-model singleton is the"
-            + "documented access pattern")
+            + "documented access pattern"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public static AllowNull get() {
       return INSTANCE;
     }
@@ -129,7 +130,8 @@ public class ReflectData extends SpecificData {
   /** Return the singleton instance. */
   @SuppressFBWarnings(value = "MS_EXPOSE_REP",
       justification = "returns the shared default model instance; the configurable datum-model singleton is the"
-          + "documented access pattern")
+          + "documented access pattern"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static ReflectData get() {
     return INSTANCE;
   }
@@ -259,7 +261,8 @@ public class ReflectData extends SpecificData {
 
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CHECKED",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   protected void setField(Object record, String name, int position, Object value, Object state) {
     if (record instanceof IndexedRecord) {
@@ -280,7 +283,8 @@ public class ReflectData extends SpecificData {
 
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CHECKED",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   protected Object getField(Object record, String name, int pos, Object state) {
     if (record instanceof IndexedRecord) {
@@ -464,7 +468,8 @@ public class ReflectData extends SpecificData {
 
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   static Class getClassProp(Schema schema, String prop) {
     String name = schema.getProp(prop);
     if (name == null)
@@ -665,7 +670,8 @@ public class ReflectData extends SpecificData {
           + "unchecked: exceptions are wrapped in AvroRuntimeException at the boundary so callers program"
           + "against the unchecked contract; PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS: the repeated"
           + "invocation is an idempotent accessor over the immutable schema model (or the two calls"
-          + "bracket the state change under test); hoisting a local would not change behavior")
+          + "bracket the state change under test); hoisting a local would not change behavior"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   protected Schema createSchema(Type type, Map<String, Schema> names) {
     if (type instanceof GenericArrayType) { // generic array
@@ -934,7 +940,8 @@ public class ReflectData extends SpecificData {
   /** Create a schema for a field. */
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   protected Schema createFieldSchema(Field field, Map<String, Schema> names) {
     AvroEncode enc = ReflectionUtil.getAvroEncode(field);
     if (enc != null)
@@ -1127,7 +1134,8 @@ public class ReflectData extends SpecificData {
 
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   private CustomEncodingWrapper populateEncoderCache(Schema schema) {
     var enc = ReflectionUtil.getAvroEncode(getClass(schema));
     if (enc != null) {

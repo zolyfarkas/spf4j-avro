@@ -70,7 +70,8 @@ public final class CloningVisitor implements SchemaVisitor<Schema> {
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public CloningVisitor(final PropertyCopier copyProperties, final boolean copyDocs, final Schema root) {
     this.copyProperties = copyProperties;
     this.copyDocs = copyDocs;

@@ -45,7 +45,8 @@ import java.util.function.Supplier;
  */
 @SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
     justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
-        + "builders, readers and writers are mutually referential by design")
+        + "builders, readers and writers are mutually referential by design"
+    + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
 public class ReflectionUtil {
 
   private ReflectionUtil() {
@@ -58,7 +59,8 @@ public class ReflectionUtil {
 
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   static void resetFieldAccess() {
     // load only one implementation of FieldAccess
     // so it is monomorphic and the JIT can inline

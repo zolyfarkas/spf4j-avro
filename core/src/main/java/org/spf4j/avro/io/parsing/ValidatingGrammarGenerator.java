@@ -30,7 +30,8 @@ import org.spf4j.avro.Schema.Field;
  */
 @SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
     justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
-        + "builders, readers and writers are mutually referential by design")
+        + "builders, readers and writers are mutually referential by design"
+    + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
 public class ValidatingGrammarGenerator {
   /**
    * Returns the non-terminal that is the start symbol for the grammar for the

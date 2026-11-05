@@ -154,7 +154,8 @@ public class SpecificCompiler {
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public SpecificCompiler(Protocol protocol) {
     this();
     // enqueue all types
@@ -200,7 +201,8 @@ public class SpecificCompiler {
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public void setAdditionalVelocityTools(List<Object> additionalVelocityTools) {
     this.additionalVelocityTools = additionalVelocityTools;
   }
@@ -337,7 +339,8 @@ public class SpecificCompiler {
 
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public void addCustomConversion(Class<?> conversionClass) {
     try {
       final Conversion<?> conversion = (Conversion<?>) conversionClass.getDeclaredConstructor().newInstance();
@@ -608,7 +611,8 @@ public class SpecificCompiler {
 
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   private String renderTemplate(String templateName, VelocityContext context) {
     Template template;
     try {

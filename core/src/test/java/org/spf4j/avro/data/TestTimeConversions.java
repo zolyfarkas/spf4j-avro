@@ -42,22 +42,28 @@ import org.junit.jupiter.api.Test;
 public class TestTimeConversions {
 
   @SuppressFBWarnings(value = "MS_PKGPROTECT",
-      justification = "test fixture schemas, initialized once in class setup and shared by the test methods")
+      justification = "test fixture schemas, initialized once in class setup and shared by the test methods"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static Schema DATE_SCHEMA;
   @SuppressFBWarnings(value = "MS_PKGPROTECT",
-      justification = "test fixture schemas, initialized once in class setup and shared by the test methods")
+      justification = "test fixture schemas, initialized once in class setup and shared by the test methods"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static Schema TIME_MILLIS_SCHEMA;
   @SuppressFBWarnings(value = "MS_PKGPROTECT",
-      justification = "test fixture schemas, initialized once in class setup and shared by the test methods")
+      justification = "test fixture schemas, initialized once in class setup and shared by the test methods"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static Schema TIME_MICROS_SCHEMA;
   @SuppressFBWarnings(value = "MS_PKGPROTECT",
-      justification = "test fixture schemas, initialized once in class setup and shared by the test methods")
+      justification = "test fixture schemas, initialized once in class setup and shared by the test methods"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static Schema TIMESTAMP_MILLIS_SCHEMA;
   @SuppressFBWarnings(value = "MS_PKGPROTECT",
-      justification = "test fixture schemas, initialized once in class setup and shared by the test methods")
+      justification = "test fixture schemas, initialized once in class setup and shared by the test methods"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static Schema TIMESTAMP_MICROS_SCHEMA;
   @SuppressFBWarnings(value = "MS_PKGPROTECT",
-      justification = "test fixture schemas, initialized once in class setup and shared by the test methods")
+      justification = "test fixture schemas, initialized once in class setup and shared by the test methods"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static Schema TIMESTAMP_NANOS_SCHEMA;
 
   @BeforeAll

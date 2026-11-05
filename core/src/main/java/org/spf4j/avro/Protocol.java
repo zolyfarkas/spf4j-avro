@@ -108,7 +108,8 @@ public class Protocol extends JsonProperties {
     /** The parameters of this message. */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + "and datum objects are shared carriers by design, not defensive-copy value objects")
+            + "and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public Schema getRequest() {
       return request;
     }
@@ -344,7 +345,8 @@ public class Protocol extends JsonProperties {
   /** The messages of this protocol. */
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public Map<String, Message> getMessages() {
     return messages;
   }
@@ -429,7 +431,8 @@ public class Protocol extends JsonProperties {
    */
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public String toString(boolean pretty) {
     try {
       StringWriter writer = new StringWriter();
@@ -479,7 +482,8 @@ public class Protocol extends JsonProperties {
           + "objects are shared carriers by design, not defensive-copy value objects;"
           + "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS: this API's documented error model is unchecked:"
           + "exceptions are wrapped in AvroRuntimeException at the boundary so callers program against"
-          + "the unchecked contract")
+          + "the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public byte[] getMD5() {
     if (md5 == null)
       try {
@@ -513,7 +517,8 @@ public class Protocol extends JsonProperties {
   /** Read a protocol from a Json string. */
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static Protocol parse(String string) {
     try {
       return parse(Schema.FACTORY.createParser(new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8))));
@@ -524,7 +529,8 @@ public class Protocol extends JsonProperties {
 
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   private static Protocol parse(JsonParser parser) {
     try {
       Protocol protocol = new Protocol();

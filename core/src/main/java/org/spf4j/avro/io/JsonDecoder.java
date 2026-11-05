@@ -65,7 +65,8 @@ public class JsonDecoder extends ParsingDecoder implements Parser.ActionHandler 
   @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
       justification = "construction completes through the class's own initialization protocol (its template methods"
           + "and registration with the owning model); the access to the partially constructed object"
-          + "stays inside the class's own constructor chain by design")
+          + "stays inside the class's own constructor chain by design"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   private JsonDecoder(Symbol root, InputStream in) throws IOException {
     super(root);
     configure(in);
@@ -74,7 +75,8 @@ public class JsonDecoder extends ParsingDecoder implements Parser.ActionHandler 
   @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
       justification = "construction completes through the class's own initialization protocol (its template methods"
           + "and registration with the owning model); the access to the partially constructed object"
-          + "stays inside the class's own constructor chain by design")
+          + "stays inside the class's own constructor chain by design"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   private JsonDecoder(Symbol root, String in) throws IOException {
     super(root);
     configure(in);
@@ -525,7 +527,8 @@ public class JsonDecoder extends ParsingDecoder implements Parser.ActionHandler 
           + "is unchecked: checked exceptions are wrapped in AvroRuntimeException at the boundary so"
           + "callers program against the unchecked contract; NP_LOAD_OF_KNOWN_NULL_VALUE: doAction"
           + "returns null to signal 'no symbol action' per the resolving-decoder contract; the null is"
-          + "the protocol value, not a dereference")
+          + "the protocol value, not a dereference"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   public Symbol doAction(Symbol input, Symbol top) throws IOException {
     if (top instanceof Symbol.FieldAdjustAction) {

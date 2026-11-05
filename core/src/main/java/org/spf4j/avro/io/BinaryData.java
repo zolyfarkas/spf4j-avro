@@ -70,7 +70,8 @@ public class BinaryData {
    */
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static int compare(byte[] b1, int s1, int l1, byte[] b2, int s2, int l2, Schema schema) {
     Decoders decoders = DECODERS.get();
     decoders.set(b1, s1, l1, b2, s2, l2);
@@ -209,7 +210,8 @@ public class BinaryData {
    */
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static int hashCode(byte[] bytes, int start, int length, Schema schema) {
     HashData data = HASH_DATA.get();
     data.set(bytes, start, length);

@@ -62,7 +62,8 @@ public class GenericDatumWriter<D> implements DatumWriter<D> {
   @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
       justification = "construction completes through the class's own initialization protocol (its template methods"
           + "and registration with the owning model); the access to the partially constructed object"
-          + "stays inside the class's own constructor chain by design")
+          + "stays inside the class's own constructor chain by design"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public GenericDatumWriter(Schema root) {
     this();
     setSchema(root);
@@ -71,7 +72,8 @@ public class GenericDatumWriter<D> implements DatumWriter<D> {
   @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
       justification = "construction completes through the class's own initialization protocol (its template methods"
           + "and registration with the owning model); the access to the partially constructed object"
-          + "stays inside the class's own constructor chain by design")
+          + "stays inside the class's own constructor chain by design"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public GenericDatumWriter(Schema root, GenericData data) {
     this(data);
     setSchema(root);
@@ -80,7 +82,8 @@ public class GenericDatumWriter<D> implements DatumWriter<D> {
   /** Return the {@link GenericData} implementation. */
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public GenericData getData() {
     return data;
   }
@@ -88,7 +91,8 @@ public class GenericDatumWriter<D> implements DatumWriter<D> {
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public void setSchema(Schema root) {
     this.root = root;
   }
@@ -174,7 +178,8 @@ public class GenericDatumWriter<D> implements DatumWriter<D> {
           + "AvroRuntimeException at the boundary so callers program against the unchecked contract;"
           + "DCN_NULLPOINTER_EXCEPTION: the catch is the error-annotation mechanism: NullPointerException"
           + "from the datum walk is caught to attach the data path and is rethrown as a tracing exception"
-          + "carrying that context")
+          + "carrying that context"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   protected void writeWithoutConversion(Schema schema, Object datum, Encoder out) throws IOException {
     int unionIndex = -1;
     Schema.Type schemaType = schema.getType();
@@ -281,7 +286,8 @@ public class GenericDatumWriter<D> implements DatumWriter<D> {
           + "AvroRuntimeException at the boundary so callers program against the unchecked contract;"
           + "DCN_NULLPOINTER_EXCEPTION: the catch is the error-annotation mechanism: NullPointerException"
           + "from the datum walk is caught to attach the data path and is rethrown as a tracing exception"
-          + "carrying that context")
+          + "carrying that context"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   protected void writeField(Object datum, Field f, Encoder out, Object state) throws IOException {
     Object value = data.getField(datum, f.name(), f.pos(), state);
     try {

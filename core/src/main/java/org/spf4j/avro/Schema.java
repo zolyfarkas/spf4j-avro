@@ -109,7 +109,8 @@ import static org.spf4j.avro.LogicalType.LOGICAL_TYPE_PROP;
         + "one cohesive unit mirroring the Avro type system: model, builders, readers and writers are "
         + "mutually referential by design; PIS_POSSIBLE_INCOMPLETE_SERIALIZATION: writeReplace"
         + "substitutes the schema's JSON string, which is by definition the complete serialized form of"
-        + "a schema")
+        + "a schema"
+    + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
 @SuppressWarnings("unused")
 public abstract class Schema extends JsonProperties implements Serializable {
 
@@ -229,7 +230,8 @@ public abstract class Schema extends JsonProperties implements Serializable {
 
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public LogicalType getLogicalType() {
     return logicalType;
   }
@@ -533,7 +535,8 @@ public abstract class Schema extends JsonProperties implements Serializable {
 
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Deprecated
   String toString(Set<String> knownNames, boolean pretty) {
     try {
@@ -770,7 +773,8 @@ public abstract class Schema extends JsonProperties implements Serializable {
     /** This field's {@link Schema}. */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + "and datum objects are shared carriers by design, not defensive-copy value objects")
+            + "and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public Schema schema() {
       return schema;
     }
@@ -1082,7 +1086,8 @@ public abstract class Schema extends JsonProperties implements Serializable {
     @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
         justification = "construction completes through the class's own initialization protocol (its template methods"
             + "and registration with the owning model); the access to the partially constructed object"
-            + "stays inside the class's own constructor chain by design")
+            + "stays inside the class's own constructor chain by design"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public RecordSchema(Name name, String doc, boolean isError) {
       super(Type.RECORD, name, doc);
       this.isError = isError;
@@ -1091,7 +1096,8 @@ public abstract class Schema extends JsonProperties implements Serializable {
     @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
         justification = "construction completes through the class's own initialization protocol (its template methods"
             + "and registration with the owning model); the access to the partially constructed object"
-            + "stays inside the class's own constructor chain by design")
+            + "stays inside the class's own constructor chain by design"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public RecordSchema(Name name, String doc, boolean isError, List<Field> fields) {
       super(Type.RECORD, name, doc);
       this.isError = isError;
@@ -1682,7 +1688,8 @@ public abstract class Schema extends JsonProperties implements Serializable {
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
         justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
             + "schemas and configuration objects instead of defensively copying them on construction and"
-            + "configuration paths")
+            + "configuration paths"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public Parser(final ParseContext context) {
       this.validate = context.nameValidator;
       this.context = context;
@@ -1798,7 +1805,8 @@ public abstract class Schema extends JsonProperties implements Serializable {
      */
     @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
         justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public Schema parse(String s) {
       try {
         return parse(FACTORY.createParser(s), false, true);
@@ -1842,7 +1850,8 @@ public abstract class Schema extends JsonProperties implements Serializable {
 
     @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
         justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public Schema parseInternal(String s) {
       try {
         return parse(FACTORY.createParser(s), false, false);
@@ -1853,7 +1862,8 @@ public abstract class Schema extends JsonProperties implements Serializable {
 
     @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
         justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     private Schema parse(JsonParser parser, boolean allowDanglingContent, boolean resolveSchema) throws IOException {
       NameValidator saved = VALIDATE_NAMES.get();
       boolean savedValidateDefaults = VALIDATE_DEFAULTS.get();
@@ -2080,7 +2090,8 @@ public abstract class Schema extends JsonProperties implements Serializable {
 
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   private static void validateDefault(Schema schema, JsonNode defaultValue) {
     if (defaultValue == null) {
       // The fork reaches this only via a record default missing a field that
@@ -2227,7 +2238,8 @@ public abstract class Schema extends JsonProperties implements Serializable {
    */
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   private static void validateValue(Schema schema, JsonNode value) {
     if (value == null) {
       throw new AvroTypeException("Missing value for " + schema);
@@ -2315,7 +2327,8 @@ public abstract class Schema extends JsonProperties implements Serializable {
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
           + "AvroRuntimeException at the boundary so callers program against the unchecked contract;"
           + "MOM_MISLEADING_OVERLOAD_MODEL: the overloads are the published API and each has distinct"
-          + "documented semantics; the similar names are the domain vocabulary of the datum model")
+          + "documented semantics; the similar names are the domain vocabulary of the datum model"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   private static boolean isValidDefault(Schema schema, JsonNode defaultValue) {
     if (defaultValue == null)
       return false;
@@ -2667,7 +2680,8 @@ public abstract class Schema extends JsonProperties implements Serializable {
 
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   static JsonNode parseJson(String s) {
     try {
       return MAPPER.readTree(FACTORY.createParser(s));

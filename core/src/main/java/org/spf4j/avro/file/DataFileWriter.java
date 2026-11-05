@@ -85,7 +85,8 @@ public class DataFileWriter<D> implements Closeable, Flushable {
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public DataFileWriter(DatumWriter<D> dout) {
     this.dout = dout;
   }
@@ -170,7 +171,8 @@ public class DataFileWriter<D> implements Closeable, Flushable {
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public DataFileWriter<D> create(Schema schema, OutputStream outs, byte[] sync) throws IOException {
     assertNotOpen();
 

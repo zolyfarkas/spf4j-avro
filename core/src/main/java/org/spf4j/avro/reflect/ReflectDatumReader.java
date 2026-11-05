@@ -46,7 +46,8 @@ import org.spf4j.avro.specific.SpecificDatumReader;
  */
 @SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
     justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
-        + "builders, readers and writers are mutually referential by design")
+        + "builders, readers and writers are mutually referential by design"
+    + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
 public class ReflectDatumReader<T> extends SpecificDatumReader<T> {
   public ReflectDatumReader() {
     this(null, null, ReflectData.get());
@@ -329,7 +330,8 @@ public class ReflectDatumReader<T> extends SpecificDatumReader<T> {
 
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_HAS_CHECKED",
       justification = "this API's documented error model is unchecked: checked exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   protected void readField(Object record, Field field, Object oldDatum, ResolvingDecoder in, Object state)
       throws IOException {

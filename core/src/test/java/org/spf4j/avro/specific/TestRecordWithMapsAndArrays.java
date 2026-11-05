@@ -64,7 +64,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
    */
   @SuppressFBWarnings(value = "MS_EXPOSE_REP",
       justification = "returns the record class's shared datum reader; the reader is configuration-only and shared"
-          + "by all instances of the generated record by design")
+          + "by all instances of the generated record by design"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static BinaryMessageDecoder<TestRecordWithMapsAndArrays> getDecoder() {
     return DECODER;
   }
@@ -127,7 +128,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public TestRecordWithMapsAndArrays(java.util.List<String> arr, java.util.Map<String, Long> map,
       java.util.List<java.util.List<String>> nested_arr,
       java.util.Map<String, java.util.Map<String, Long>> nested_map) {
@@ -139,7 +141,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
 
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   public SpecificData getSpecificData() {
     return MODEL$;
@@ -153,7 +156,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
   // Used by DatumWriter. Applications should not call.
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   public Object get(int field$) {
     switch (field$) {
@@ -174,7 +178,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   @SuppressWarnings(value = "unchecked")
   public void put(int field$, Object value$) {
@@ -203,7 +208,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
    */
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public java.util.List<String> getArr() {
     return arr;
   }
@@ -216,7 +222,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public void setArr(java.util.List<String> value) {
     this.arr = value;
   }
@@ -228,7 +235,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
    */
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public java.util.Map<String, Long> getMap() {
     return map;
   }
@@ -241,7 +249,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public void setMap(java.util.Map<String, Long> value) {
     this.map = value;
   }
@@ -253,7 +262,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
    */
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public java.util.List<java.util.List<String>> getNestedArr() {
     return nested_arr;
   }
@@ -266,7 +276,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public void setNestedArr(java.util.List<java.util.List<String>> value) {
     this.nested_arr = value;
   }
@@ -278,7 +289,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
    */
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public java.util.Map<String, java.util.Map<String, Long>> getNestedMap() {
     return nested_map;
   }
@@ -291,7 +303,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public void setNestedMap(java.util.Map<String, java.util.Map<String, Long>> value) {
     this.nested_map = value;
   }
@@ -341,7 +354,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
   @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
       justification = "checked-in output of the specific compiler: builder field access is by schema-fixed"
           + " constant index (fields()[N]) because a record's field positions are fixed by its schema;"
-          + " the idiom comes from the codegen template")
+          + " the idiom comes from the codegen template"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @AvroGenerated
   public static class Builder extends SpecificRecordBuilderBase<TestRecordWithMapsAndArrays>
       implements org.spf4j.avro.data.RecordBuilder<TestRecordWithMapsAndArrays> {
@@ -413,7 +427,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + "and datum objects are shared carriers by design, not defensive-copy value objects")
+            + "and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public java.util.List<String> getArr() {
       return arr;
     }
@@ -427,7 +442,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
         justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
             + "schemas and configuration objects instead of defensively copying them on construction and"
-            + "configuration paths")
+            + "configuration paths"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public Builder setArr(java.util.List<String> value) {
       validate(fields()[0], value);
       this.arr = value;
@@ -462,7 +478,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + "and datum objects are shared carriers by design, not defensive-copy value objects")
+            + "and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public java.util.Map<String, Long> getMap() {
       return map;
     }
@@ -476,7 +493,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
         justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
             + "schemas and configuration objects instead of defensively copying them on construction and"
-            + "configuration paths")
+            + "configuration paths"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public Builder setMap(java.util.Map<String, Long> value) {
       validate(fields()[1], value);
       this.map = value;
@@ -511,7 +529,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + "and datum objects are shared carriers by design, not defensive-copy value objects")
+            + "and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public java.util.List<java.util.List<String>> getNestedArr() {
       return nested_arr;
     }
@@ -525,7 +544,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
         justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
             + "schemas and configuration objects instead of defensively copying them on construction and"
-            + "configuration paths")
+            + "configuration paths"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public Builder setNestedArr(java.util.List<java.util.List<String>> value) {
       validate(fields()[2], value);
       this.nested_arr = value;
@@ -560,7 +580,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
      */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + "and datum objects are shared carriers by design, not defensive-copy value objects")
+            + "and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public java.util.Map<String, java.util.Map<String, Long>> getNestedMap() {
       return nested_map;
     }
@@ -574,7 +595,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
         justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
             + "schemas and configuration objects instead of defensively copying them on construction and"
-            + "configuration paths")
+            + "configuration paths"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public Builder setNestedMap(java.util.Map<String, java.util.Map<String, Long>> value) {
       validate(fields()[3], value);
       this.nested_map = value;
@@ -604,7 +626,8 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
 
     @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
         justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     @Override
     @SuppressWarnings("unchecked")
     public TestRecordWithMapsAndArrays build() {

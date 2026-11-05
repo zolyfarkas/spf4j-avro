@@ -67,7 +67,8 @@ public class Json {
 
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + " AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + " AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   private static Schema loadSchema() {
     try {
       try (InputStream in = Json.class.getResourceAsStream("/org/spf4j/avro/data/Json.avsc")) {
@@ -131,7 +132,8 @@ public class Json {
    */
   @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static Object parseJson(String s) {
     try {
       return JacksonUtils.toObject(MAPPER.readTree(FACTORY.createParser(s)));

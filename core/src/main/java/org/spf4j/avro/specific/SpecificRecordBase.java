@@ -35,7 +35,8 @@ import org.spf4j.avro.message.MessageEncoder;
 /** Base class for generated record classes. */
 @SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
     justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
-        + "builders, readers and writers are mutually referential by design")
+        + "builders, readers and writers are mutually referential by design"
+    + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
 public abstract class SpecificRecordBase
     implements SpecificRecord, Comparable<SpecificRecord>, GenericRecord, Externalizable {
 

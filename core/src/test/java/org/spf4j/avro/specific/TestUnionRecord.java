@@ -66,7 +66,8 @@ public class TestUnionRecord extends SpecificRecordBase implements SpecificRecor
    */
   @SuppressFBWarnings(value = "MS_EXPOSE_REP",
       justification = "returns the record class's shared datum reader; the reader is configuration-only and shared"
-          + "by all instances of the generated record by design")
+          + "by all instances of the generated record by design"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static BinaryMessageDecoder<TestUnionRecord> getDecoder() {
     return DECODER;
   }
@@ -126,7 +127,8 @@ public class TestUnionRecord extends SpecificRecordBase implements SpecificRecor
 
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @Override
   public SpecificData getSpecificData() {
     return MODEL$;
@@ -301,7 +303,8 @@ public class TestUnionRecord extends SpecificRecordBase implements SpecificRecor
 
     @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
         justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     @Override
     @SuppressWarnings("unchecked")
     public TestUnionRecord build() {

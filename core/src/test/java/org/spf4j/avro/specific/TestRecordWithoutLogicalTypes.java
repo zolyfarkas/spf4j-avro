@@ -65,7 +65,8 @@ public class TestRecordWithoutLogicalTypes extends org.spf4j.avro.specific.Speci
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public TestRecordWithoutLogicalTypes(java.lang.Boolean b, java.lang.Integer i32, java.lang.Long i64,
       java.lang.Float f32, java.lang.Double f64, java.lang.String s, java.lang.Integer d, java.lang.Integer t,
       java.lang.Long ts, java.nio.ByteBuffer dec) {
@@ -90,7 +91,8 @@ public class TestRecordWithoutLogicalTypes extends org.spf4j.avro.specific.Speci
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
           + "and datum objects are shared carriers by design, not defensive-copy value objects;"
           + "URV_INHERITED_METHOD_WITH_RELATED_TYPES: the method is inherited as part of this class's"
-          + "published or generated API surface; its signature is fixed by the supertype's contract")
+          + "published or generated API surface; its signature is fixed by the supertype's contract"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public java.lang.Object get(int field$) {
     switch (field$) {
     case 0:
@@ -122,7 +124,8 @@ public class TestRecordWithoutLogicalTypes extends org.spf4j.avro.specific.Speci
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   @SuppressWarnings(value = "unchecked")
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
@@ -229,7 +232,8 @@ public class TestRecordWithoutLogicalTypes extends org.spf4j.avro.specific.Speci
    */
   @SuppressFBWarnings(value = "EI_EXPOSE_REP",
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public java.nio.ByteBuffer getDec() {
     return dec;
   }
@@ -261,7 +265,8 @@ public class TestRecordWithoutLogicalTypes extends org.spf4j.avro.specific.Speci
   @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
       justification = "checked-in output of the specific compiler: builder field access is by schema-fixed"
           + " constant index (fields()[N]) because a record's field positions are fixed by its schema;"
-          + " the idiom comes from the codegen template")
+          + " the idiom comes from the codegen template"
+      + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
   public static class Builder extends org.spf4j.avro.specific.SpecificRecordBuilderBase<TestRecordWithoutLogicalTypes>
       implements org.spf4j.avro.data.RecordBuilder<TestRecordWithoutLogicalTypes> {
 
@@ -594,7 +599,8 @@ public class TestRecordWithoutLogicalTypes extends org.spf4j.avro.specific.Speci
     /** Gedec the value of the 'dec' field */
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
         justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-            + "and datum objects are shared carriers by design, not defensive-copy value objects")
+            + "and datum objects are shared carriers by design, not defensive-copy value objects"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public java.nio.ByteBuffer getDec() {
       return dec;
     }
@@ -603,7 +609,8 @@ public class TestRecordWithoutLogicalTypes extends org.spf4j.avro.specific.Speci
     @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
         justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
             + "schemas and configuration objects instead of defensively copying them on construction and"
-            + "configuration paths")
+            + "configuration paths"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     public TestRecordWithoutLogicalTypes.Builder setDec(java.nio.ByteBuffer value) {
       validate(fields()[9], value);
       this.dec = value;
@@ -624,7 +631,8 @@ public class TestRecordWithoutLogicalTypes extends org.spf4j.avro.specific.Speci
 
     @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
         justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract"
+        + " The real fix is a major rework, postponed per the user's 2026-11-05 decision.")
     @Override
     public TestRecordWithoutLogicalTypes build() {
       try {
