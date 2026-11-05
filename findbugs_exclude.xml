@@ -38,13 +38,17 @@
          suppressed narrowly in code (@SuppressFBWarnings with a reason);
          none of those may reappear here. What remains below is exactly:
          (a) priority 3/4 non-security instances in inherited code,
-         (b) the two package-regex entries for build-generated code - the
-         JavaCC-generated IDL parser and the specific.test records
-         generated at test time from the shipped Velocity templates -
-         which also carry the priority 1/2 instances in those sources:
-         annotating them requires the shipped code generators to emit
-         @SuppressFBWarnings, imposing a spotbugs-annotations dependency
-         on all generated user code, and
+         (b) exact class+pattern entries for build-generated code, which
+         is NOT exempt from analysis (user directive 2026-11-05): every
+         priority 1/2 and security instance in generated code is fixed
+         at the generator (idl.jj, the seeded JavaCC skeletons under
+         compiler/src/main/javacc-skeletons, the SpecificCompiler
+         Velocity templates) or suppressed by generator-emitted
+         @SuppressFBWarnings; the only entries of this kind are the
+         JavaCC token manager and constants interface, which JavaCC
+         emits from internal templates with no grammar, template or
+         seeding lever, plus priority 3/4 instances in generated
+         classes, held to the same standard as (a), and
          (c) SIC_INNER_SHOULD_BE_STATIC_ANON entries keyed by the
          ENCLOSING class: for that finding SpotBugs matches filters
          against the enclosing class, not the anonymous $N class it
@@ -52,12 +56,74 @@
          This section must only shrink.
          See avro-standalone-static-analysis.md for the disposition table. -->
     <Match>
-      <Class name="~org\.spf4j\.avro\.compiler\.idl\..*"/>
-      <Bug pattern="AI_ANNOTATION_ISSUES_NEEDS_NULLABLE,BED_BOGUS_EXCEPTION_DECLARATION,BED_HIERARCHICAL_EXCEPTION_DECLARATION,CC_CYCLOMATIC_COMPLEXITY,DLS_DEAD_LOCAL_STORE,DM_CONVERT_CASE,DM_DEFAULT_ENCODING,EI_EXPOSE_REP,EI_EXPOSE_REP2,FCBL_FIELD_COULD_BE_LOCAL,FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY,IMC_IMMATURE_CLASS_NO_TOSTRING,IMC_IMMATURE_CLASS_WRONG_FIELD_ORDER,IMPROPER_UNICODE,INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE,IOI_USE_OF_FILE_STREAM_CONSTRUCTORS,LEST_LOST_EXCEPTION_STACK_TRACE,MODIFICATION_AFTER_VALIDATION,MS_OOI_PKGPROTECT,MS_PKGPROTECT,MS_SHOULD_BE_FINAL,NM_CONFUSING,NM_METHOD_NAMING_CONVENTION,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,OCP_OVERLY_CONCRETE_PARAMETER,OS_OPEN_STREAM_EXCEPTION_PATH,PATH_TRAVERSAL_IN,PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS,PL_PARALLEL_LISTS,PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS,PSC_PRESIZE_COLLECTIONS,REC_CATCH_EXCEPTION,SEO_SUBOPTIMAL_EXPRESSION_ORDER,SF_SWITCH_NO_DEFAULT,SLS_SUSPICIOUS_LOOP_SEARCH,STT_STRING_PARSING_A_FIELD,UCF_USELESS_CONTROL_FLOW,UCPM_USE_CHARACTER_PARAMETERIZED_METHOD,UC_USELESS_VOID_METHOD,URF_UNREAD_FIELD,URLCONNECTION_SSRF_FD,USBR_UNNECESSARY_STORE_BEFORE_RETURN,UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR,UWF_UNWRITTEN_FIELD,VA_FORMAT_STRING_USES_NEWLINE,WMI_WRONG_MAP_ITERATOR"/>
+      <!-- Grammar-generated parser class: the priority 3 patterns of the
+           generated productions (production method names are the grammar's
+           own). All priority 1/2 and security instances in this class are
+           fixed in idl.jj or suppressed by annotations the grammar emits. -->
+      <Class name="org.spf4j.avro.compiler.idl.Idl"/>
+      <Bug pattern="AI_ANNOTATION_ISSUES_NEEDS_NULLABLE,DLS_DEAD_LOCAL_STORE,IMC_IMMATURE_CLASS_NO_TOSTRING,IMC_IMMATURE_CLASS_WRONG_FIELD_ORDER,NM_METHOD_NAMING_CONVENTION,SEO_SUBOPTIMAL_EXPRESSION_ORDER,UWF_UNWRITTEN_FIELD"/>
     </Match>
     <Match>
-      <Class name="~org\.spf4j\.avro\.specific\.test\..*"/>
-      <Bug pattern="CLI_CONSTANT_LIST_INDEX,EI_EXPOSE_REP,EI_EXPOSE_REP2,FE_FLOATING_POINT_EQUALITY,IMC_IMMATURE_CLASS_BAD_SERIALVERSIONUID,MS_EXPOSE_REP,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_INSTANCEOF,REC_CATCH_EXCEPTION,RI_REDUNDANT_INTERFACES,URV_INHERITED_METHOD_WITH_RELATED_TYPES,USBR_UNNECESSARY_STORE_BEFORE_RETURN,WEM_WEAK_EXCEPTION_MESSAGING"/>
+      <!-- LAST RESORT (mechanisms 1-2 impossible): the tokenImage array is
+           emitted into this constants interface by JavaCC's internal
+           template, driven by the grammar's token declarations; the
+           array's shape and exposure are fixed by that template, and the
+           interface is regenerated unconditionally on every build, so
+           neither the grammar nor the skeleton seeding can reach it. -->
+      <Class name="org.spf4j.avro.compiler.idl.IdlConstants"/>
+      <Bug pattern="MS_OOI_PKGPROTECT"/>
+    </Match>
+    <Match>
+      <!-- LAST RESORT (mechanisms 1-2 impossible): this class is emitted in
+           full by JavaCC's internal token-manager templates from the
+           grammar's token specifications. It is not one of the skeleton
+           files JavaCC creates only when absent, so the seeding mechanism
+           cannot reach it, and the grammar offers no hook to annotate or
+           reshape it. The priority 1 CC instances are the generated DFA
+           tables for this grammar's token set. -->
+      <Class name="org.spf4j.avro.compiler.idl.IdlTokenManager"/>
+      <Bug pattern="CC_CYCLOMATIC_COMPLEXITY,EI_EXPOSE_REP2,IMC_IMMATURE_CLASS_NO_TOSTRING,IMC_IMMATURE_CLASS_WRONG_FIELD_ORDER,MS_PKGPROTECT,NM_METHOD_NAMING_CONVENTION,PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS,REC_CATCH_EXCEPTION,SEO_SUBOPTIMAL_EXPRESSION_ORDER,SF_SWITCH_NO_DEFAULT,UCF_USELESS_CONTROL_FLOW,UC_USELESS_VOID_METHOD,URF_UNREAD_FIELD"/>
+    </Match>
+    <Match>
+      <!-- Hand-written classes of the idl package whose priority 3/4
+           instances were silently covered by the removed package-regex
+           entry; grandfathered exactly, like (a). -->
+      <Class name="org.spf4j.avro.compiler.idl.IsResolvedSchemaVisitor"/>
+      <Bug pattern="IMC_IMMATURE_CLASS_NO_TOSTRING"/>
+    </Match>
+    <Match>
+      <Class name="org.spf4j.avro.compiler.idl.SchemaResolver"/>
+      <Bug pattern="AI_ANNOTATION_ISSUES_NEEDS_NULLABLE"/>
+    </Match>
+    <Match>
+      <Class name="org.spf4j.avro.compiler.idl.TestCycle"/>
+      <Bug pattern="PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS"/>
+    </Match>
+    <Match>
+      <Class name="org.spf4j.avro.compiler.idl.TestIdl"/>
+      <Bug pattern="UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
+    </Match>
+    <Match>
+      <Class name="org.spf4j.avro.compiler.idl.TestIdl$GenTest"/>
+      <Bug pattern="OS_OPEN_STREAM_EXCEPTION_PATH"/>
+    </Match>
+    <Match>
+      <Class name="org.spf4j.avro.compiler.idl.TestLogicalTypes"/>
+      <Bug pattern="NM_CONFUSING,UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR"/>
+    </Match>
+    <Match>
+      <!-- JavaCC skeleton class Token: not seeded; its only instance not
+           covered by spf4j's global section is this priority 3 note. -->
+      <Class name="org.spf4j.avro.compiler.idl.Token"/>
+      <Bug pattern="AI_ANNOTATION_ISSUES_NEEDS_NULLABLE"/>
+    </Match>
+    <Match>
+      <!-- The codegen template compares primitive float/double fields with
+           != in generated equals(); switching the template to
+           Float.compare/Double.compare would change NaN and -0.0 equality
+           semantics for every generated record. Priority 3. -->
+      <Class name="org.spf4j.avro.specific.test.FullRecordV1"/>
+      <Bug pattern="FE_FLOATING_POINT_EQUALITY"/>
     </Match>
     <Match>
       <Class name="NoPackage"/>
