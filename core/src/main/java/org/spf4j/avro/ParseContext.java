@@ -318,33 +318,24 @@ public class ParseContext {
   }
 
   /**
-   * Optional override for tolerating undefined logical types while parsing.
-   * When {@code null} (the default), parsing falls back to
-   * {@link LogicalTypes#isAllowUndefinedLogicalTypes()} (thread-local
-   * override, then the {@code allowUndefinedLogicalTypes} system property),
-   * which is {@code false} unless explicitly enabled: an undefined logical
-   * type then fails parsing, as in the spf4j avro fork.
+   * Whether undefined logical types (logical type names that are neither
+   * built-in nor registered) are tolerated while parsing with this context.
+   * {@code false} by default: an undefined logical type then fails parsing
+   * with an {@link IllegalArgumentException}, as in the spf4j avro fork.
+   * This is plain per-instance configuration, set via
+   * {@link Schema.Parser#setAllowUndefinedLogicalTypes(boolean)}; there is
+   * deliberately no thread-local or system-property fallback.
    */
-  private Boolean allowUndefinedLogicalTypes;
+  private boolean allowUndefinedLogicalTypes;
 
-  /** The per-context override, or {@code null} when none was set. */
-  public Boolean getAllowUndefinedLogicalTypes() {
-    return allowUndefinedLogicalTypes;
-  }
-
-  /** Set (or clear, with {@code null}) the per-context override. */
-  public void setAllowUndefinedLogicalTypes(Boolean allowUndefinedLogicalTypes) {
+  /** Set whether undefined logical types are tolerated for this context's parses. */
+  public void setAllowUndefinedLogicalTypes(boolean allowUndefinedLogicalTypes) {
     this.allowUndefinedLogicalTypes = allowUndefinedLogicalTypes;
   }
 
-  /**
-   * Whether undefined logical types are tolerated for this parse: the
-   * per-context override when set, otherwise
-   * {@link LogicalTypes#isAllowUndefinedLogicalTypes()}.
-   */
+  /** Whether undefined logical types are tolerated for this context's parses. */
   public boolean isAllowUndefinedLogicalTypes() {
-    return allowUndefinedLogicalTypes != null ? allowUndefinedLogicalTypes
-        : LogicalTypes.isAllowUndefinedLogicalTypes();
+    return allowUndefinedLogicalTypes;
   }
 
   public boolean hasNewSchemas() {

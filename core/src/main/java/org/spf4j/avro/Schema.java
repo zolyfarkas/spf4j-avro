@@ -1686,9 +1686,8 @@ public abstract class Schema extends JsonProperties implements Serializable {
     /**
      * Set whether this parser tolerates undefined logical types (logical
      * type names that are neither built-in nor registered). By default they
-     * fail parsing; when a parser does not set this, the ambient fallback of
-     * {@link LogicalTypes#isAllowUndefinedLogicalTypes()} (thread-local
-     * override, then system property) applies.
+     * fail parsing. This is per-instance configuration of this parser only;
+     * there is no thread-local or system-property fallback.
      */
     public Parser setAllowUndefinedLogicalTypes(boolean allowUndefinedLogicalTypes) {
       context.setAllowUndefinedLogicalTypes(allowUndefinedLogicalTypes);
@@ -1723,43 +1722,12 @@ public abstract class Schema extends JsonProperties implements Serializable {
     }
 
     /**
-     * Parse a schema from the provided stream, explicitly choosing whether
-     * undefined logical types are tolerated for this parse only; the
-     * parser's own setting is restored afterwards.
-     */
-    public Schema parse(InputStream in, boolean allowUndefinedLogicalTypes) throws IOException {
-      Boolean saved = context.getAllowUndefinedLogicalTypes();
-      context.setAllowUndefinedLogicalTypes(allowUndefinedLogicalTypes);
-      try {
-        return parse(in);
-      } finally {
-        context.setAllowUndefinedLogicalTypes(saved);
-      }
-    }
-
-    /**
      * Parse a schema from the provided reader. If named, the schema is added to the
      * names known to this parser. The reader stays open after the parsing.
      */
     public Schema parse(Reader in) throws IOException {
       JsonParser parser = FACTORY.createParser(in).disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
       return parse(parser, true, true);
-    }
-
-    /**
-     * Parse a schema from the provided reader, explicitly choosing whether
-     * undefined logical types are tolerated for this parse only; the
-     * parser's own setting is restored afterwards. This is the per-parse
-     * opt-in surface of the spf4j avro fork (commit ef9086f52).
-     */
-    public Schema parse(Reader in, boolean allowUndefinedLogicalTypes) throws IOException {
-      Boolean saved = context.getAllowUndefinedLogicalTypes();
-      context.setAllowUndefinedLogicalTypes(allowUndefinedLogicalTypes);
-      try {
-        return parse(in);
-      } finally {
-        context.setAllowUndefinedLogicalTypes(saved);
-      }
     }
 
     /** Read a schema from one or more json strings */
@@ -1779,21 +1747,6 @@ public abstract class Schema extends JsonProperties implements Serializable {
         return parse(FACTORY.createParser(s), false, true);
       } catch (IOException e) {
         throw new SchemaParseException(e);
-      }
-    }
-
-    /**
-     * Parse a schema from the provided string, explicitly choosing whether
-     * undefined logical types are tolerated for this parse only; the
-     * parser's own setting is restored afterwards.
-     */
-    public Schema parse(String s, boolean allowUndefinedLogicalTypes) {
-      Boolean saved = context.getAllowUndefinedLogicalTypes();
-      context.setAllowUndefinedLogicalTypes(allowUndefinedLogicalTypes);
-      try {
-        return parse(s);
-      } finally {
-        context.setAllowUndefinedLogicalTypes(saved);
       }
     }
 

@@ -111,15 +111,15 @@ public class Idl implements Closeable {
 
   /**
    * Whether schemas using an undefined logical type (a {@code logicalType}
-   * name nothing registers) are tolerated by this compilation. Initialized
-   * from {@link LogicalTypes#isAllowUndefinedLogicalTypes()} (the core
-   * thread-local / {@code allowUndefinedLogicalTypes} system property) when
-   * this parser is constructed; the IDL parser builds schemas
+   * name nothing registers) are tolerated by this compilation. Plain
+   * per-instance state of this parser, {@code false} (strict) by default,
+   * set via {@link #setIsAllowUndefinedLogicalTypes(boolean)}; there is no
+   * thread-local or system-property default. The IDL parser builds schemas
    * programmatically and does not go through {@code Schema.Parser}, so it
    * needs this compiler-level equivalent of the spf4j avro fork's toggle to
    * enforce the same strict-by-default behavior on its own parser path.
    */
-  private boolean allowUndefinedLogicalTypes = LogicalTypes.isAllowUndefinedLogicalTypes();
+  private boolean allowUndefinedLogicalTypes;
 
   public boolean isAllowUndefinedLogicalTypes() {
     return allowUndefinedLogicalTypes;

@@ -121,40 +121,17 @@ public class LogicalTypes {
     return fromSchemaImpl(schema, false);
   }
 
-  private static final ThreadLocal<Boolean> ALLOW_UNDEF_LT = new ThreadLocal<>();
-
-  /**
-   * Whether undefined logical types are tolerated on the current thread: the
-   * thread-local override set via
-   * {@link #setAllowUndefinedLogicalTypesThreadLocal(Boolean)} when present,
-   * otherwise the {@code allowUndefinedLogicalTypes} system property.
-   * Ported from the spf4j avro fork (commit ef9086f52).
-   */
-  public static boolean isAllowUndefinedLogicalTypes() {
-    Boolean tlb = ALLOW_UNDEF_LT.get();
-    if (tlb == null) {
-      return Boolean.getBoolean("allowUndefinedLogicalTypes");
-    } else {
-      return tlb;
-    }
-  }
-
-  public static void setAllowUndefinedLogicalTypesThreadLocal(final Boolean isAllowUndefinedLogicalTypes) {
-    ALLOW_UNDEF_LT.set(isAllowUndefinedLogicalTypes);
-  }
-
-  public static Boolean getAllowUndefinedLogicalTypesThreadLocal() {
-    return ALLOW_UNDEF_LT.get();
-  }
-
   /**
    * Returns the {@link LogicalType} from the schema, if one is present.
    * Unlike {@link #fromSchemaIgnoreInvalid(Schema)}, an undefined logical
    * type (a name that is neither a built-in logical type nor registered via
    * {@link #register(String, LogicalTypeFactory)}) is an error unless
-   * {@code allowUndefinedLogicalTypes} is set: an
+   * {@code allowUndefinedLogicalTypes} is {@code true}: an
    * {@link IllegalArgumentException} is thrown, as in the spf4j avro fork.
-   * Defined-but-invalid logical types keep the lenient behavior of
+   * The tolerance is an explicit parameter supplied by the caller (during
+   * parsing, from the {@link ParseContext}); there is deliberately no
+   * thread-local or system-property fallback. Defined-but-invalid logical
+   * types keep the lenient behavior of
    * {@link #fromSchemaIgnoreInvalid(Schema)} and yield {@code null}.
    */
   public static LogicalType fromSchema(Schema schema, final boolean allowUndefinedLogicalTypes) {

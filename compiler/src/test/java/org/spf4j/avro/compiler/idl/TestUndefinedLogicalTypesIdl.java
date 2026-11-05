@@ -17,10 +17,8 @@
  */
 package org.spf4j.avro.compiler.idl;
 
-import org.spf4j.avro.LogicalTypes;
 import org.spf4j.avro.Protocol;
 import org.spf4j.avro.Schema;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,22 +32,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * {@code Idl.setIsAllowUndefinedLogicalTypes}): an IDL protocol whose schema
  * uses an undefined logical type (a {@code logicalType} name nothing
  * registers) must fail compilation by default, and must compile with the
- * {@code allowUndefinedLogicalTypes} opt-in active. The opt-in is driven
- * through this library's actual surfaces: the {@link LogicalTypes}
- * thread-local from core, captured when the {@link Idl} parser is
- * constructed, and the compiler-level {@code Idl} toggle that overrides it
- * (the minimal equivalent of the fork's toggle, needed because the IDL
- * parser builds schemas programmatically and does not go through
- * {@code Schema.Parser}/{@code ParseContext}).
+ * {@code allowUndefinedLogicalTypes} opt-in active. The opt-in is the
+ * per-instance {@code Idl} toggle only — plain instance state, strict by
+ * default, with no thread-local or system-property default (the IDL parser
+ * builds schemas programmatically and does not go through
+ * {@code Schema.Parser}/{@code ParseContext}, so it carries the equivalent
+ * of the core per-parser setting on its own parser path).
  */
 public class TestUndefinedLogicalTypesIdl {
 
   private static final String RESOURCE = "undefinedLogicalType.avdl";
-
-  @AfterEach
-  public void clearAmbientOptIn() {
-    LogicalTypes.setAllowUndefinedLogicalTypesThreadLocal(null);
-  }
 
   private static Idl newIdl() {
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
@@ -66,8 +58,7 @@ public class TestUndefinedLogicalTypesIdl {
     assertNull(values.getLogicalType());
   }
 
-  @Test
-  void undefinedLogicalTypeFailsCompilationByDefault() {
+  private static void assertCompilationFails() {
     IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> {
       try (Idl idl = newIdl()) {
         idl.CompilationUnit();
@@ -77,11 +68,8 @@ public class TestUndefinedLogicalTypesIdl {
   }
 
   @Test
-  void undefinedLogicalTypeCompilesWithThreadLocalOptIn() throws Exception {
-    LogicalTypes.setAllowUndefinedLogicalTypesThreadLocal(Boolean.TRUE);
-    try (Idl idl = newIdl()) {
-      assertUndefinedLtRetained(idl.CompilationUnit());
-    }
+  void undefinedLogicalTypeFailsCompilationByDefault() {
+    assertCompilationFails();
   }
 
   @Test
@@ -93,10 +81,20 @@ public class TestUndefinedLogicalTypesIdl {
   }
 
   @Test
-  void idlToggleFalseOverridesAmbientThreadLocalOptIn() {
-    LogicalTypes.setAllowUndefinedLogicalTypesThreadLocal(Boolean.TRUE);
+  void idlToggleIsPerInstance() throws Exception {
+    try (Idl idl = newIdl()) {
+      idl.setIsAllowUndefinedLogicalTypes(true);
+      assertUndefinedLtRetained(idl.CompilationUnit());
+    }
+    // a separate, default Idl instance is unaffected by the toggle above
+    assertCompilationFails();
+  }
+
+  @Test
+  void idlToggleTurnedBackOffRestoresStrictCompilation() {
     assertThrows(IllegalArgumentException.class, () -> {
       try (Idl idl = newIdl()) {
+        idl.setIsAllowUndefinedLogicalTypes(true);
         idl.setIsAllowUndefinedLogicalTypes(false);
         idl.CompilationUnit();
       }
