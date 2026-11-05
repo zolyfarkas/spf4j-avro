@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.file;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -40,11 +41,17 @@ final class NullCodec extends Codec {
     return DataFileConstants.NULL_CODEC;
   }
 
+  @SuppressFBWarnings(value = "BED_BOGUS_EXCEPTION_DECLARATION",
+      justification = "the declared exception set is the published API contract; narrowing it would break"
+          + "implementers and existing callers")
   @Override
   public ByteBuffer compress(ByteBuffer buffer) throws IOException {
     return buffer;
   }
 
+  @SuppressFBWarnings(value = "BED_BOGUS_EXCEPTION_DECLARATION",
+      justification = "the declared exception set is the published API contract; narrowing it would break"
+          + "implementers and existing callers")
   @Override
   public ByteBuffer decompress(ByteBuffer data) throws IOException {
     return data;

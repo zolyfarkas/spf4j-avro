@@ -205,6 +205,9 @@ public class TestSpecificData {
       return allInterfaces;
     }
 
+    @SuppressFBWarnings(value = "OCP_OVERLY_CONCRETE_PARAMETER",
+        justification = "the signature is the published API, and the implementation uses operations specific to the"
+            + "concrete parameter type")
     private static Method findFirst(ExecutableElement ref, List<Method> methods) {
       return methods.stream().filter((Method m) -> GeneratedCodeController.areMethodSame(ref, m)).findFirst()
           .orElse(null);

@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.junit.jupiter.api.Test;
 
@@ -41,6 +42,9 @@ public class TestBinaryData {
     assertEquals(nextIndex, 10);
   }
 
+  @SuppressFBWarnings(value = "CE_CLASS_ENVY",
+      justification = "the method's function is to operate on the collaborator type's data (a visitor/converter"
+          + "over the schema model); the feature concentration is the purpose of the method")
   @Test
   void testIntLongVleEquality() {
     byte[] intResult = new byte[9];

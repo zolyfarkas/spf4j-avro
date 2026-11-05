@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 
@@ -35,6 +36,9 @@ import org.spf4j.avro.path.LocationStep;
  * {@link org.spf4j.avro.io.DatumWriter DatumWriter} for generated Java
  * classes.
  */
+@SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
+    justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
+        + "builders, readers and writers are mutually referential by design")
 public class SpecificDatumWriter<T> extends GenericDatumWriter<T> {
   public SpecificDatumWriter() {
     super(SpecificData.get());
@@ -100,6 +104,9 @@ public class SpecificDatumWriter<T> extends GenericDatumWriter<T> {
     return ((Conversion<Object>) conversion).tryDirectEncode(value, out, fieldSchema, DatumContext.of(getData()));
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_HAS_CHECKED",
+      justification = "this API's documented error model is unchecked: checked exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   @Override
   protected void writeField(Object datum, Schema.Field f, Encoder out, Object state) throws IOException {
     if (datum instanceof SpecificRecordBase) {

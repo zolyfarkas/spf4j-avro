@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -56,6 +57,9 @@ import org.junit.Test;
  */
 public class TestExtendedJsonEncoderPort {
 
+  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+      justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
   @Test
   public void testBooleanHandling() throws IOException {
     Schema recordSchema = SchemaBuilder.record("TestRecord").fields()

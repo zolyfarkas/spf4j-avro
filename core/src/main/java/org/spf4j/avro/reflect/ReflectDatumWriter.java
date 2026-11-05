@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.reflect;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,6 +37,9 @@ import org.spf4j.avro.util.MapEntry;
  * {@link org.spf4j.avro.io.DatumWriter DatumWriter} for existing classes via
  * Java reflection.
  */
+@SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
+    justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
+        + "builders, readers and writers are mutually referential by design")
 public class ReflectDatumWriter<T> extends SpecificDatumWriter<T> {
   public ReflectDatumWriter() {
     this(ReflectData.get());
@@ -174,6 +178,9 @@ public class ReflectDatumWriter<T> extends SpecificDatumWriter<T> {
     }
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_HAS_CHECKED",
+      justification = "this API's documented error model is unchecked: checked exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   @Override
   protected void writeField(Object record, Field f, Encoder out, Object state) throws IOException {
     if (state != null) {

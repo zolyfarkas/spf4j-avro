@@ -49,6 +49,9 @@ public class TestSchemaBuilder {
   @TempDir
   public File DIR;
 
+  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+      justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
   @Test
   void record() {
     Schema schema = SchemaBuilder.record("myrecord").namespace("org.example").aliases("oldrecord").fields().name("f0")
@@ -97,6 +100,12 @@ public class TestSchemaBuilder {
     assertEquals("v2real", s.getProp("p2"));
   }
 
+  @SuppressFBWarnings(value = {"CE_CLASS_ENVY", "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION"},
+      justification = "CE_CLASS_ENVY: the method's function is to operate on the collaborator type's data (a"
+          + "visitor/converter over the schema model); the feature concentration is the purpose of the"
+          + "method; NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION: the boolean values are data of a"
+          + "Boolean-typed slot (parameterized-test arguments, a Boolean-valued map or a generic"
+          + "container); they are stored as Boolean objects by design")
   @Test
   void objectProps() {
     Schema s = SchemaBuilder.builder().intBuilder().prop("booleanProp", true).prop("intProp", Integer.MAX_VALUE)
@@ -124,6 +133,9 @@ public class TestSchemaBuilder {
     assertEquals("abc", s.getObjectProp("stringProp"));
   }
 
+  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+      justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
   @Test
   void fieldObjectProps() {
     Schema s = SchemaBuilder.builder().record("MyRecord").fields().name("myField").prop("booleanProp", true)
@@ -157,6 +169,9 @@ public class TestSchemaBuilder {
     assertEquals("default", f.getObjectProp("unknwon", "default"));
   }
 
+  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+      justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
   @Test
   void arrayObjectProp() {
     List<Object> values = new ArrayList<>();
@@ -189,6 +204,9 @@ public class TestSchemaBuilder {
     assertEquals("abc", iter.next());
   }
 
+  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+      justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
   @Test
   void fieldArrayObjectProp() {
     List<Object> values = new ArrayList<>();
@@ -224,6 +242,9 @@ public class TestSchemaBuilder {
     assertEquals("abc", iter.next());
   }
 
+  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+      justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
   @Test
   void mapObjectProp() {
     Map<String, Object> values = new HashMap<>();
@@ -261,6 +282,9 @@ public class TestSchemaBuilder {
     assertEquals("abc", valueMap.get("stringKey"));
   }
 
+  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+      justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
   @Test
   void fieldMapObjectProp() {
     Map<String, Object> values = new HashMap<>();
@@ -662,6 +686,9 @@ public class TestSchemaBuilder {
     });
   }
 
+  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+      justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
   @Test
   void fieldTypesAndDefaultValues() {
     byte[] bytedef = new byte[] { 3 };

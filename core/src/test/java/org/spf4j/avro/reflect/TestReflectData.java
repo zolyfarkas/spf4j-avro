@@ -114,7 +114,13 @@ public class TestReflectData {
   }
 
   static class User {
+    @SuppressFBWarnings(value = "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD",
+        justification = "the field is populated or read reflectively (or by the framework under test); there is no"
+            + "direct source reference by design")
     public String first = "Avro";
+    @SuppressFBWarnings(value = "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD",
+        justification = "the field is populated or read reflectively (or by the framework under test); there is no"
+            + "direct source reference by design")
     public String last = "Apache";
   }
 

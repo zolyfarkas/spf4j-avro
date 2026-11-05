@@ -106,10 +106,13 @@ public class BinaryMessageDecoder<D> extends MessageDecoder.BaseDecoder<D> {
    * @param readSchema the {@link Schema} used to construct datum instances
    * @param resolver   a {@link SchemaStore} used to find schemas by fingerprint
    */
-  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+  @SuppressFBWarnings(value = {"EI_EXPOSE_REP2", "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS"},
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths; PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS: construction completes"
+          + "through the class's own initialization protocol (its template methods and registration with"
+          + "the owning model); the access to the partially constructed object stays inside the class's"
+          + "own constructor chain by design")
   public BinaryMessageDecoder(GenericData model, Schema readSchema, SchemaStore resolver) {
     this.model = model;
     this.readSchema = readSchema;

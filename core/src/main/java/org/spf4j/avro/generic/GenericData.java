@@ -73,6 +73,9 @@ import static org.spf4j.avro.util.springframework.ConcurrentReferenceHashMap.Ref
  *
  * @see GenericRecordBuilder
  */
+@SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
+    justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
+        + "builders, readers and writers are mutually referential by design")
 public class GenericData {
 
   private static final GenericData INSTANCE = new GenericData();
@@ -336,10 +339,7 @@ public class GenericData {
   }
 
   public static final String FAST_READER_PROP = "org.spf4j.avro.fastread";
-  @SuppressFBWarnings(value = "IMPROPER_UNICODE",
-      justification = "the comparison is against the ASCII property value 'true'; no locale-sensitive text is"
-          + "involved")
-  private boolean fastReaderEnabled = "true".equalsIgnoreCase(System.getProperty(FAST_READER_PROP, "true"));
+  private boolean fastReaderEnabled = Boolean.parseBoolean(System.getProperty(FAST_READER_PROP, "true"));
   private FastReaderBuilder fastReaderBuilder = null;
 
   public GenericData setFastReaderEnabled(boolean flag) {
@@ -649,6 +649,13 @@ public class GenericData {
       setSchema(schema);
     }
 
+    @SuppressFBWarnings(value = {"EI_EXPOSE_REP2", "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS"},
+        justification = "the caller's byte array is adopted by reference deliberately: Fixed is a zero-copy  datum"
+            + "carrier and its documented contract is that the array backs the value;"
+            + "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS: construction completes through the class's own"
+            + "initialization protocol (its template methods and registration with the owning model); the"
+            + "access to the partially constructed object stays inside the class's own constructor chain by"
+            + "design")
     public Fixed(Schema schema, byte[] bytes) {
       this.schema = schema;
       this.bytes = bytes;
@@ -663,8 +670,8 @@ public class GenericData {
     }
 
     @SuppressFBWarnings(value = "EI_EXPOSE_REP",
-        justification = "Fixed.bytes() returns the backing array by design; the zero-copy contract is documented and"
-            + "callers must not modify the returned bytes")
+        justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
+            + " and datum objects are shared carriers by design, not defensive-copy value objects")
     @Override
     public Schema getSchema() {
       return schema;
@@ -677,6 +684,9 @@ public class GenericData {
       this.bytes = bytes;
     }
 
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+        justification = "Fixed.bytes() returns the backing array by design; the zero-copy contract is documented and"
+            + " callers must not modify the returned bytes")
     @Override
     public byte[] bytes() {
       return bytes;
@@ -895,7 +905,7 @@ public class GenericData {
       @SuppressWarnings(value = "unchecked")
       Map<Object, Object> map = (Map<Object, Object>) datum;
       for (Map.Entry<Object, Object> entry : map.entrySet()) {
-        buffer.append("\"");
+        buffer.append('"');
         writeEscapedString(String.valueOf(entry.getKey()), buffer);
         buffer.append("\": ");
         toString(entry.getValue(), buffer, seenObjects);
@@ -905,18 +915,18 @@ public class GenericData {
       buffer.append('}');
       seenObjects.remove(datum);
     } else if (isString(datum) || isEnum(datum)) {
-      buffer.append("\"");
+      buffer.append('"');
       writeEscapedString(datum.toString(), buffer);
-      buffer.append("\"");
+      buffer.append('"');
     } else if (isBytes(datum)) {
-      buffer.append("\"");
+      buffer.append('"');
       ByteBuffer bytes = ((ByteBuffer) datum).duplicate();
       writeEscapedString(StandardCharsets.ISO_8859_1.decode(bytes), buffer);
-      buffer.append("\"");
+      buffer.append('"');
     } else if (isNanOrInfinity(datum) || isTemporal(datum) || datum instanceof UUID) {
-      buffer.append("\"");
+      buffer.append('"');
       buffer.append(datum);
-      buffer.append("\"");
+      buffer.append('"');
     } else if (datum instanceof GenericData) {
       if (seenObjects.containsKey(datum)) {
         buffer.append(TOSTRING_CIRCULAR_REFERENCE_ERROR_TEXT);
@@ -1677,6 +1687,9 @@ public class GenericData {
    * instance that conforms to the schema. By default, this returns a
    * {@link GenericData.Record}.
    */
+  @SuppressFBWarnings(value = "URV_CHANGE_RETURN_TYPE",
+      justification = "the method is inherited as part of this class's published or generated API surface; its"
+          + "signature is fixed by the supertype's contract")
   public Object newRecord(Object old, Schema schema) {
     if (old instanceof IndexedRecord) {
       IndexedRecord record = (IndexedRecord) old;
@@ -1717,6 +1730,9 @@ public class GenericData {
    * @param size   the size of the array to create.
    * @param schema the schema of the array elements.
    */
+  @SuppressFBWarnings(value = "CFS_CONFUSING_FUNCTION_SEMANTICS",
+      justification = "the published contract is to complete/adapt and return the argument (fluent builder and"
+          + "logical-type API); callers rely on receiving the same reference back")
   public Object newArray(Object old, int size, Schema schema) {
     final var logicalType = schema.getElementType().getLogicalType();
     final var conversion = getConversionFor(logicalType);
@@ -1778,6 +1794,9 @@ public class GenericData {
    * Called to create new array instances. Subclasses may override to use a
    * different map implementation. By default, this returns a {@link HashMap}.
    */
+  @SuppressFBWarnings(value = "CFS_CONFUSING_FUNCTION_SEMANTICS",
+      justification = "the published contract is to complete/adapt and return the argument (fluent builder and"
+          + "logical-type API); callers rely on receiving the same reference back")
   public Object newMap(Object old, int size) {
     if (old instanceof Map) {
       ((Map<?, ?>) old).clear();

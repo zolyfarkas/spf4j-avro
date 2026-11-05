@@ -63,6 +63,9 @@ public class TestCircularReferences {
       this.refFieldName = schema.getProp(REF_FIELD_NAME);
     }
 
+    @SuppressFBWarnings(value = "CFS_CONFUSING_FUNCTION_SEMANTICS",
+        justification = "the published contract is to complete/adapt and return the argument (fluent builder and"
+            + "logical-type API); callers rely on receiving the same reference back")
     @Override
     public Schema addToSchema(Schema schema) {
       super.addToSchema(schema);
@@ -116,6 +119,9 @@ public class TestCircularReferences {
       this.idFieldName = schema.getProp(ID_FIELD_NAME);
     }
 
+    @SuppressFBWarnings(value = "CFS_CONFUSING_FUNCTION_SEMANTICS",
+        justification = "the published contract is to complete/adapt and return the argument (fluent builder and"
+            + "logical-type API); callers rely on receiving the same reference back")
     @Override
     public Schema addToSchema(Schema schema) {
       super.addToSchema(schema);
@@ -239,6 +245,9 @@ public class TestCircularReferences {
         return Reference.REFERENCE;
       }
 
+      @SuppressFBWarnings(value = "CFS_CONFUSING_FUNCTION_SEMANTICS",
+          justification = "the published contract is to complete/adapt and return the argument (fluent builder and"
+              + "logical-type API); callers rely on receiving the same reference back")
       @Override
       public IndexedRecord fromRecord(final IndexedRecord record, Schema schema, LogicalType type) {
         // read side: resolve the record or save a callback

@@ -15,6 +15,7 @@
  */
 
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.spf4j.avro.SystemLimitException.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,6 +25,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Function;
 
+@SuppressFBWarnings(value = "NM_CLASS_NOT_EXCEPTION",
+    justification = "the name is fixed by the API or fixture this class mirrors; renaming would break the"
+        + "correspondence it exists to keep")
 public class TestSystemLimitException {
 
   /** Delegated here for package visibility. */

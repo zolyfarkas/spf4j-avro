@@ -28,6 +28,9 @@ import java.util.List;
  * a {@link NullPointerException} with extra fields used to trace back the path
  * to a null value through an object graph
  */
+@SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
+    justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
+        + "builders, readers and writers are mutually referential by design")
 public class TracingNullPointException extends NullPointerException
     implements PathTracingException<NullPointerException> {
   private final NullPointerException cause;

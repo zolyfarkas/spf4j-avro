@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -35,6 +36,16 @@ import org.spf4j.avro.util.Utf8;
  * @see Encoder
  * @see Decoder
  */
+@SuppressFBWarnings(value = "ACEM_ABSTRACT_CLASS_EMPTY_METHODS",
+    justification = "ACEM_ABSTRACT_CLASS_EMPTY_METHODS: the empty methods are the visitor/adapter extension"
+        + "points: subclasses override only the callbacks they need; the defaults are deliberately"
+        + "no-ops; ACEM_ABSTRACT_CLASS_EMPTY_METHODS: the empty methods are the visitor/adapter"
+        + "extension points: subclasses override only the callbacks they need; the defaults are"
+        + "deliberately no-ops; ACEM_ABSTRACT_CLASS_EMPTY_METHODS: the empty methods are the"
+        + "visitor/adapter extension points: subclasses override only the callbacks they need; the"
+        + "defaults are deliberately no-ops; ACEM_ABSTRACT_CLASS_EMPTY_METHODS: the empty methods are"
+        + "the visitor/adapter extension points: subclasses override only the callbacks they need; the"
+        + "defaults are deliberately no-ops")
 public abstract class BinaryEncoder extends Encoder {
 
   /*

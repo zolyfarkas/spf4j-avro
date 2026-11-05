@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io.parsing;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,9 @@ import org.spf4j.avro.Schema.Field;
 /**
  * The class that generates validating grammar.
  */
+@SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
+    justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
+        + "builders, readers and writers are mutually referential by design")
 public class ValidatingGrammarGenerator {
   /**
    * Returns the non-terminal that is the start symbol for the grammar for the

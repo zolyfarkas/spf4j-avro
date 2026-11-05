@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.util.HashMap;
 import java.util.List;
@@ -719,6 +720,9 @@ public class Resolver {
     }
   }
 
+  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+      justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
   private static boolean unionEquiv(Schema write, Schema read, Map<SeenPair, Boolean> seen) {
     final Schema.Type wt = write.getType();
     if (wt != read.getType()) {

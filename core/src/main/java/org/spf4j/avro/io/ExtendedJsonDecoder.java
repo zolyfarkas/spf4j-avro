@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -259,6 +260,9 @@ public final class ExtendedJsonDecoder extends JsonDecoder implements JsonExtens
     return null;
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CHECKED",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   @Override
   AvroTypeException error(String type) {
     try {
@@ -271,6 +275,9 @@ public final class ExtendedJsonDecoder extends JsonDecoder implements JsonExtens
     }
   }
 
+  @SuppressFBWarnings(value = "BL_BURYING_LOGIC",
+      justification = "the compound condition is the specification's rule for this decision, kept in one expression"
+          + "so the rule reads as written")
   private boolean injectDefaultValueIfAvailable(final JsonParser in, Symbol.FieldAdjustAction action)
       throws IOException {
     JsonNode defVal = action.defaultValue;
@@ -370,6 +377,9 @@ public final class ExtendedJsonDecoder extends JsonDecoder implements JsonExtens
     return buf;
   }
 
+  @SuppressFBWarnings(value = "ICAST_QUESTIONABLE_UNSIGNED_RIGHT_SHIFT",
+      justification = "zigzag varint encoding: the unsigned shift and the byte truncation are the encoding's"
+          + " definition, and the branch above bounds the value to the two-byte form")
   private static void writeInt(final int n, final ByteBuffer buf) {
     int val = (n << 1) ^ (n >> 31);
     if ((val & ~0x7F) == 0) {

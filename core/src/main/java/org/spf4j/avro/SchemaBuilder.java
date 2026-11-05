@@ -386,6 +386,9 @@ public class SchemaBuilder {
       return (props != null);
     }
 
+    @SuppressFBWarnings(value = "CFS_CONFUSING_FUNCTION_SEMANTICS",
+        justification = "the published contract is to complete/adapt and return the argument (fluent builder and"
+            + "logical-type API); callers rely on receiving the same reference back")
     final <T extends JsonProperties> T addPropsTo(T jsonable) {
       if (hasProps()) {
         for (Map.Entry<String, JsonNode> prop : props.entrySet()) {
@@ -455,6 +458,9 @@ public class SchemaBuilder {
       return schema;
     }
 
+    @SuppressFBWarnings(value = "CFS_CONFUSING_FUNCTION_SEMANTICS",
+        justification = "the published contract is to complete/adapt and return the argument (fluent builder and"
+            + "logical-type API); callers rely on receiving the same reference back")
     final Field addAliasesTo(Field field) {
       if (null != aliases) {
         for (String alias : aliases) {
@@ -2720,6 +2726,9 @@ public class SchemaBuilder {
   }
 
   // create default value JsonNodes from objects
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   private static JsonNode toJsonNode(Object o) {
     try {
       String s;

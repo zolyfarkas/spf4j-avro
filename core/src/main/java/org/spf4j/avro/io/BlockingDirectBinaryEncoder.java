@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -80,6 +81,9 @@ public class BlockingDirectBinaryEncoder extends DirectBinaryEncoder {
     this.out = buf;
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   private void endBlock() {
     if (depth == 0) {
       throw new RuntimeException("Called endBlock, while not buffering a block");

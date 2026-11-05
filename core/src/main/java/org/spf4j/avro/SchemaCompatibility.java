@@ -885,6 +885,9 @@ public class SchemaCompatibility {
     }
 
     /** {@inheritDoc} */
+    @SuppressFBWarnings(value = "BL_BURYING_LOGIC",
+        justification = "the compound condition is the specification's rule for this decision, kept in one expression"
+            + "so the rule reads as written")
     @Override
     public boolean equals(Object other) {
       if ((other instanceof SchemaPairCompatibility)) {

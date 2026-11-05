@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.util.internal;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -39,6 +40,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.TokenBuffer;
 
+@SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
+    justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
+        + "builders, readers and writers are mutually referential by design")
 public class JacksonUtils {
   /**
    * Object Mapper used for toJsonNode method.
@@ -56,6 +60,9 @@ public class JacksonUtils {
   private JacksonUtils() {
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   public static JsonNode toJsonNode(Object datum) {
     if (datum == null) {
       return null;

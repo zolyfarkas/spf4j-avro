@@ -30,9 +30,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TestSchemaResolver {
 
-  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+  @SuppressFBWarnings(value = {"PATH_TRAVERSAL_IN", "BED_HIERARCHICAL_EXCEPTION_DECLARATION"},
       justification = "test code: the file is built from constant names under the test's own directory; there is no"
-          + "untrusted input")
+          + "untrusted input; BED_HIERARCHICAL_EXCEPTION_DECLARATION: the declared exception set is the"
+          + "published API contract; narrowing it would break implementers and existing callers")
   @Test
   void resolving() throws ParseException, MalformedURLException, IOException {
     File file = new File(".");

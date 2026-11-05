@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -173,6 +174,9 @@ public class DecoderFactory {
    * @see DirectBinaryDecoder
    * @see Decoder
    */
+  @SuppressFBWarnings(value = "BC_UNCONFIRMED_CAST",
+      justification = "the cast is protected by the schema/type dispatch that selects this branch: the runtime type"
+          + "is fixed by that invariant")
   public BinaryDecoder directBinaryDecoder(InputStream in, BinaryDecoder reuse) {
     if (null == reuse || !reuse.getClass().equals(DirectBinaryDecoder.class)) {
       return new DirectBinaryDecoder(in);

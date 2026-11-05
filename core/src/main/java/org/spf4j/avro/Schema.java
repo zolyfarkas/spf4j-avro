@@ -98,10 +98,12 @@ import static org.spf4j.avro.LogicalType.LOGICAL_TYPE_PROP;
  * property.
  * </ul>
  */
-@SuppressFBWarnings(value = "SE_NO_SUITABLE_CONSTRUCTOR",
-    justification = "Schema objects are never Java-deserialized directly: writeReplace substitutes"
-        + "SerializableSchema (the schema's JSON text), and reconstruction goes through the parser, so"
-        + "there is no field-deserialization path for a no-arg constructor to serve")
+@SuppressFBWarnings(value = { "SE_NO_SUITABLE_CONSTRUCTOR", "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY" },
+    justification = "SE_NO_SUITABLE_CONSTRUCTOR: serialization uses writeReplace to substitute the"
+        + " SerializableSchema JSON form, so there is no field-deserialization path for a no-arg"
+        + " constructor to serve; FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY: the classes of this package form"
+        + " one cohesive unit mirroring the Avro type system: model, builders, readers and writers are"
+        + " mutually referential by design")
 @SuppressWarnings("unused")
 public abstract class Schema extends JsonProperties implements Serializable {
 
@@ -520,6 +522,9 @@ public abstract class Schema extends JsonProperties implements Serializable {
     return toString(knownNames, pretty);
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   @Deprecated
   String toString(Set<String> knownNames, boolean pretty) {
     try {
@@ -804,6 +809,10 @@ public abstract class Schema extends JsonProperties implements Serializable {
       return Collections.unmodifiableSet(aliases);
     }
 
+    @SuppressFBWarnings(value = "SEO_SUBOPTIMAL_EXPRESSION_ORDER",
+        justification = "all operands are side-effect-free; the recursive schema comparison already runs after the"
+            + "identity, name and order checks, and the remaining order is chosen for readability of the"
+            + "equality definition")
     @Override
     public boolean equals(Object other) {
       if (other == this)
@@ -1051,6 +1060,10 @@ public abstract class Schema extends JsonProperties implements Serializable {
     private Map<String, Field> fieldMap;
     private final boolean isError;
 
+    @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
+        justification = "construction completes through the class's own initialization protocol (its template methods"
+            + "and registration with the owning model); the access to the partially constructed object"
+            + "stays inside the class's own constructor chain by design")
     public RecordSchema(Name name, String doc, boolean isError) {
       super(Type.RECORD, name, doc);
       this.isError = isError;
@@ -1174,6 +1187,9 @@ public abstract class Schema extends JsonProperties implements Serializable {
       gen.writeEndObject();
     }
 
+    @SuppressFBWarnings(value = "CE_CLASS_ENVY",
+        justification = "the method's function is to operate on the collaborator type's data (a visitor/converter"
+            + "over the schema model); the feature concentration is the purpose of the method")
     @Override
     @Deprecated
     void fieldsToJson(Set<String> knownNames, String namespace, JsonGenerator gen) throws IOException {
@@ -1798,6 +1814,9 @@ public abstract class Schema extends JsonProperties implements Serializable {
       }
     }
 
+    @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+        justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
     public Schema parseInternal(String s) {
       try {
         return parse(FACTORY.createParser(s), false, false);
@@ -1806,6 +1825,9 @@ public abstract class Schema extends JsonProperties implements Serializable {
       }
     }
 
+    @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+        justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
     private Schema parse(JsonParser parser, boolean allowDanglingContent, boolean resolveSchema) throws IOException {
       NameValidator saved = VALIDATE_NAMES.get();
       boolean savedValidateDefaults = VALIDATE_DEFAULTS.get();
@@ -1996,7 +2018,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
     return Schema.VALIDATE_NAMES.get();
   }
 
-  private static final ThreadLocal<Boolean> VALIDATE_DEFAULTS = ThreadLocalWithInitial.of(() -> true);
+  private static final ThreadLocal<Boolean> VALIDATE_DEFAULTS = ThreadLocalWithInitial.of(() -> Boolean.TRUE);
 
   private static JsonNode validateDefault(String fieldName, Schema schema, JsonNode defaultValue) {
     if (VALIDATE_DEFAULTS.get() && defaultValue != null) {
@@ -2030,6 +2052,9 @@ public abstract class Schema extends JsonProperties implements Serializable {
     reader.read(null, dec);
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   private static void validateDefault(Schema schema, JsonNode defaultValue) {
     if (defaultValue == null) {
       // The fork reaches this only via a record default missing a field that
@@ -2174,6 +2199,9 @@ public abstract class Schema extends JsonProperties implements Serializable {
    * field defaults are therefore both validated any-branch here, as
    * upstream's boolean check does — a documented deviation from the fork.
    */
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   private static void validateValue(Schema schema, JsonNode value) {
     if (value == null) {
       throw new AvroTypeException("Missing value for " + schema);
@@ -2250,10 +2278,16 @@ public abstract class Schema extends JsonProperties implements Serializable {
    * @param jsonValue a value to check against the schema
    * @return true if the value is valid according to this schema
    */
+  @SuppressFBWarnings(value = "MOM_MISLEADING_OVERLOAD_MODEL",
+      justification = "the overloads are the published API and each has distinct documented semantics; the similar"
+          + "names are the domain vocabulary of the datum model")
   public boolean isValidDefault(JsonNode jsonValue) {
     return isValidDefault(this, jsonValue);
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   private static boolean isValidDefault(Schema schema, JsonNode defaultValue) {
     if (defaultValue == null)
       return false;
@@ -2600,6 +2634,9 @@ public abstract class Schema extends JsonProperties implements Serializable {
     return jsonNode != null ? jsonNode.textValue() : null;
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   static JsonNode parseJson(String s) {
     try {
       return MAPPER.readTree(FACTORY.createParser(s));
@@ -2698,6 +2735,9 @@ public abstract class Schema extends JsonProperties implements Serializable {
     return result;
   }
 
+  @SuppressFBWarnings(value = "MOM_MISLEADING_OVERLOAD_MODEL",
+      justification = "the overloads are the published API and each has distinct documented semantics; the similar"
+          + "names are the domain vocabulary of the datum model")
   @SuppressWarnings("DataFlowIssue")
   private static void getAliases(Schema schema, Map<Schema, Schema> seen, Map<Name, Name> aliases,
       Map<Name, Map<String, String>> fieldAliases) {

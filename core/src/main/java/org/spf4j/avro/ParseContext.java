@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.util.SchemaResolver;
 import org.spf4j.avro.util.SchemaVisitor;
@@ -55,6 +56,9 @@ import static java.util.Objects.requireNonNull;
  * @see <a href="https://avro.apache.org/docs/current/specification/">JSON based
  *      schema definition</a>
  **/
+@SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
+    justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
+        + "builders, readers and writers are mutually referential by design")
 public class ParseContext {
   private static final Map<String, Schema.Type> PRIMITIVES = new HashMap<>();
 

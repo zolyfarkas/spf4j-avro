@@ -64,6 +64,10 @@ public class SpecificDatumReader<T> extends GenericDatumReader<T> {
   }
 
   /** Construct for reading instances of a class. */
+  @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
+      justification = "construction completes through the class's own initialization protocol (its template methods"
+          + "and registration with the owning model); the access to the partially constructed object"
+          + "stays inside the class's own constructor chain by design")
   public SpecificDatumReader(Class<T> c) {
     this(SpecificData.getForClass(c));
     setSchema(getSpecificData().getSchema(c));
@@ -127,6 +131,9 @@ public class SpecificDatumReader<T> extends GenericDatumReader<T> {
     return super.findStringClass(schema);
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   private Class getPropAsClass(Schema schema, String prop) {
     String name = schema.getProp(prop);
     if (name == null)

@@ -34,6 +34,10 @@ public class UnresolvedUnionException extends AvroRuntimeException {
     this.unresolvedDatum = unresolvedDatum;
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
+          + " schemas and configuration objects instead of defensively copying them on construction and"
+          + " configuration paths")
   public UnresolvedUnionException(Schema unionSchema, Schema.Field field, Object unresolvedDatum) {
     super(
         "Not in union " + unionSchema + ": " + datumTypeDescription(unresolvedDatum) + " (field=" + field.name() + ")");

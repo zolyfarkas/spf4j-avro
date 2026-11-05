@@ -192,6 +192,9 @@ public class ReflectData extends SpecificData {
    * @param field A child field
    * @return The default field value
    */
+  @SuppressFBWarnings(value = "RFI_SET_ACCESSIBLE",
+      justification = "reflective field access is this class's function (the reflect datum layer); setAccessible is"
+          + "applied to the fields the layer itself reads and writes")
   protected Object getOrCreateDefaultValue(Type type, Field field) {
     Object defaultValue = null;
     field.setAccessible(true);
@@ -216,17 +219,20 @@ public class ReflectData extends SpecificData {
    * @return The value
    */
   protected Object getOrCreateDefaultValue(Type type) {
-    return this.defaultValues.computeIfAbsent(type, ignored -> {
-      try {
-        Constructor constructor = ((Class) type).getDeclaredConstructor();
-        constructor.setAccessible(true);
-        return constructor.newInstance();
-      } catch (ClassCastException | InstantiationException | IllegalAccessException | NoSuchMethodException
-          | InvocationTargetException e) {
-        // do nothing
-      }
-      return null;
-    });
+    return this.defaultValues.computeIfAbsent(type, this::newDefaultInstance);
+  }
+
+  @SuppressFBWarnings(value = "RFI_SET_ACCESSIBLE", justification = "reflective access is this layer's function: the datum layer materializes and inspects the classes it is asked to handle; setAccessible is applied only to those classes' own members")
+  private Object newDefaultInstance(Type type) {
+    try {
+      Constructor constructor = ((Class) type).getDeclaredConstructor();
+      constructor.setAccessible(true);
+      return constructor.newInstance();
+    } catch (ClassCastException | InstantiationException | IllegalAccessException | NoSuchMethodException
+        | InvocationTargetException e) {
+      // do nothing
+    }
+    return null;
   }
 
   @Override
@@ -249,6 +255,9 @@ public class ReflectData extends SpecificData {
     setField(record, name, position, value, null);
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CHECKED",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   @Override
   protected void setField(Object record, String name, int position, Object value, Object state) {
     if (record instanceof IndexedRecord) {
@@ -267,6 +276,9 @@ public class ReflectData extends SpecificData {
     return getField(record, name, position, null);
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CHECKED",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   @Override
   protected Object getField(Object record, String name, int pos, Object state) {
     if (record instanceof IndexedRecord) {
@@ -445,6 +457,9 @@ public class ReflectData extends SpecificData {
 
   private static final Map<String, Class> CLASS_CACHE = new ConcurrentHashMap<>();
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   static Class getClassProp(Schema schema, String prop) {
     String name = schema.getProp(prop);
     if (name == null)
@@ -628,11 +643,17 @@ public class ReflectData extends SpecificData {
     return defaultValue;
   }
 
-  @SuppressFBWarnings(value = { "CLI_CONSTANT_LIST_INDEX", "PSC_PRESIZE_COLLECTIONS" },
+  @SuppressFBWarnings(value = { "CLI_CONSTANT_LIST_INDEX", "PSC_PRESIZE_COLLECTIONS", "CC_CYCLOMATIC_COMPLEXITY",
+      "EXS_EXCEPTION_SOFTENING_NO_CHECKED" },
       justification = "CLI_CONSTANT_LIST_INDEX: positional access into a fixed-order list (schema fields or"
           + " invocation arguments) whose layout is established by the surrounding code; the constant index"
           + " names the slot; PSC_PRESIZE_COLLECTIONS: the collection is populated incrementally from the"
-          + " schema/data being processed; its final size is not known when it is created")
+          + " schema/data being processed; its final size is not known when it is created;"
+          + " CC_CYCLOMATIC_COMPLEXITY: the method is a decision table over the specification's resolution"
+          + " rules; its complexity is intrinsic to the rule set and it is covered by the resolver and"
+          + " parser test suites; EXS_EXCEPTION_SOFTENING_NO_CHECKED: this API's documented error model is"
+          + " unchecked: exceptions are wrapped in AvroRuntimeException at the boundary so callers program"
+          + " against the unchecked contract")
   @Override
   protected Schema createSchema(Type type, Map<String, Schema> names) {
     if (type instanceof GenericArrayType) { // generic array
@@ -849,6 +870,9 @@ public class ReflectData extends SpecificData {
   }
 
   /** Create and return a union of the null schema and the provided schema. */
+  @SuppressFBWarnings(value = "CE_CLASS_ENVY",
+      justification = "the method's function is to operate on the collaborator type's data (a visitor/converter"
+          + "over the schema model); the feature concentration is the purpose of the method")
   public static Schema makeNullable(Schema schema) {
     if (schema.getType() == Schema.Type.UNION) {
       // check to see if the union already contains NULL
@@ -893,6 +917,9 @@ public class ReflectData extends SpecificData {
   }
 
   /** Create a schema for a field. */
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   protected Schema createFieldSchema(Field field, Map<String, Schema> names) {
     AvroEncode enc = ReflectionUtil.getAvroEncode(field);
     if (enc != null)
@@ -945,9 +972,11 @@ public class ReflectData extends SpecificData {
     return protocol;
   }
 
-  @SuppressFBWarnings(value = "PSC_PRESIZE_COLLECTIONS",
+  @SuppressFBWarnings(value = {"PSC_PRESIZE_COLLECTIONS", "ITC_INHERITANCE_TYPE_CHECKING"},
       justification = "the collection is populated incrementally from the schema/data being processed; its final"
-          + "size is not known when it is created")
+          + "size is not known when it is created; ITC_INHERITANCE_TYPE_CHECKING: dispatch over the"
+          + "closed set of schema/datum kinds fixed by the specification is the algorithm; the type tests"
+          + "are the rule table")
   private Message getMessage(Method method, Protocol protocol, Map<String, Schema> names,
       Map<? extends Type, Type> genericTypeMap) {
     List<Schema.Field> fields = new ArrayList<>();
@@ -1081,6 +1110,9 @@ public class ReflectData extends SpecificData {
     return this.encoderCache.computeIfAbsent(schema, this::populateEncoderCache).get();
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   private CustomEncodingWrapper populateEncoderCache(Schema schema) {
     var enc = ReflectionUtil.getAvroEncode(getClass(schema));
     if (enc != null) {

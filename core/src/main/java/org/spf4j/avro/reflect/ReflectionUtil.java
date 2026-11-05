@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.reflect;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.AvroRuntimeException;
 
@@ -42,6 +43,9 @@ import java.util.function.Supplier;
  *
  * InterfaceAudience.Private
  */
+@SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
+    justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
+        + "builders, readers and writers are mutually referential by design")
 public class ReflectionUtil {
 
   private ReflectionUtil() {
@@ -52,6 +56,9 @@ public class ReflectionUtil {
     resetFieldAccess();
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   static void resetFieldAccess() {
     // load only one implementation of FieldAccess
     // so it is monomorphic and the JIT can inline

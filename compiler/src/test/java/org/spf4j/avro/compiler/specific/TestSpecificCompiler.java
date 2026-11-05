@@ -310,12 +310,14 @@ public class TestSpecificCompiler {
     }
   }
 
-  @SuppressFBWarnings(value = {"DM_DEFAULT_ENCODING", "MDM_STRING_BYTES_ENCODING"},
+  @SuppressFBWarnings(value = {"DM_DEFAULT_ENCODING", "MDM_STRING_BYTES_ENCODING", "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS"},
       justification = "the test compares a file written with the platform default encoding against one written with"
           + "an explicit encoding; decoding one side with the platform default charset is the behavior"
           + "under test; MDM_STRING_BYTES_ENCODING: this test verifies output character encodings;"
           + "conversions through the platform default charset inside it are part of the behavior under"
-          + "test")
+          + "test; IOI_USE_OF_FILE_STREAM_CONSTRUCTORS: stream construction from a File is this API's"
+          + "documented shape (the container-file readers and writers are file-based); the File"
+          + "constructors' exception behavior is part of the contract")
   @Test
   void settingOutputCharacterEncoding() throws Exception {
     SpecificCompiler compiler = createCompiler();

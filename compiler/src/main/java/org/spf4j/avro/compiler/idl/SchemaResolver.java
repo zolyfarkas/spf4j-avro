@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.compiler.idl;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.Protocol;
 import org.spf4j.avro.Schema;
@@ -34,6 +35,9 @@ import java.util.function.Function;
  * Utility class to resolve schemas that are unavailable at the time they are
  * referenced in the IDL.
  */
+@SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
+    justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
+        + "builders, readers and writers are mutually referential by design")
 final class SchemaResolver {
 
   private SchemaResolver() {

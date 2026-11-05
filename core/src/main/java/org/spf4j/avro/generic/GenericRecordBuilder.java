@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.generic;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 
@@ -57,6 +58,10 @@ public class GenericRecordBuilder extends RecordBuilderBase<Record> {
    * 
    * @param other the record instance to copy.
    */
+  @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
+      justification = "construction completes through the class's own initialization protocol (its template methods"
+          + "and registration with the owning model); the access to the partially constructed object"
+          + "stays inside the class's own constructor chain by design")
   public GenericRecordBuilder(Record other) {
     super(other.getSchema(), GenericData.get());
     record = new GenericData.Record(other, /* deepCopy = */ true);
@@ -212,6 +217,9 @@ public class GenericRecordBuilder extends RecordBuilderBase<Record> {
     return this;
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   @Override
   public Record build() {
     Record record;

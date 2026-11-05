@@ -59,6 +59,20 @@ import org.spf4j.avro.io.EncoderFactory;
 import org.spf4j.avro.util.Utf8;
 import org.junit.jupiter.api.Test;
 
+@SuppressFBWarnings(value = "SEC_SIDE_EFFECT_CONSTRUCTOR",
+    justification = "SEC_SIDE_EFFECT_CONSTRUCTOR: the tests in this class deliberately construct objects whose"
+        + "constructors validate their arguments (and throw on invalid ones); the constructor"
+        + "validation is the behavior under test; SEC_SIDE_EFFECT_CONSTRUCTOR: the tests in this class"
+        + "deliberately construct objects whose constructors validate their arguments (and throw on"
+        + "invalid ones); the constructor validation is the behavior under test;"
+        + "SEC_SIDE_EFFECT_CONSTRUCTOR: the tests in this class deliberately construct objects whose"
+        + "constructors validate their arguments (and throw on invalid ones); the constructor"
+        + "validation is the behavior under test; SEC_SIDE_EFFECT_CONSTRUCTOR: the tests in this class"
+        + "deliberately construct objects whose constructors validate their arguments (and throw on"
+        + "invalid ones); the constructor validation is the behavior under test;"
+        + "SEC_SIDE_EFFECT_CONSTRUCTOR: the tests in this class deliberately construct objects whose"
+        + "constructors validate their arguments (and throw on invalid ones); the constructor"
+        + "validation is the behavior under test")
 public class TestGenericData {
 
   @Test
@@ -528,6 +542,9 @@ public class TestGenericData {
     assertEquals(Integer.valueOf(55), array.get(5));
   }
 
+  @SuppressFBWarnings(value = "BED_HIERARCHICAL_EXCEPTION_DECLARATION",
+      justification = "the declared exception set is the published API contract; narrowing it would break"
+          + "implementers and existing callers")
   @Test
   void toStringIsJson() throws JsonParseException, IOException {
     Field stringField = new Field("string", Schema.create(Type.STRING), null, null);
@@ -550,6 +567,9 @@ public class TestGenericData {
     mapper.readTree(parser);
   }
 
+  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+      justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
   @Test
   void mapWithNonStringKeyToStringIsJson() throws Exception {
     Schema intMapSchema = SchemaParser
@@ -628,6 +648,9 @@ public class TestGenericData {
     assertEquals("\"/\"", data.toString("/"));
   }
 
+  @SuppressFBWarnings(value = "CE_CLASS_ENVY",
+      justification = "the method's function is to operate on the collaborator type's data (a visitor/converter"
+          + "over the schema model); the feature concentration is the purpose of the method")
   @Test
   void toStringNanInfinity() throws Exception {
     GenericData data = GenericData.get();
@@ -800,9 +823,11 @@ public class TestGenericData {
    * has the risk of detecting that same value as being a circular reference. For
    * Record, Map and Array this is correct, for the rest is is not.
    */
-  @SuppressFBWarnings(value = "PSC_PRESIZE_COLLECTIONS",
+  @SuppressFBWarnings(value = {"PSC_PRESIZE_COLLECTIONS", "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION"},
       justification = "the collection is populated incrementally from the schema/data being processed; its final"
-          + "size is not known when it is created")
+          + "size is not known when it is created; NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION: the boolean"
+          + "values are data of a Boolean-typed slot (parameterized-test arguments, a Boolean-valued map"
+          + "or a generic container); they are stored as Boolean objects by design")
   @Test
   void toStringSameValues() throws IOException {
     List<Field> fields = new ArrayList<>();

@@ -56,9 +56,11 @@ public class TestByteBuffer {
 
   File content;
 
-  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+  @SuppressFBWarnings(value = {"PATH_TRAVERSAL_IN", "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS"},
       justification = "test code: the file is built from constant names under the test's own directory; there is no"
-          + "untrusted input")
+          + "untrusted input; IOI_USE_OF_FILE_STREAM_CONSTRUCTORS: stream construction from a File is"
+          + "this API's documented shape (the container-file readers and writers are file-based); the"
+          + "File constructors' exception behavior is part of the contract")
   @BeforeEach
   public void before() throws IOException {
     content = new File(DIR.getPath(), "test-content");
@@ -92,6 +94,12 @@ public class TestByteBuffer {
     return record;
   }
 
+  @SuppressFBWarnings(value = {"BED_HIERARCHICAL_EXCEPTION_DECLARATION", "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS"},
+      justification = "BED_HIERARCHICAL_EXCEPTION_DECLARATION: the declared exception set is the published API"
+          + "contract; narrowing it would break implementers and existing callers;"
+          + "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS: stream construction from a File is this API's"
+          + "documented shape (the container-file readers and writers are file-based); the File"
+          + "constructors' exception behavior is part of the contract")
   private void writeOneXAsAvro(Schema schema, ByteArrayOutputStream bout) throws IOException, FileNotFoundException {
     DatumWriter<X> datumWriter = new ReflectDatumWriter<>(schema);
     try (DataFileWriter<X> writer = new DataFileWriter<>(datumWriter)) {
@@ -111,6 +119,10 @@ public class TestByteBuffer {
     }
   }
 
+  @SuppressFBWarnings(value = "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS",
+      justification = "stream construction from a File is this API's documented shape (the container-file readers"
+          + "and writers are file-based); the File constructors' exception behavior is part of the"
+          + "contract")
   private String getmd5(File content) throws Exception {
     try (FileInputStream fis = new FileInputStream(content)) {
       try (FileChannel channel = fis.getChannel()) {

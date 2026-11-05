@@ -59,6 +59,10 @@ public class GenericDatumWriter<D> implements DatumWriter<D> {
     this.data = data;
   }
 
+  @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
+      justification = "construction completes through the class's own initialization protocol (its template methods"
+          + "and registration with the owning model); the access to the partially constructed object"
+          + "stays inside the class's own constructor chain by design")
   public GenericDatumWriter(Schema root) {
     this();
     setSchema(root);
@@ -161,6 +165,9 @@ public class GenericDatumWriter<D> implements DatumWriter<D> {
   }
 
   /** Called to write data. */
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   protected void writeWithoutConversion(Schema schema, Object datum, Encoder out) throws IOException {
     int unionIndex = -1;
     Schema.Type schemaType = schema.getType();
@@ -262,6 +269,9 @@ public class GenericDatumWriter<D> implements DatumWriter<D> {
    * Called to write a single field of a record. May be overridden for more
    * efficient or alternate implementations.
    */
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   protected void writeField(Object datum, Field f, Encoder out, Object state) throws IOException {
     Object value = data.getField(datum, f.name(), f.pos(), state);
     try {

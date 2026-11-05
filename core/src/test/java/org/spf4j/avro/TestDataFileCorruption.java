@@ -45,6 +45,10 @@ public class TestDataFileCorruption {
     return new File(DIR, "test-" + name + ".avro");
   }
 
+  @SuppressFBWarnings(value = "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS",
+      justification = "stream construction from a File is this API's documented shape (the container-file readers"
+          + "and writers are file-based); the File constructors' exception behavior is part of the"
+          + "contract")
   @Test
   void corruptedFile() throws IOException {
     Schema schema = Schema.create(Type.STRING);

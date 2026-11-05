@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.Assert.assertEquals;
 
@@ -136,6 +137,9 @@ public class TestExtendedJsonNaturalNumberWrite {
       return false;
     }
 
+    @SuppressFBWarnings(value = "BC_UNCONFIRMED_CAST",
+        justification = "the cast is protected by the schema/type dispatch that selects this branch: the runtime type"
+            + "is fixed by that invariant")
     @Override
     public BigDecimal fromBytes(java.nio.ByteBuffer value, Schema schema, LogicalType type) {
       byte[] bytes = new byte[value.remaining()];
@@ -144,6 +148,9 @@ public class TestExtendedJsonNaturalNumberWrite {
           ((org.spf4j.avro.LogicalTypes.Decimal) type).getScale());
     }
 
+    @SuppressFBWarnings(value = "BC_UNCONFIRMED_CAST",
+        justification = "the cast is protected by the schema/type dispatch that selects this branch: the runtime type"
+            + "is fixed by that invariant")
     @Override
     public java.nio.ByteBuffer toBytes(BigDecimal value, Schema schema, LogicalType type) {
       return java.nio.ByteBuffer

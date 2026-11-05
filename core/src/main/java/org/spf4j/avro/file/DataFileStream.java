@@ -88,10 +88,13 @@ public class DataFileStream<D> implements Iterator<D>, Iterable<D>, Closeable {
    * {@link DataFileReader}. This will buffer, wrapping with a
    * {@link java.io.BufferedInputStream} is not necessary.
    */
-  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+  @SuppressFBWarnings(value = {"EI_EXPOSE_REP2", "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS"},
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths; PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS: construction completes"
+          + "through the class's own initialization protocol (its template methods and registration with"
+          + "the owning model); the access to the partially constructed object stays inside the class's"
+          + "own constructor chain by design")
   public DataFileStream(InputStream in, DatumReader<D> reader) throws IOException {
     this.reader = reader;
     initialize(in, null);
@@ -317,6 +320,9 @@ public class DataFileStream<D> implements Iterator<D>, Iterable<D>, Closeable {
     // nothing for the stream impl
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   boolean hasNextBlock() {
     try {
       if (availableBlock)

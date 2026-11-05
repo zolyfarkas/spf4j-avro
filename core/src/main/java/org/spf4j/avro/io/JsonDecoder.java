@@ -62,6 +62,10 @@ public class JsonDecoder extends ParsingDecoder implements Parser.ActionHandler 
     public JsonParser origParser = null;
   }
 
+  @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
+      justification = "construction completes through the class's own initialization protocol (its template methods"
+          + "and registration with the owning model); the access to the partially constructed object"
+          + "stays inside the class's own constructor chain by design")
   private JsonDecoder(Symbol root, InputStream in) throws IOException {
     super(root);
     configure(in);
@@ -506,10 +510,12 @@ public class JsonDecoder extends ParsingDecoder implements Parser.ActionHandler 
     return n;
   }
 
-  @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE",
+  @SuppressFBWarnings(value = {"RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE", "EXS_EXCEPTION_SOFTENING_HAS_CHECKED"},
       justification = "the null check on the buffered-field lookup decides whether the parser is swapped for the"
           + "buffered field's tokens; the flagged redundancy is an artifact of the try-with-resources"
-          + "close() desugaring")
+          + "close() desugaring; EXS_EXCEPTION_SOFTENING_HAS_CHECKED: this API's documented error model"
+          + "is unchecked: checked exceptions are wrapped in AvroRuntimeException at the boundary so"
+          + "callers program against the unchecked contract")
   @Override
   public Symbol doAction(Symbol input, Symbol top) throws IOException {
     if (top instanceof Symbol.FieldAdjustAction) {

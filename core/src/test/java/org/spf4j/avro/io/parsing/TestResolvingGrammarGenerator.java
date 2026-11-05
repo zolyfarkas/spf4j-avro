@@ -114,9 +114,11 @@ public class TestResolvingGrammarGenerator {
     return ret.stream().map(args -> toArguments(mapper, args));
   }
 
-  @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
-      justification = "the argument array is a (schema, data) pair built by this provider; indices 0 and 1"
-          + " name the two slots")
+  @SuppressFBWarnings(value = { "CLI_CONSTANT_LIST_INDEX", "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS" },
+      justification = "CLI_CONSTANT_LIST_INDEX: the argument array is a (schema, data) pair built by this"
+          + " provider; indices 0 and 1 name the two slots; EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS: this"
+          + " API's documented error model is unchecked: exceptions are wrapped in AvroRuntimeException at"
+          + " the boundary so callers program against the unchecked contract")
   private static Arguments toArguments(ObjectMapper mapper, String[] args) {
     Schema schema = SchemaParser.parseSingle(args[0]);
     try {

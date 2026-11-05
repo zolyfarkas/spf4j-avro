@@ -27,6 +27,10 @@ import org.spf4j.avro.message.BinaryMessageEncoder;
 import org.spf4j.avro.message.SchemaStore;
 import org.spf4j.avro.specific.SpecificData;
 
+@SuppressFBWarnings(value = "IMC_IMMATURE_CLASS_BAD_SERIALVERSIONUID",
+    justification = "checked-in generated record: the serialVersionUID is as emitted by the specific compiler;"
+        + "the class's real serialized form is the Avro binary encoding, and Java serialization is"
+        + "incidental")
 @org.spf4j.avro.specific.AvroGenerated
 public class FooBarSpecificRecord extends org.spf4j.avro.specific.SpecificRecordBase
     implements org.spf4j.avro.specific.SpecificRecord {
@@ -133,6 +137,9 @@ public class FooBarSpecificRecord extends org.spf4j.avro.specific.SpecificRecord
   }
 
   // Used by DatumWriter. Applications should not call.
+  @SuppressFBWarnings(value = "URV_INHERITED_METHOD_WITH_RELATED_TYPES",
+      justification = "the method is inherited as part of this class's published or generated API surface; its"
+          + "signature is fixed by the supertype's contract")
   @Override
   public java.lang.Object get(int field$) {
     switch (field$) {
@@ -608,6 +615,9 @@ public class FooBarSpecificRecord extends org.spf4j.avro.specific.SpecificRecord
       return this;
     }
 
+    @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+        justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
     @Override
     @SuppressWarnings("unchecked")
     public FooBarSpecificRecord build() {

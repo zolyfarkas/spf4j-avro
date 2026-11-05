@@ -15,6 +15,7 @@
  */
 
 package org.spf4j.avro.util.springframework;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.reflect.Nullable;
 import org.junit.jupiter.api.Disabled;
@@ -51,6 +52,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Phillip Webb
  * @author Juergen Hoeller
  */
+@SuppressFBWarnings(value = "SEC_SIDE_EFFECT_CONSTRUCTOR",
+    justification = "SEC_SIDE_EFFECT_CONSTRUCTOR: the tests in this class deliberately construct objects whose"
+        + "constructors validate their arguments (and throw on invalid ones); the constructor"
+        + "validation is the behavior under test; SEC_SIDE_EFFECT_CONSTRUCTOR: the tests in this class"
+        + "deliberately construct objects whose constructors validate their arguments (and throw on"
+        + "invalid ones); the constructor validation is the behavior under test;"
+        + "SEC_SIDE_EFFECT_CONSTRUCTOR: the tests in this class deliberately construct objects whose"
+        + "constructors validate their arguments (and throw on invalid ones); the constructor"
+        + "validation is the behavior under test; SEC_SIDE_EFFECT_CONSTRUCTOR: the tests in this class"
+        + "deliberately construct objects whose constructors validate their arguments (and throw on"
+        + "invalid ones); the constructor validation is the behavior under test;"
+        + "SEC_SIDE_EFFECT_CONSTRUCTOR: the tests in this class deliberately construct objects whose"
+        + "constructors validate their arguments (and throw on invalid ones); the constructor"
+        + "validation is the behavior under test; SEC_SIDE_EFFECT_CONSTRUCTOR: the tests in this class"
+        + "deliberately construct objects whose constructors validate their arguments (and throw on"
+        + "invalid ones); the constructor validation is the behavior under test")
 class TestConcurrentReferenceHashMap {
 
   private static final Comparator<? super String> NULL_SAFE_STRING_SORT = new NullSafeComparator<>(

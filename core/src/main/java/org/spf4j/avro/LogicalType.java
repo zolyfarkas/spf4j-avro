@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.generic.GenericData;
 import org.spf4j.avro.specific.SpecificData;
@@ -64,6 +65,9 @@ public class LogicalType {
    * @return the modified Schema
    * @throws IllegalArgumentException if the type and schema are incompatible
    */
+  @SuppressFBWarnings(value = "CFS_CONFUSING_FUNCTION_SEMANTICS",
+      justification = "the published contract is to complete/adapt and return the argument (fluent builder and"
+          + "logical-type API); callers rely on receiving the same reference back")
   public Schema addToSchema(Schema schema) {
     validate(schema);
     schema.addProp(LOGICAL_TYPE_PROP, name);

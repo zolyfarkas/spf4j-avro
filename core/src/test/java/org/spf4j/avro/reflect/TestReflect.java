@@ -855,6 +855,9 @@ public class TestReflect {
     }
   }
 
+  @SuppressFBWarnings(value = "NM_CLASS_NAMING_CONVENTION",
+      justification = "the name is fixed by the API or fixture this class mirrors; renaming would break the"
+          + "correspondence it exists to keep")
   public static class multipleAnnotationRecord {
     @AvroIgnore
     @Stringable
@@ -1025,6 +1028,9 @@ public class TestReflect {
         return hash;
       }
 
+      @SuppressFBWarnings(value = "BL_BURYING_LOGIC",
+          justification = "the compound condition is the specification's rule for this decision, kept in one expression"
+              + "so the rule reads as written")
       @Override
       public boolean equals(Object other) {
         if (other instanceof AnotherSampleRecord) {
@@ -1154,6 +1160,11 @@ public class TestReflect {
     checkBinary(data, s, array, false, blocking);
   }
 
+  @SuppressFBWarnings(value = {"OCP_OVERLY_CONCRETE_PARAMETER", "URV_CHANGE_RETURN_TYPE"},
+      justification = "OCP_OVERLY_CONCRETE_PARAMETER: the signature is the published API, and the implementation"
+          + "uses operations specific to the concrete parameter type; URV_CHANGE_RETURN_TYPE: the method"
+          + "is inherited as part of this class's published or generated API surface; its signature is"
+          + "fixed by the supertype's contract")
   private Object randomFor(Class<?> c, Random r) {
     if (c == boolean.class)
       return r.nextBoolean();

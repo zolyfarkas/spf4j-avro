@@ -13,6 +13,10 @@ import org.spf4j.avro.message.BinaryMessageEncoder;
 import org.spf4j.avro.message.SchemaStore;
 
 @AvroGenerated
+@SuppressFBWarnings(value = { "IMC_IMMATURE_CLASS_BAD_SERIALVERSIONUID", "NM_CLASS_NAMING_CONVENTION" },
+    justification = "checked-in generated record for a schema type named 'int': the class name and the"
+        + " serialVersionUID are as emitted by the specific compiler; the class's real serialized form is"
+        + " the Avro binary encoding, and Java serialization is incidental")
 public class int$ extends SpecificRecordBase implements SpecificRecord {
   private static final long serialVersionUID = 3003385205621277651L;
 
@@ -182,9 +186,12 @@ public class int$ extends SpecificRecordBase implements SpecificRecord {
 
     @Override
     @SuppressWarnings("unchecked")
-    @SuppressFBWarnings(value = "USBR_UNNECESSARY_STORE_BEFORE_RETURN",
-        justification = "checked-in generated builder: build() constructs the record, applies builder state"
-            + " and returns it; the store-then-return shape is the codegen template's output")
+    @SuppressFBWarnings(value = { "USBR_UNNECESSARY_STORE_BEFORE_RETURN", "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS" },
+        justification = "USBR_UNNECESSARY_STORE_BEFORE_RETURN: checked-in generated builder: build() constructs"
+            + " the record, applies builder state and returns it; the store-then-return shape is the codegen"
+            + " template's output; EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS: this API's documented error model"
+            + " is unchecked: exceptions are wrapped in AvroRuntimeException at the boundary so callers"
+            + " program against the unchecked contract")
     public int$ build() {
       try {
         int$ record = new int$();

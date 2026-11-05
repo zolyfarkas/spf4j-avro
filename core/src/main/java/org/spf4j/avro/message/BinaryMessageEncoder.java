@@ -18,6 +18,7 @@
  */
 
 package org.spf4j.avro.message;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.AvroRuntimeException;
 import org.spf4j.avro.Schema;
@@ -108,6 +109,9 @@ public class BinaryMessageEncoder<D> implements MessageEncoder<D> {
       super.encode(datum, stream);
     }
 
+    @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+        justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
     private static byte[] getWriteHeader(Schema schema) {
       try {
         byte[] fp = SchemaNormalization.parsingFingerprint("CRC-64-AVRO", schema);

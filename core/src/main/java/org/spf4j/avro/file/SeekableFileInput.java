@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.file;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +30,9 @@ public class SeekableFileInput extends FileInputStream implements SeekableInput 
     super(file);
   }
 
+  @SuppressFBWarnings(value = "BED_BOGUS_EXCEPTION_DECLARATION",
+      justification = "the declared exception set is the published API contract; narrowing it would break"
+          + "implementers and existing callers")
   public SeekableFileInput(FileDescriptor fd) throws IOException {
     super(fd);
   }

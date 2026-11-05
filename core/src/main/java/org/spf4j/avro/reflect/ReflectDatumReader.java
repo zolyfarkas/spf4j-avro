@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.reflect;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -43,6 +44,9 @@ import org.spf4j.avro.specific.SpecificDatumReader;
  * {@link org.spf4j.avro.io.DatumReader DatumReader} for existing classes via
  * Java reflection.
  */
+@SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
+    justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
+        + "builders, readers and writers are mutually referential by design")
 public class ReflectDatumReader<T> extends SpecificDatumReader<T> {
   public ReflectDatumReader() {
     this(null, null, ReflectData.get());
@@ -78,6 +82,9 @@ public class ReflectDatumReader<T> extends SpecificDatumReader<T> {
     return (ReflectData) getSpecificData();
   }
 
+  @SuppressFBWarnings(value = "CFS_CONFUSING_FUNCTION_SEMANTICS",
+      justification = "the published contract is to complete/adapt and return the argument (fluent builder and"
+          + "logical-type API); callers rely on receiving the same reference back")
   @Override
   protected Object newArray(Object old, int size, Schema schema) {
     Class<?> collectionClass = ReflectData.getClassProp(schema, SpecificData.CLASS_PROP);
@@ -281,6 +288,9 @@ public class ReflectDatumReader<T> extends SpecificDatumReader<T> {
     return value;
   }
 
+  @SuppressFBWarnings(value = "URV_INHERITED_METHOD_WITH_RELATED_TYPES",
+      justification = "the method is inherited as part of this class's published or generated API surface; its"
+          + "signature is fixed by the supertype's contract")
   @Override
   protected Object readBytes(Object old, Schema s, Decoder in) throws IOException {
     ByteBuffer bytes = in.readBytes(null);
@@ -317,6 +327,9 @@ public class ReflectDatumReader<T> extends SpecificDatumReader<T> {
     return value;
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_HAS_CHECKED",
+      justification = "this API's documented error model is unchecked: checked exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   @Override
   protected void readField(Object record, Field field, Object oldDatum, ResolvingDecoder in, Object state)
       throws IOException {

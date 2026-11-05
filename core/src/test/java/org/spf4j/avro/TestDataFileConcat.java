@@ -44,6 +44,12 @@ public class TestDataFileConcat {
   @TempDir
   public File DIR;
 
+  @SuppressFBWarnings(value = {"CE_CLASS_ENVY", "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION"},
+      justification = "CE_CLASS_ENVY: the method's function is to operate on the collaborator type's data (a"
+          + "visitor/converter over the schema model); the feature concentration is the purpose of the"
+          + "method; NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION: the boolean values are data of a"
+          + "Boolean-typed slot (parameterized-test arguments, a Boolean-valued map or a generic"
+          + "container); they are stored as Boolean objects by design")
   public static Stream<Arguments> codecs() {
     return Stream.of(Arguments.of(null, null, false), Arguments.of(null, null, true),
         Arguments.of(CodecFactory.deflateCodec(1), CodecFactory.deflateCodec(6), false),

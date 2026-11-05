@@ -332,6 +332,9 @@ public class SpecificCompiler {
     this.enableDecimalLogicalType = enableDecimalLogicalType;
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   public void addCustomConversion(Class<?> conversionClass) {
     try {
       final Conversion<?> conversion = (Conversion<?>) conversionClass.getDeclaredConstructor().newInstance();
@@ -420,6 +423,9 @@ public class SpecificCompiler {
     return logicalTypeResults;
   }
 
+  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+      justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
   private void initializeVelocity() {
     this.velocityEngine = new VelocityEngine();
 
@@ -455,15 +461,19 @@ public class SpecificCompiler {
      * Writes output to path destination directory when it is newer than src,
      * creating directories as necessary. Returns the created file.
      */
-    @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+    @SuppressFBWarnings(value = {"PATH_TRAVERSAL_IN", "UAC_UNNECESSARY_API_CONVERSION_FILE_TO_PATH", "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS"},
         justification = "the output path is the compiler's configured destination directory plus the compiled"
             + "schema's package path; package segments are Java identifiers and cannot traverse out of the"
-            + "destination")
+            + "destination; UAC_UNNECESSARY_API_CONVERSION_FILE_TO_PATH: Files.newBufferedWriter requires a"
+            + "Path; the File-to-Path conversion is the API entry point, not a redundant conversion;"
+            + "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS: stream construction from a File is this API's"
+            + "documented shape (the container-file readers and writers are file-based); the File"
+            + "constructors' exception behavior is part of the contract")
     File writeToDestination(File src, File destDir) throws IOException {
       File f = new File(destDir, path);
       if (src != null && f.exists() && f.lastModified() >= src.lastModified())
         return f; // already up to date: ignore
-      f.getParentFile().mkdirs();
+      Files.createDirectories(f.getParentFile().toPath());
       try (Writer fw = outputCharacterEncoding != null
           ? new OutputStreamWriter(new FileOutputStream(f), outputCharacterEncoding)
           : Files.newBufferedWriter(f.toPath(), UTF_8)) {
@@ -589,6 +599,9 @@ public class SpecificCompiler {
     }
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   private String renderTemplate(String templateName, VelocityContext context) {
     Template template;
     try {

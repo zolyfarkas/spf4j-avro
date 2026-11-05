@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -43,6 +44,10 @@ import org.spf4j.avro.util.Utf8;
 public class ValidatingDecoder extends ParsingDecoder implements Parser.ActionHandler {
   protected Decoder in;
 
+  @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
+      justification = "construction completes through the class's own initialization protocol (its template methods"
+          + "and registration with the owning model); the access to the partially constructed object"
+          + "stays inside the class's own constructor chain by design")
   ValidatingDecoder(Symbol root, Decoder in) throws IOException {
     super(root);
     this.configure(in);

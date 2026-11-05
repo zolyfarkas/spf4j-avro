@@ -117,6 +117,9 @@ public class TestValidatingIO {
     }
   }
 
+  @SuppressFBWarnings(value = "CC_CYCLOMATIC_COMPLEXITY",
+      justification = "the method is a decision table over the specification's resolution rules; its complexity is"
+          + "intrinsic to the rule set and it is covered by the resolver and parser test suites")
   public static void generate(Encoder vw, String calls, Object[] values) throws IOException {
     InputScanner cs = new InputScanner(calls.toCharArray());
     int p = 0;
@@ -272,12 +275,18 @@ public class TestValidatingIO {
     return r;
   }
 
+  @SuppressFBWarnings(value = "OCP_OVERLY_CONCRETE_PARAMETER",
+      justification = "the signature is the published API, and the implementation uses operations specific to the"
+          + "concrete parameter type")
   private static byte[] nextBytes(Random r, int length) {
     byte[] bb = new byte[length];
     r.nextBytes(bb);
     return bb;
   }
 
+  @SuppressFBWarnings(value = "OCP_OVERLY_CONCRETE_PARAMETER",
+      justification = "the signature is the published API, and the implementation uses operations specific to the"
+          + "concrete parameter type")
   private static String nextString(Random r, int length) {
     char[] cc = new char[length];
     for (int i = 0; i < length; i++) {
@@ -305,6 +314,9 @@ public class TestValidatingIO {
     check(msg, vi, calls, values, skipLevel);
   }
 
+  @SuppressFBWarnings(value = "CC_CYCLOMATIC_COMPLEXITY",
+      justification = "the method is a decision table over the specification's resolution rules; its complexity is"
+          + "intrinsic to the rule set and it is covered by the resolver and parser test suites")
   public static void check(String msg, Decoder vi, String calls, Object[] values, final int skipLevel)
       throws IOException {
     InputScanner cs = new InputScanner(calls.toCharArray());

@@ -53,9 +53,12 @@ public class GenerateBlockingData {
     blockCount = 0;
   }
 
-  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+  @SuppressFBWarnings(value = {"PATH_TRAVERSAL_IN", "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS"},
       justification = "the paths are this command-line tool's own arguments; the operator who invokes it is the"
-          + "trust boundary and there is no untrusted input source to sanitize against")
+          + "trust boundary and there is no untrusted input source to sanitize against;"
+          + "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS: stream construction from a File is this API's"
+          + "documented shape (the container-file readers and writers are file-based); the File"
+          + "constructors' exception behavior is part of the contract")
   public static void main(String[] args) throws Exception {
     if (args.length != 3) {
       System.out.println("Usage: GenerateBlockingData <schemafile> <outputfile> <count>");

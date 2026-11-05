@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -48,6 +49,10 @@ public class DirectBinaryEncoder extends BinaryEncoder {
    * Create a writer that sends its output to the underlying stream
    * <code>out</code>.
    **/
+  @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
+      justification = "construction completes through the class's own initialization protocol (its template methods"
+          + "and registration with the owning model); the access to the partially constructed object"
+          + "stays inside the class's own constructor chain by design")
   protected DirectBinaryEncoder(OutputStream out) {
     configure(out);
   }

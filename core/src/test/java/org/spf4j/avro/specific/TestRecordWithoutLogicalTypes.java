@@ -86,9 +86,11 @@ public class TestRecordWithoutLogicalTypes extends org.spf4j.avro.specific.Speci
   }
 
   // Used by DatumWriter. Applications should not call.
-  @SuppressFBWarnings(value = "EI_EXPOSE_REP",
+  @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "URV_INHERITED_METHOD_WITH_RELATED_TYPES"},
       justification = "the returned object is this instance's live model/state, exposed deliberately: Avro's model"
-          + "and datum objects are shared carriers by design, not defensive-copy value objects")
+          + "and datum objects are shared carriers by design, not defensive-copy value objects;"
+          + "URV_INHERITED_METHOD_WITH_RELATED_TYPES: the method is inherited as part of this class's"
+          + "published or generated API surface; its signature is fixed by the supertype's contract")
   public java.lang.Object get(int field$) {
     switch (field$) {
     case 0:
@@ -620,6 +622,9 @@ public class TestRecordWithoutLogicalTypes extends org.spf4j.avro.specific.Speci
       return this;
     }
 
+    @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+        justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
     @Override
     public TestRecordWithoutLogicalTypes build() {
       try {

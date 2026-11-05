@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.AvroRuntimeException;
 import org.spf4j.avro.Schema;
@@ -692,6 +693,9 @@ public class TestBinaryDecoder {
 
   }
 
+  @SuppressFBWarnings(value = "CE_CLASS_ENVY",
+      justification = "the method's function is to operate on the collaborator type's data (a visitor/converter"
+          + "over the schema model); the feature concentration is the purpose of the method")
   private void skipGenerated(Decoder bd) throws IOException {
     for (int i = 0; i < records.size(); i++) {
       bd.readInt();

@@ -58,10 +58,13 @@ public class DataFileReader12<D> implements FileReader<D>, Closeable {
   private byte[] syncBuffer = new byte[SYNC_SIZE];
 
   /** Construct a reader for a file. */
-  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+  @SuppressFBWarnings(value = {"EI_EXPOSE_REP2", "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS"},
       justification = "the caller's object is adopted by reference deliberately: the datum/model layer shares"
           + "schemas and configuration objects instead of defensively copying them on construction and"
-          + "configuration paths")
+          + "configuration paths; PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS: construction completes"
+          + "through the class's own initialization protocol (its template methods and registration with"
+          + "the owning model); the access to the partially constructed object stays inside the class's"
+          + "own constructor chain by design")
   public DataFileReader12(SeekableInput sin, DatumReader<D> reader) throws IOException {
     this.in = new DataFileReader.SeekableInputStream(sin);
 

@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.reflect;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -23,6 +24,12 @@ import java.lang.reflect.Field;
 import org.spf4j.avro.io.Decoder;
 import org.spf4j.avro.io.Encoder;
 
+@SuppressFBWarnings(value = "ACEM_ABSTRACT_CLASS_EMPTY_METHODS",
+    justification = "ACEM_ABSTRACT_CLASS_EMPTY_METHODS: the empty methods are the visitor/adapter extension"
+        + "points: subclasses override only the callbacks they need; the defaults are deliberately"
+        + "no-ops; ACEM_ABSTRACT_CLASS_EMPTY_METHODS: the empty methods are the visitor/adapter"
+        + "extension points: subclasses override only the callbacks they need; the defaults are"
+        + "deliberately no-ops")
 abstract class FieldAccessor {
   FieldAccessor() {
   }

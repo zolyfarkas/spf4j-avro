@@ -18,6 +18,7 @@
  */
 
 package org.spf4j.avro.message;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.AvroRuntimeException;
 import org.spf4j.avro.Schema;
@@ -81,6 +82,9 @@ public class RawMessageDecoder<D> extends MessageDecoder.BaseDecoder<D> {
     this.reader = model.createDatumReader(writeSchema, readSchema);
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_HAS_CHECKED",
+      justification = "this API's documented error model is unchecked: checked exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   @Override
   public D decode(InputStream stream, D reuse) {
     BinaryDecoder decoder = DecoderFactory.get().directBinaryDecoder(stream, DECODER.get());

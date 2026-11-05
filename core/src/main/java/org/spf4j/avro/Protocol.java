@@ -427,6 +427,9 @@ public class Protocol extends JsonProperties {
    *
    * @param pretty if true, pretty-print JSON.
    */
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   public String toString(boolean pretty) {
     try {
       StringWriter writer = new StringWriter();
@@ -468,12 +471,15 @@ public class Protocol extends JsonProperties {
   }
 
   /** Return the MD5 hash of the text of this protocol. */
-  @SuppressFBWarnings(value = {"WEAK_MESSAGE_DIGEST_MD5", "EI_EXPOSE_REP"},
+  @SuppressFBWarnings(value = {"WEAK_MESSAGE_DIGEST_MD5", "EI_EXPOSE_REP", "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS"},
       justification = "MD5 is the protocol fingerprint the Avro specification defines for the RPC handshake and it"
           + "is compared against the peer's value; it is an interoperability checksum, not a security"
           + "control, and changing the digest would break wire compatibility; EI_EXPOSE_REP: the returned"
           + "object is this instance's live model/state, exposed deliberately: Avro's model and datum"
-          + "objects are shared carriers by design, not defensive-copy value objects")
+          + "objects are shared carriers by design, not defensive-copy value objects;"
+          + "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS: this API's documented error model is unchecked:"
+          + "exceptions are wrapped in AvroRuntimeException at the boundary so callers program against"
+          + "the unchecked contract")
   public byte[] getMD5() {
     if (md5 == null)
       try {
@@ -513,6 +519,9 @@ public class Protocol extends JsonProperties {
     }
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   private static Protocol parse(JsonParser parser) {
     try {
       Protocol protocol = new Protocol();
@@ -523,6 +532,9 @@ public class Protocol extends JsonProperties {
     }
   }
 
+  @SuppressFBWarnings(value = "MOM_MISLEADING_OVERLOAD_MODEL",
+      justification = "the overloads are the published API and each has distinct documented semantics; the similar"
+          + "names are the domain vocabulary of the datum model")
   private void parse(JsonNode json) {
     parseNameAndNamespace(json);
     parseTypes(json);

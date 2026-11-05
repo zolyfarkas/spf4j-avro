@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.file;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.InvalidAvroMagicException;
 import org.spf4j.avro.io.DatumReader;
@@ -136,6 +137,10 @@ public class DataFileReader<D> extends DataFileStream<D> implements FileReader<D
   }
 
   /** Construct a reader for a file. Please close resource files yourself. */
+  @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
+      justification = "construction completes through the class's own initialization protocol (its template methods"
+          + "and registration with the owning model); the access to the partially constructed object"
+          + "stays inside the class's own constructor chain by design")
   protected DataFileReader(SeekableInput sin, DatumReader<D> reader, boolean closeOnError, byte[] magic)
       throws IOException {
     super(reader);

@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.reflect;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.AvroRuntimeException;
 import org.spf4j.avro.io.Decoder;
@@ -26,6 +27,9 @@ import java.lang.reflect.Field;
 
 class FieldAccessReflect extends FieldAccess {
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CHECKED",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   @Override
   protected FieldAccessor getAccessor(Field field) {
     AvroEncode enc = ReflectionUtil.getAvroEncode(field);
@@ -43,6 +47,9 @@ class FieldAccessReflect extends FieldAccess {
     private final boolean isStringable;
     private final boolean isCustomEncoded;
 
+    @SuppressFBWarnings(value = "RFI_SET_ACCESSIBLE",
+        justification = "reflective field access is this class's function (the reflect datum layer); setAccessible is"
+            + "applied to the fields the layer itself reads and writes")
     public ReflectionBasedAccessor(Field field) {
       this.field = field;
       this.field.setAccessible(true);
@@ -60,6 +67,9 @@ class FieldAccessReflect extends FieldAccess {
       return field.get(object);
     }
 
+    @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+        justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
+            + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
     @Override
     public void set(Object object, Object value) throws IllegalAccessException, IOException {
       if (value == null && field.getType().isPrimitive()) {
@@ -112,6 +122,9 @@ class FieldAccessReflect extends FieldAccess {
       this.encoding = encoding;
     }
 
+    @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_HAS_CHECKED",
+        justification = "this API's documented error model is unchecked: checked exceptions are wrapped in"
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
     @Override
     protected void read(Object object, Decoder in) throws IOException {
       try {
@@ -121,6 +134,9 @@ class FieldAccessReflect extends FieldAccess {
       }
     }
 
+    @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_HAS_CHECKED",
+        justification = "this API's documented error model is unchecked: checked exceptions are wrapped in"
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
     @Override
     protected void write(Object object, Encoder out) throws IOException {
       try {

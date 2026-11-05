@@ -36,10 +36,13 @@ import java.time.temporal.ChronoUnit;
 
 public class TestSpecificToFromByteArray {
 
-  @SuppressFBWarnings(value = {"CNT_ROUGH_CONSTANT_VALUE", "SPP_USE_BIGDECIMAL_STRING_CTOR"},
+  @SuppressFBWarnings(value = {"CNT_ROUGH_CONSTANT_VALUE", "SPP_USE_BIGDECIMAL_STRING_CTOR", "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION"},
       justification = "CNT_ROUGH_CONSTANT_VALUE: 3.14f is a deliberate fixture value for the record's float field,"
           + "not an approximation of pi; SPP_USE_BIGDECIMAL_STRING_CTOR: the inexact double-constructed"
-          + "decimal is the fixture under test; the round-trip assertions pin its exact serialized form")
+          + "decimal is the fixture under test; the round-trip assertions pin its exact serialized form;"
+          + "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION: the boolean values are data of a Boolean-typed"
+          + "slot (parameterized-test arguments, a Boolean-valued map or a generic container); they are"
+          + "stored as Boolean objects by design")
   @Test
   void specificToFromByteBufferWithLogicalTypes() throws IOException {
     // Java 9+ comes with NANO precision and since we encode it using millis
@@ -57,8 +60,11 @@ public class TestSpecificToFromByteArray {
     assertEquals(record, copy);
   }
 
-  @SuppressFBWarnings(value = "CNT_ROUGH_CONSTANT_VALUE",
-      justification = "3.14f is a deliberate fixture value for the record's float field, not an approximation of pi")
+  @SuppressFBWarnings(value = {"CNT_ROUGH_CONSTANT_VALUE", "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION"},
+      justification = "3.14f is a deliberate fixture value for the record's float field, not an approximation of"
+          + "pi; NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION: the boolean values are data of a Boolean-typed"
+          + "slot (parameterized-test arguments, a Boolean-valued map or a generic container); they are"
+          + "stored as Boolean objects by design")
   @Test
   void specificToFromByteBufferWithoutLogicalTypes() throws IOException {
     final TestRecordWithoutLogicalTypes record = new TestRecordWithoutLogicalTypes(true, 34, 35L, 3.14F, 3019.34, null,
@@ -71,8 +77,11 @@ public class TestSpecificToFromByteArray {
     assertEquals(record, copy);
   }
 
-  @SuppressFBWarnings(value = "CNT_ROUGH_CONSTANT_VALUE",
-      justification = "3.14f is a deliberate fixture value for the record's float field, not an approximation of pi")
+  @SuppressFBWarnings(value = {"CNT_ROUGH_CONSTANT_VALUE", "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION"},
+      justification = "3.14f is a deliberate fixture value for the record's float field, not an approximation of"
+          + "pi; NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION: the boolean values are data of a Boolean-typed"
+          + "slot (parameterized-test arguments, a Boolean-valued map or a generic container); they are"
+          + "stored as Boolean objects by design")
   @Test
   void specificByteArrayIncompatibleWithLogicalTypes() throws IOException {
     final TestRecordWithoutLogicalTypes withoutLogicalTypes = new TestRecordWithoutLogicalTypes(true, 34, 35L, 3.14F,
@@ -86,10 +95,13 @@ public class TestSpecificToFromByteArray {
     });
   }
 
-  @SuppressFBWarnings(value = {"CNT_ROUGH_CONSTANT_VALUE", "SPP_USE_BIGDECIMAL_STRING_CTOR"},
+  @SuppressFBWarnings(value = {"CNT_ROUGH_CONSTANT_VALUE", "SPP_USE_BIGDECIMAL_STRING_CTOR", "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION"},
       justification = "CNT_ROUGH_CONSTANT_VALUE: 3.14f is a deliberate fixture value for the record's float field,"
           + "not an approximation of pi; SPP_USE_BIGDECIMAL_STRING_CTOR: the inexact double-constructed"
-          + "decimal is the fixture under test; the round-trip assertions pin its exact serialized form")
+          + "decimal is the fixture under test; the round-trip assertions pin its exact serialized form;"
+          + "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION: the boolean values are data of a Boolean-typed"
+          + "slot (parameterized-test arguments, a Boolean-valued map or a generic container); they are"
+          + "stored as Boolean objects by design")
   @Test
   void specificByteArrayIncompatibleWithoutLogicalTypes() throws IOException {
     final TestRecordWithLogicalTypes withLogicalTypes = new TestRecordWithLogicalTypes(true, 34, 35L, 3.14F, 3019.34,

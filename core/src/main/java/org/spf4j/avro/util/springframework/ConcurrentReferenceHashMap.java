@@ -341,9 +341,9 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
           if (ref != null) {
             ref.release();
           }
-          return true;
+          return Boolean.TRUE;
         }
-        return false;
+        return Boolean.FALSE;
       }
     });
     return (Boolean.TRUE.equals(result));
@@ -356,9 +356,9 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
       protected Boolean execute(@Nullable Reference<K, V> ref, @Nullable Entry<K, V> entry) {
         if (entry != null && ObjectUtils.nullSafeEquals(entry.getValue(), oldValue)) {
           entry.setValue(newValue);
-          return true;
+          return Boolean.TRUE;
         }
-        return false;
+        return Boolean.FALSE;
       }
     });
     return (Boolean.TRUE.equals(result));
@@ -781,6 +781,9 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
       return (this.key + "=" + this.value);
     }
 
+    @SuppressFBWarnings(value = "NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION",
+        justification = "the annotation only tightens the nullness contract relative to the supertype declaration; it"
+            + "does not change behavior")
     @Override
     @SuppressWarnings("rawtypes")
     public boolean equals(@Nullable Object other) {

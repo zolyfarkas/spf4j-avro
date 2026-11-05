@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.Schema;
 
@@ -46,6 +47,9 @@ public class TestResolvingIOResolving {
         dataForResolvingTests());
   }
 
+  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+      justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
   private static Object[][] dataForResolvingTests() {
     // The mnemonics are the same as {@link TestValidatingIO#testSchemas}
     return new Object[][] {

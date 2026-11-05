@@ -87,7 +87,13 @@ public class SpecificData extends GenericData {
   private static final Class<?>[] NO_ARG = new Class[] {};
   private static final Class<?>[] SCHEMA_ARG = new Class[] { Schema.class };
 
-  private static final Function<Class<?>, Constructor<?>> CTOR_CACHE = new ClassValueCache<>(c -> {
+  private static final Function<Class<?>, Constructor<?>> CTOR_CACHE = new ClassValueCache<>(
+      SpecificData::findConstructor);
+
+  private static final Function<Class<?>, SpecificData> MODEL_CACHE = new ClassValueCache<>(SpecificData::findModel);
+
+  @SuppressFBWarnings(value = "RFI_SET_ACCESSIBLE", justification = "reflective access is this layer's function: the datum layer materializes and inspects the classes it is asked to handle; setAccessible is applied only to those classes' own members")
+  private static Constructor<?> findConstructor(Class<?> c) {
     boolean useSchema = SchemaConstructable.class.isAssignableFrom(c);
     try {
       Constructor<?> meth = c.getDeclaredConstructor(useSchema ? SCHEMA_ARG : NO_ARG);
@@ -96,9 +102,10 @@ public class SpecificData extends GenericData {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-  });
+  }
 
-  private static final Function<Class<?>, SpecificData> MODEL_CACHE = new ClassValueCache<>(c -> {
+  @SuppressFBWarnings(value = "RFI_SET_ACCESSIBLE", justification = "reflective access is this layer's function: the datum layer materializes and inspects the classes it is asked to handle; setAccessible is applied only to those classes' own members")
+  private static SpecificData findModel(Class<?> c) {
     Field specificDataField;
     try {
       specificDataField = c.getDeclaredField("MODEL$");
@@ -110,7 +117,7 @@ public class SpecificData extends GenericData {
     } catch (IllegalAccessException e) {
       throw new AvroRuntimeException("while trying to access field MODEL$ on " + c.getCanonicalName(), e);
     }
-  });
+  }
 
   public static final String CLASS_PROP = "java-class";
   public static final String KEY_CLASS_PROP = "java-key-class";
@@ -495,6 +502,9 @@ public class SpecificData extends GenericData {
   private final Map<java.lang.reflect.Type, Schema> schemaTypeCache = Collections.synchronizedMap(new WeakHashMap<>());
 
   /** Find the schema for a Java type. */
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   public Schema getSchema(java.lang.reflect.Type type) {
     try {
       if (type instanceof Class) {
@@ -507,9 +517,12 @@ public class SpecificData extends GenericData {
   }
 
   /** Create the schema for a Java type. */
-  @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
-      justification = "positional access into a fixed-order list (schema fields or invocation arguments) whose"
-          + "layout is established by the surrounding code; the constant index names the slot")
+  @SuppressFBWarnings(value = { "CLI_CONSTANT_LIST_INDEX", "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS" },
+      justification = "CLI_CONSTANT_LIST_INDEX: positional access into a fixed-order list (schema fields or"
+          + " invocation arguments) whose layout is established by the surrounding code; the constant index"
+          + " names the slot; EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS: this API's documented error model is"
+          + " unchecked: exceptions are wrapped in AvroRuntimeException at the boundary so callers program"
+          + " against the unchecked contract")
   @SuppressWarnings(value = "unchecked")
   protected Schema createSchema(java.lang.reflect.Type type, Map<String, Schema> names) {
     if (type instanceof Class && CharSequence.class.isAssignableFrom((Class) type))
@@ -592,6 +605,9 @@ public class SpecificData extends GenericData {
   }
 
   /** Return the protocol for a Java interface. */
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   public Protocol getProtocol(Class iface) {
     try {
       Protocol p = (Protocol) (iface.getDeclaredField("PROTOCOL").get(null));
@@ -622,6 +638,9 @@ public class SpecificData extends GenericData {
    * {@link SchemaConstructable}, call a constructor with a
    * {@link org.spf4j.avro.Schema} parameter, otherwise use a no-arg constructor.
    */
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   @SuppressWarnings("unchecked")
   public static Object newInstance(Class c, Schema s) {
     boolean useSchema = SchemaConstructable.class.isAssignableFrom(c);

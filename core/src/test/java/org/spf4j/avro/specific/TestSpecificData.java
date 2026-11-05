@@ -122,6 +122,9 @@ public class TestSpecificData {
       }
     }
 
+    @SuppressFBWarnings(value = "URV_INHERITED_METHOD_WITH_RELATED_TYPES",
+        justification = "the method is inherited as part of this class's published or generated API surface; its"
+            + "signature is fixed by the supertype's contract")
     @Override
     public Object get(int i) {
       switch (i) {

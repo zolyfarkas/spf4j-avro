@@ -243,6 +243,9 @@ public class TestNonStringMapKeys {
    * Test that non-string map-keys are readable through GenericDatumReader This
    * method should read as array of {key, value} and not as a map
    */
+  @SuppressFBWarnings(value = "UP_UNUSED_PARAMETER",
+      justification = "the parameter is mandated by the interface/callback (or parameterized-test source) signature"
+          + "being implemented; it is intentionally unused by this implementation")
   private <T> List<GenericRecord> testGenericDatumRead(String testType, byte[] bytes, T... entityObjs)
       throws IOException {
 
@@ -270,6 +273,9 @@ public class TestNonStringMapKeys {
    * method should form the original map and should not return any array of {key,
    * value} as done by {@link #testGenericDatumRead()}
    */
+  @SuppressFBWarnings(value = "UP_UNUSED_PARAMETER",
+      justification = "the parameter is mandated by the interface/callback (or parameterized-test source) signature"
+          + "being implemented; it is intentionally unused by this implementation")
   private <T> List<T> testReflectDatumRead(String testType, byte[] bytes, T... entityObjs) throws IOException {
 
     ReflectDatumReader<T> datumReader = new ReflectDatumReader<>();
@@ -286,6 +292,9 @@ public class TestNonStringMapKeys {
     return records;
   }
 
+  @SuppressFBWarnings(value = "UP_UNUSED_PARAMETER",
+      justification = "the parameter is mandated by the interface/callback (or parameterized-test source) signature"
+          + "being implemented; it is intentionally unused by this implementation")
   private <T> byte[] testJsonEncoder(String testType, T entityObj) throws IOException {
 
     ReflectData rdata = ReflectData.AllowNull.get();
@@ -302,6 +311,9 @@ public class TestNonStringMapKeys {
     return bytes;
   }
 
+  @SuppressFBWarnings(value = "UP_UNUSED_PARAMETER",
+      justification = "the parameter is mandated by the interface/callback (or parameterized-test source) signature"
+          + "being implemented; it is intentionally unused by this implementation")
   private <T> GenericRecord testJsonDecoder(String testType, byte[] bytes, T entityObj) throws IOException {
 
     ReflectData rdata = ReflectData.AllowNull.get();
@@ -344,6 +356,9 @@ public class TestNonStringMapKeys {
     return co;
   }
 
+  @SuppressFBWarnings(value = "CE_CLASS_ENVY",
+      justification = "the method's function is to operate on the collaborator type's data (a visitor/converter"
+          + "over the schema model); the feature concentration is the purpose of the method")
   private SameMapSignature buildSameMapSignature() {
     SameMapSignature obj = new SameMapSignature();
     obj.setMap1(new HashMap<>());

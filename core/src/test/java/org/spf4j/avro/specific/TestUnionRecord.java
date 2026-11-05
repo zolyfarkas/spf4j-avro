@@ -23,6 +23,10 @@ import org.spf4j.avro.message.BinaryMessageDecoder;
 import org.spf4j.avro.message.BinaryMessageEncoder;
 import org.spf4j.avro.message.SchemaStore;
 
+@SuppressFBWarnings(value = "IMC_IMMATURE_CLASS_BAD_SERIALVERSIONUID",
+    justification = "checked-in generated record: the serialVersionUID is as emitted by the specific compiler;"
+        + "the class's real serialized form is the Avro binary encoding, and Java serialization is"
+        + "incidental")
 @SuppressWarnings("all")
 @AvroGenerated
 public class TestUnionRecord extends SpecificRecordBase implements SpecificRecord {
@@ -295,6 +299,9 @@ public class TestUnionRecord extends SpecificRecordBase implements SpecificRecor
       return this;
     }
 
+    @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+        justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
     @Override
     @SuppressWarnings("unchecked")
     public TestUnionRecord build() {

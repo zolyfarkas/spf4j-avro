@@ -37,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TestSchemaParser {
+  private static final SecureRandom RANDOM = new SecureRandom();
   private static final Schema SCHEMA_REAL = Schema.createFixed("Real", null, "tests", 42);
   private static final String SCHEMA_JSON = SchemaFormatter.getInstance("json").format(SCHEMA_REAL);
   private static final Charset[] UTF_CHARSETS = { StandardCharsets.UTF_8, StandardCharsets.UTF_16LE,
@@ -78,7 +79,7 @@ class TestSchemaParser {
   @Test
   void testParseURI() throws IOException {
     Path tempFile = Files.createTempFile("TestSchemaParser", null);
-    Charset charset = UTF_CHARSETS[new SecureRandom().nextInt(UTF_CHARSETS.length)];
+    Charset charset = UTF_CHARSETS[RANDOM.nextInt(UTF_CHARSETS.length)];
     Files.write(tempFile, singletonList(SCHEMA_JSON), charset);
 
     Schema schema = new SchemaParser().parse(tempFile.toUri(), null).mainSchema();

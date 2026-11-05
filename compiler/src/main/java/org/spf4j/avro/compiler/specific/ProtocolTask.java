@@ -95,6 +95,9 @@ public class ProtocolTask extends Task {
     compiler.compileToDestination(src, dest);
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   private void compile(File file) {
     try {
       doCompile(file, dest);

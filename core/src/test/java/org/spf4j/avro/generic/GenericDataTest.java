@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.generic;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.Conversion;
 import org.spf4j.avro.LogicalType;
@@ -56,6 +57,9 @@ class GenericDataTest {
     }
   }
 
+  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+      justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
   static Object sampleValue(Schema schema) {
     if (schema.getLogicalType() != null) {
       return new Object();
@@ -200,6 +204,9 @@ class GenericDataTest {
     });
   }
 
+  @SuppressFBWarnings(value = "ITC_INHERITANCE_TYPE_CHECKING",
+      justification = "dispatch over the closed set of schema/datum kinds fixed by the specification is the"
+          + "algorithm; the type tests are the rule table")
   @ParameterizedTest
   @MethodSource("testNewArrayData")
   void testNewArray(String description, Schema schema, List<Conversion<?>> convertions, Object initial,

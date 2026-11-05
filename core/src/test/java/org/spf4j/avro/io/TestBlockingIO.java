@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
@@ -260,6 +261,9 @@ public class TestBlockingIO {
     assertEquals(s, s2);
   }
 
+  @SuppressFBWarnings(value = "UP_UNUSED_PARAMETER",
+      justification = "the parameter is mandated by the interface/callback (or parameterized-test source) signature"
+          + "being implemented; it is intentionally unused by this implementation")
   private static void serialize(Encoder cos, JsonParser p, ByteArrayOutputStream os) throws IOException {
     boolean[] isArray = new boolean[100];
     int[] counts = new int[100];

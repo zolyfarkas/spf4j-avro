@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io.parsing;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -206,6 +207,9 @@ public abstract class Symbol {
    *              handling recursive definitions and for caching.
    * @param map2  A map to store the list of fix-ups.
    */
+  @SuppressFBWarnings(value = "MOM_MISLEADING_OVERLOAD_MODEL",
+      justification = "the overloads are the published API and each has distinct documented semantics; the similar"
+          + "names are the domain vocabulary of the datum model")
   static void flatten(Symbol[] in, int start, Symbol[] out, int skip, Map<Sequence, Sequence> map,
       Map<Sequence, List<Fixup>> map2) {
     for (int i = start, j = skip; i < in.length; i++) {
@@ -247,6 +251,9 @@ public abstract class Symbol {
    * @return The number of symbols that will be produced if one expands the given
    *         input.
    */
+  @SuppressFBWarnings(value = "MOM_MISLEADING_OVERLOAD_MODEL",
+      justification = "the overloads are the published API and each has distinct documented semantics; the similar"
+          + "names are the domain vocabulary of the datum model")
   protected static int flattenedSize(Symbol[] symbols, int start) {
     int result = 0;
     for (int i = start; i < symbols.length; i++) {
@@ -400,6 +407,9 @@ public abstract class Symbol {
     return hasErrors(symbol, new HashSet<>());
   }
 
+  @SuppressFBWarnings(value = "ITC_INHERITANCE_TYPE_CHECKING",
+      justification = "dispatch over the closed set of schema/datum kinds fixed by the specification is the"
+          + "algorithm; the type tests are the rule table")
   private static boolean hasErrors(Symbol symbol, Set<Symbol> visited) {
     // avoid infinite recursion
     if (visited.contains(symbol)) {

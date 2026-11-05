@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.Externalizable;
 import java.io.ObjectOutput;
@@ -32,6 +33,9 @@ import org.spf4j.avro.message.MessageDecoder;
 import org.spf4j.avro.message.MessageEncoder;
 
 /** Base class for generated record classes. */
+@SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
+    justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
+        + "builders, readers and writers are mutually referential by design")
 public abstract class SpecificRecordBase
     implements SpecificRecord, Comparable<SpecificRecord>, GenericRecord, Externalizable {
 

@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io.parsing;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -78,6 +79,9 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
    * @return The start symbol for the resolving grammar
    * @throws IOException
    */
+  @SuppressFBWarnings(value = "ITC_INHERITANCE_TYPE_CHECKING",
+      justification = "dispatch over the closed set of schema/datum kinds fixed by the specification is the"
+          + "algorithm; the type tests are the rule table")
   private Symbol generate(Resolver.Action action, Map<Object, Symbol> seen) throws IOException {
     if (action instanceof Resolver.DoNothing) {
       return simpleGen(action.writer, seen);
@@ -251,6 +255,9 @@ public class ResolvingGrammarGenerator extends ValidatingGrammarGenerator {
    * @param n The Json node to encode.
    * @throws IOException
    */
+  @SuppressFBWarnings(value = "CC_CYCLOMATIC_COMPLEXITY",
+      justification = "the method is a decision table over the specification's resolution rules; its complexity is"
+          + "intrinsic to the rule set and it is covered by the resolver and parser test suites")
   public static void encode(Encoder e, Schema s, JsonNode n) throws IOException {
     switch (s.getType()) {
     case RECORD:

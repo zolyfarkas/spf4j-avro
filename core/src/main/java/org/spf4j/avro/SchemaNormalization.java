@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -37,6 +38,9 @@ public class SchemaNormalization {
   /**
    * Returns "Parsing Canonical Form" of a schema as defined by Avro spec.
    */
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   public static String toParsingForm(Schema s) {
     try {
       Map<String, String> env = new HashMap<>();

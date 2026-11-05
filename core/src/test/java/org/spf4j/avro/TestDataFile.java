@@ -61,6 +61,9 @@ public class TestDataFile {
   @TempDir
   public File DIR;
 
+  @SuppressFBWarnings(value = "CE_CLASS_ENVY",
+      justification = "the method's function is to operate on the collaborator type's data (a visitor/converter"
+          + "over the schema model); the feature concentration is the purpose of the method")
   public static Stream<Arguments> codecs() {
     List<Object[]> r = new ArrayList<>();
     r.add(new Object[] { null });

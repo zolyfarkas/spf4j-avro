@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,6 +45,10 @@ public class TestDataFileMeta {
     }
   }
 
+  @SuppressFBWarnings(value = "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS",
+      justification = "stream construction from a File is this API's documented shape (the container-file readers"
+          + "and writers are file-based); the File constructors' exception behavior is part of the"
+          + "contract")
   @Test
   public void useMeta() throws IOException {
     File f = new File(DIR, "testDataFileMeta.avro");

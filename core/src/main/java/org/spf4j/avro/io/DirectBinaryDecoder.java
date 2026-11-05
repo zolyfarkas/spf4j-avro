@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -72,6 +73,10 @@ class DirectBinaryDecoder extends BinaryDecoder {
 
   private ByteReader byteReader;
 
+  @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
+      justification = "construction completes through the class's own initialization protocol (its template methods"
+          + "and registration with the owning model); the access to the partially constructed object"
+          + "stays inside the class's own constructor chain by design")
   DirectBinaryDecoder(InputStream in) {
     super();
     configure(in);

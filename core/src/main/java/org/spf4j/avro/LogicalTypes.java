@@ -164,6 +164,9 @@ public class LogicalTypes {
     }
   }
 
+  @SuppressFBWarnings(value = "CC_CYCLOMATIC_COMPLEXITY",
+      justification = "the method is a decision table over the specification's resolution rules; its complexity is"
+          + "intrinsic to the rule set and it is covered by the resolver and parser test suites")
   private static LogicalType fromSchemaImpl(Schema schema, boolean throwErrors) {
     final LogicalType logicalType;
     final String typeName = schema.getProp(LogicalType.LOGICAL_TYPE_PROP);
@@ -444,6 +447,9 @@ public class LogicalTypes {
       }
     }
 
+    @SuppressFBWarnings(value = "CFS_CONFUSING_FUNCTION_SEMANTICS",
+        justification = "the published contract is to complete/adapt and return the argument (fluent builder and"
+            + "logical-type API); callers rely on receiving the same reference back")
     @Override
     public Schema addToSchema(Schema schema) {
       super.addToSchema(schema);

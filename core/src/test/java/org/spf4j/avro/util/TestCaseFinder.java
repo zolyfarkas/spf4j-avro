@@ -113,9 +113,11 @@ public class TestCaseFinder {
     return new BufferedReader(new StringReader(s));
   }
 
-  @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
-      justification = "positional access into a fixed-order list (schema fields or invocation arguments) whose"
-          + "layout is established by the surrounding code; the constant index names the slot")
+  @SuppressFBWarnings(value = { "CLI_CONSTANT_LIST_INDEX", "OCP_OVERLY_CONCRETE_PARAMETER" },
+      justification = "CLI_CONSTANT_LIST_INDEX: positional access into a fixed-order list (schema fields or"
+          + " invocation arguments) whose layout is established by the surrounding code; the constant index"
+          + " names the slot; OCP_OVERLY_CONCRETE_PARAMETER: the signature is the published API, and the"
+          + " implementation uses operations specific to the concrete parameter type")
   private static String pr(List<Object[]> t) {
     StringBuilder b = new StringBuilder();
     b.append("{ ");

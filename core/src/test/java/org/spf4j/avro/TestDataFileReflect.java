@@ -54,9 +54,11 @@ public class TestDataFileReflect {
    * Test that using multiple schemas in a file works doing a union before writing
    * any records.
    */
-  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+  @SuppressFBWarnings(value = {"PATH_TRAVERSAL_IN", "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS"},
       justification = "test code: the file is built from constant names under the test's own directory; there is no"
-          + "untrusted input")
+          + "untrusted input; IOI_USE_OF_FILE_STREAM_CONSTRUCTORS: stream construction from a File is"
+          + "this API's documented shape (the container-file readers and writers are file-based); the"
+          + "File constructors' exception behavior is part of the contract")
   @Test
   void multiReflectWithUnionBeforeWriting() throws IOException {
     File file = new File(DIR.getPath(), "testMultiReflectWithUnionBeforeWriting.avro");
@@ -93,9 +95,11 @@ public class TestDataFileReflect {
   /*
    * Test that writing a record with a field that is null.
    */
-  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+  @SuppressFBWarnings(value = {"PATH_TRAVERSAL_IN", "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS"},
       justification = "test code: the file is built from constant names under the test's own directory; there is no"
-          + "untrusted input")
+          + "untrusted input; IOI_USE_OF_FILE_STREAM_CONSTRUCTORS: stream construction from a File is"
+          + "this API's documented shape (the container-file readers and writers are file-based); the"
+          + "File constructors' exception behavior is part of the contract")
   @Test
   void testNull() throws IOException {
     File file = new File(DIR.getPath(), "testNull.avro");
@@ -157,9 +161,11 @@ public class TestDataFileReflect {
   /*
    * Test that writing out and reading in a nested class works
    */
-  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+  @SuppressFBWarnings(value = {"PATH_TRAVERSAL_IN", "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS"},
       justification = "test code: the file is built from constant names under the test's own directory; there is no"
-          + "untrusted input")
+          + "untrusted input; IOI_USE_OF_FILE_STREAM_CONSTRUCTORS: stream construction from a File is"
+          + "this API's documented shape (the container-file readers and writers are file-based); the"
+          + "File constructors' exception behavior is part of the contract")
   @Test
   void nestedClass() throws IOException {
     File file = new File(DIR.getPath(), "testNull.avro");

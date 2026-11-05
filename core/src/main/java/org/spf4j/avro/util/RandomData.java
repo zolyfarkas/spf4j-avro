@@ -93,12 +93,18 @@ public class RandomData implements Iterable<Object> {
     this.utf8ForString = utf8ForString;
   }
 
+  @SuppressFBWarnings(value = "PREDICTABLE_RANDOM",
+      justification = "the values produced are reproducible sample/test data generated from a seed;"
+          + " predictability is the feature, not a vulnerability")
+  private Random seededRandom() {
+    return new Random(seed);
+  }
+
   @Override
   public Iterator<Object> iterator() {
+    final Random random = seededRandom();
     return new Iterator<Object>() {
       private int n;
-      @SuppressFBWarnings(value = "PREDICTABLE_RANDOM", justification = "the values produced are reproducible sample/test data generated from a seed; predictability is the feature, not a vulnerability")
-      private final Random random = new Random(seed);
 
       @Override
       public boolean hasNext() {
@@ -183,9 +189,11 @@ public class RandomData implements Iterable<Object> {
     return random.nextInt();
   }
 
-  @SuppressFBWarnings(value = "PREDICTABLE_RANDOM",
+  @SuppressFBWarnings(value = {"PREDICTABLE_RANDOM", "OCP_OVERLY_CONCRETE_PARAMETER"},
       justification = "RandomData is a sample-data generator: the values it produces are test/sample payloads, not"
-          + "secrets or tokens, so predictability has no security impact")
+          + "secrets or tokens, so predictability has no security impact; OCP_OVERLY_CONCRETE_PARAMETER:"
+          + "the signature is the published API, and the implementation uses operations specific to the"
+          + "concrete parameter type")
   private long randomLong(Random random, LogicalType type) {
     if (type instanceof LogicalTypes.TimeMicros) {
       return ThreadLocalRandom.current().nextLong(RandomData.MILLIS_IN_DAY * 1000L);
@@ -204,6 +212,9 @@ public class RandomData implements Iterable<Object> {
     return utf8ForString ? new Utf8(bytes) : new String(bytes, UTF8);
   }
 
+  @SuppressFBWarnings(value = "OCP_OVERLY_CONCRETE_PARAMETER",
+      justification = "the signature is the published API, and the implementation uses operations specific to the"
+          + "concrete parameter type")
   private static ByteBuffer randomBytes(Random rand, int maxLength) {
     ByteBuffer bytes = ByteBuffer.allocate(rand.nextInt(maxLength));
     bytes.limit(bytes.capacity());

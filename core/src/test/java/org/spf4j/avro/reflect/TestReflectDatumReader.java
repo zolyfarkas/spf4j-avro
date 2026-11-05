@@ -43,6 +43,9 @@ import org.spf4j.avro.util.ClassSecurityValidator;
 import org.spf4j.avro.util.ClassSecurityValidator.ClassSecurityPredicate;
 import org.junit.jupiter.api.Test;
 
+@SuppressFBWarnings(value = "SEC_SIDE_EFFECT_CONSTRUCTOR",
+    justification = "the tests in this class deliberately construct objects whose constructors validate their"
+        + "arguments (and throw on invalid ones); the constructor validation is the behavior under test")
 public class TestReflectDatumReader {
 
   private static <T> byte[] serializeWithReflectDatumWriter(T toSerialize, Class<T> toSerializeClass)

@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.generic.GenericData;
 import org.spf4j.avro.generic.GenericDatumWriter;
@@ -97,6 +98,9 @@ public class TestProtocol {
         parsingForm);
   }
 
+  @SuppressFBWarnings(value = "CE_CLASS_ENVY",
+      justification = "the method's function is to operate on the collaborator type's data (a visitor/converter"
+          + "over the schema model); the feature concentration is the purpose of the method")
   @Test
   void namespaceAndNameRules() {
     Protocol p1 = new Protocol("P", null, "foo");

@@ -15,6 +15,7 @@
  */
 
 package org.spf4j.avro.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -54,6 +55,9 @@ public class TestGeneratedCode {
     MODEL.setCustomCoders(true);
   }
 
+  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+      justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
   @Test
   void withoutSchemaMigration() throws IOException {
     FullRecordV1 src = new FullRecordV1(true, 87231, 731L, 54.2832F, 38.321, "Hi there", null);
@@ -73,6 +77,9 @@ public class TestGeneratedCode {
     Assert.assertEquals(src, dst);
   }
 
+  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+      justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
   @Test
   void withSchemaMigration() throws IOException {
     Map<CharSequence, CharSequence> map = new HashMap<>();

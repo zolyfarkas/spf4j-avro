@@ -226,6 +226,9 @@ public class Conversions {
       return false;
     }
 
+    @SuppressFBWarnings(value = "BC_UNCONFIRMED_CAST",
+        justification = "the cast is protected by the schema/type dispatch that selects this branch: the runtime type"
+            + "is fixed by that invariant")
     @Override
     public BigDecimal fromBytes(ByteBuffer value, Schema schema, LogicalType type) {
       int scale = ((LogicalTypes.Decimal) type).getScale();
@@ -235,6 +238,9 @@ public class Conversions {
       return new BigDecimal(new BigInteger(bytes), scale);
     }
 
+    @SuppressFBWarnings(value = "BC_UNCONFIRMED_CAST",
+        justification = "the cast is protected by the schema/type dispatch that selects this branch: the runtime type"
+            + "is fixed by that invariant")
     @Override
     public ByteBuffer toBytes(BigDecimal value, Schema schema, LogicalType type) {
       value = validate((LogicalTypes.Decimal) type, value);
@@ -242,12 +248,18 @@ public class Conversions {
       return ByteBuffer.wrap(value.unscaledValue().toByteArray());
     }
 
+    @SuppressFBWarnings(value = "BC_UNCONFIRMED_CAST",
+        justification = "the cast is protected by the schema/type dispatch that selects this branch: the runtime type"
+            + "is fixed by that invariant")
     @Override
     public BigDecimal fromFixed(GenericFixed value, Schema schema, LogicalType type) {
       int scale = ((LogicalTypes.Decimal) type).getScale();
       return new BigDecimal(new BigInteger(value.bytes()), scale);
     }
 
+    @SuppressFBWarnings(value = "BC_UNCONFIRMED_CAST",
+        justification = "the cast is protected by the schema/type dispatch that selects this branch: the runtime type"
+            + "is fixed by that invariant")
     @Override
     public GenericFixed toFixed(BigDecimal value, Schema schema, LogicalType type) {
       value = validate((LogicalTypes.Decimal) type, value);
@@ -308,6 +320,9 @@ public class Conversions {
       return "big-decimal";
     }
 
+    @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+        justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
     @Override
     public BigDecimal fromBytes(final ByteBuffer value, final Schema schema, final LogicalType type) {
       BinaryDecoder decoder = DecoderFactory.get().binaryDecoder(value.array(), null);
@@ -327,6 +342,9 @@ public class Conversions {
       }
     }
 
+    @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+        justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
     @Override
     public ByteBuffer toBytes(final BigDecimal value, final Schema schema, final LogicalType type) {
       try {
@@ -407,6 +425,9 @@ public class Conversions {
    * @throws IllegalArgumentException if datum is not null, but schema, type or
    *                                  conversion is.
    */
+  @SuppressFBWarnings(value = "CE_CLASS_ENVY",
+      justification = "the method's function is to operate on the collaborator type's data (a visitor/converter"
+          + "over the schema model); the feature concentration is the purpose of the method")
   public static Object convertToLogicalType(Object datum, Schema schema, LogicalType type, Conversion<?> conversion) {
     if (datum == null) {
       return null;
@@ -467,6 +488,9 @@ public class Conversions {
    * @throws IllegalArgumentException if datum is not null, but schema, type or
    *                                  conversion is.
    */
+  @SuppressFBWarnings(value = "CE_CLASS_ENVY",
+      justification = "the method's function is to operate on the collaborator type's data (a visitor/converter"
+          + "over the schema model); the feature concentration is the purpose of the method")
   public static <T> Object convertToRawType(Object datum, Schema schema, LogicalType type, Conversion<T> conversion) {
     if (datum == null) {
       return null;

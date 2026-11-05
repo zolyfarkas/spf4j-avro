@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io.parsing;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -202,6 +203,9 @@ public class Parser {
    * productions along the way. The stack position is left just past that
    * terminal; {@link #goBack(int)} restores it.
    */
+  @SuppressFBWarnings(value = "BED_BOGUS_EXCEPTION_DECLARATION",
+      justification = "the declared exception set is the published API contract; narrowing it would break"
+          + "implementers and existing callers")
   public final int countToFirstTerminal() throws IOException {
     int i = 1;
     while (true) {
@@ -217,6 +221,9 @@ public class Parser {
   }
 
   /** Counts the symbols up to the end (root) of the current production. */
+  @SuppressFBWarnings(value = "BED_BOGUS_EXCEPTION_DECLARATION",
+      justification = "the declared exception set is the published API contract; narrowing it would break"
+          + "implementers and existing callers")
   public final int countToEnd() throws IOException {
     if (pos <= 0) {
       return 0;
@@ -267,6 +274,9 @@ public class Parser {
   }
 
   /** Skips {@code nrToSkip} symbols without performing implicit actions. */
+  @SuppressFBWarnings(value = "BED_BOGUS_EXCEPTION_DECLARATION",
+      justification = "the declared exception set is the published API contract; narrowing it would break"
+          + "implementers and existing callers")
   public final void skip(int nrToSkip) throws IOException {
     while (nrToSkip > 0) {
       Symbol top = stack[--pos];

@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io.parsing;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 
@@ -41,6 +42,9 @@ public class SkipParser extends Parser {
 
   private final SkipHandler skipHandler;
 
+  @SuppressFBWarnings(value = "BED_BOGUS_EXCEPTION_DECLARATION",
+      justification = "the declared exception set is the published API contract; narrowing it would break"
+          + "implementers and existing callers")
   public SkipParser(Symbol root, ActionHandler symbolHandler, SkipHandler skipHandler) throws IOException {
     super(root, symbolHandler);
     this.skipHandler = skipHandler;

@@ -69,6 +69,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+@SuppressFBWarnings(value = "SEC_SIDE_EFFECT_CONSTRUCTOR",
+    justification = "SEC_SIDE_EFFECT_CONSTRUCTOR: the tests in this class deliberately construct objects whose"
+        + "constructors validate their arguments (and throw on invalid ones); the constructor"
+        + "validation is the behavior under test; SEC_SIDE_EFFECT_CONSTRUCTOR: the tests in this class"
+        + "deliberately construct objects whose constructors validate their arguments (and throw on"
+        + "invalid ones); the constructor validation is the behavior under test;"
+        + "SEC_SIDE_EFFECT_CONSTRUCTOR: the tests in this class deliberately construct objects whose"
+        + "constructors validate their arguments (and throw on invalid ones); the constructor"
+        + "validation is the behavior under test; SEC_SIDE_EFFECT_CONSTRUCTOR: the tests in this class"
+        + "deliberately construct objects whose constructors validate their arguments (and throw on"
+        + "invalid ones); the constructor validation is the behavior under test")
 public class TestSchema {
   @Test
   void splitSchemaBuild() {
@@ -448,6 +459,9 @@ public class TestSchema {
     assertEquals("Int", nameInt.getQualified("space"));
   }
 
+  @SuppressFBWarnings(value = "CE_CLASS_ENVY",
+      justification = "the method's function is to operate on the collaborator type's data (a visitor/converter"
+          + "over the schema model); the feature concentration is the purpose of the method")
   @Test
   void validValue() {
     // Valid null value

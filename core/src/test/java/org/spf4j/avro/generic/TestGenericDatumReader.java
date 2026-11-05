@@ -46,10 +46,10 @@ import org.spf4j.avro.io.DecoderFactory;
 import org.spf4j.avro.io.EncoderFactory;
 import org.junit.jupiter.api.Test;
 
+@SuppressFBWarnings(value = "PREDICTABLE_RANDOM",
+    justification = "static test-data generator; the values are serialization test payloads, not secrets")
 public class TestGenericDatumReader {
 
-  @SuppressFBWarnings(value = "PREDICTABLE_RANDOM",
-      justification = "static test-data generator; the values are serialization test payloads, not secrets")
   private static final Random r = new Random(System.currentTimeMillis());
 
   @Test
@@ -126,6 +126,9 @@ public class TestGenericDatumReader {
     return String.class;
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   private void sleep() {
     long timeToSleep = r.nextInt(30) + 10L;
     if (timeToSleep > 25) {

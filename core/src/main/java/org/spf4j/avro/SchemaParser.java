@@ -267,6 +267,9 @@ public class SchemaParser {
    *                              suppressed underlying parse exceptions if
    *                              available
    */
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   public ParseResult parse(CharSequence text) throws SchemaParseException {
     try {
       return parse(null, text);

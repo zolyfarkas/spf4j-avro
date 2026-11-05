@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.util.internal;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.spf4j.avro.util.internal.JacksonUtils.toJsonNode;
 import static org.spf4j.avro.util.internal.JacksonUtils.toObject;
@@ -47,6 +48,12 @@ public class TestJacksonUtils {
     UP, DOWN;
   }
 
+  @SuppressFBWarnings(value = {"CE_CLASS_ENVY", "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION"},
+      justification = "CE_CLASS_ENVY: the method's function is to operate on the collaborator type's data (a"
+          + "visitor/converter over the schema model); the feature concentration is the purpose of the"
+          + "method; NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION: the boolean values are data of a"
+          + "Boolean-typed slot (parameterized-test arguments, a Boolean-valued map or a generic"
+          + "container); they are stored as Boolean objects by design")
   @Test
   void testToJsonNode() {
     assertNull(toJsonNode(null));
@@ -71,6 +78,9 @@ public class TestJacksonUtils {
     assertEquals(on, toJsonNode(Collections.singletonMap("a", 1)));
   }
 
+  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+      justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
   @Test
   void testToObject() {
     assertNull(toObject(null));

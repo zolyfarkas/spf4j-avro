@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -67,6 +68,9 @@ public class BinaryData {
    * 1, if less than return -1. Order is consistent with that of
    * {@link org.spf4j.avro.generic.GenericData#compare(Object, Object, Schema)}.
    */
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   public static int compare(byte[] b1, int s1, int l1, byte[] b2, int s2, int l2, Schema schema) {
     Decoders decoders = DECODERS.get();
     decoders.set(b1, s1, l1, b2, s2, l2);
@@ -203,6 +207,9 @@ public class BinaryData {
    * Hash binary encoded data. Consistent with
    * {@link org.spf4j.avro.generic.GenericData#hashCode(Object, Schema)}.
    */
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   public static int hashCode(byte[] bytes, int start, int length, Schema schema) {
     HashData data = HASH_DATA.get();
     data.set(bytes, start, length);

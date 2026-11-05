@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.data;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,10 +62,17 @@ public class Json {
   private static final String JSON_AVSC_NOT_FOUND = "Packaged Avro JSON schema not found";
 
   static {
+    SCHEMA = loadSchema();
+  }
+
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + " AvroRuntimeException at the boundary so callers program against the unchecked contract")
+  private static Schema loadSchema() {
     try {
       try (InputStream in = Json.class.getResourceAsStream("/org/spf4j/avro/data/Json.avsc")) {
         String schema = new String(requireNonNull(in, JSON_AVSC_NOT_FOUND).readAllBytes(), StandardCharsets.UTF_8);
-        SCHEMA = JsonSchemaParser.parseInternal(schema);
+        return JsonSchemaParser.parseInternal(schema);
       }
     } catch (IOException e) {
       throw new AvroRuntimeException(e);
@@ -121,6 +129,9 @@ public class Json {
    * Parses a JSON string and converts it to the object model described in
    * {@link org.spf4j.avro.JsonProperties}.
    */
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   public static Object parseJson(String s) {
     try {
       return JacksonUtils.toObject(MAPPER.readTree(FACTORY.createParser(s)));

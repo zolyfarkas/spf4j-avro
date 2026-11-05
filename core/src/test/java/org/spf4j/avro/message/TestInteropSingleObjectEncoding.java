@@ -41,18 +41,21 @@ import java.util.Arrays;
  * "https://avro.apache.org/docs/current/spec.html#single_object_encoding">single
  * object</a>
  */
+@SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+    justification = "test fixture paths built from constant names under the test resources folder"
+        + " (the share.dir system property only relocates the fixture root); there is no untrusted input")
 public class TestInteropSingleObjectEncoding {
   private static final String RESOURCES_FOLDER = System.getProperty("share.dir", "target/test-classes/share")
       + "/test/data/messageV1";
-  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
-      justification = "test fixture path built from constant names under the test resources folder; there is no untrusted input")
   private static final File SCHEMA_FILE = new File(RESOURCES_FOLDER + "/test_schema.avsc");
-  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
-      justification = "test fixture path built from constant names under the test resources folder; there is no untrusted input")
   private static final File MESSAGE_FILE = new File(RESOURCES_FOLDER + "/test_message.bin");
   private static Schema SCHEMA;
   private static GenericRecordBuilder BUILDER;
 
+  @SuppressFBWarnings(value = "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS",
+      justification = "stream construction from a File is this API's documented shape (the container-file readers"
+          + "and writers are file-based); the File constructors' exception behavior is part of the"
+          + "contract")
   @BeforeAll
   public static void setup() throws IOException {
     try (FileInputStream fileInputStream = new FileInputStream(SCHEMA_FILE)) {

@@ -25,6 +25,10 @@ import org.spf4j.avro.message.BinaryMessageEncoder;
 import org.spf4j.avro.message.BinaryMessageDecoder;
 import org.spf4j.avro.message.SchemaStore;
 
+@SuppressFBWarnings(value = "IMC_IMMATURE_CLASS_BAD_SERIALVERSIONUID",
+    justification = "checked-in generated record: the serialVersionUID is as emitted by the specific compiler;"
+        + "the class's real serialized form is the Avro binary encoding, and Java serialization is"
+        + "incidental")
 @AvroGenerated
 public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements SpecificRecord {
   private static final long serialVersionUID = -3823801533006425147L;
@@ -598,6 +602,9 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
       return this;
     }
 
+    @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+        justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
     @Override
     @SuppressWarnings("unchecked")
     public TestRecordWithMapsAndArrays build() {

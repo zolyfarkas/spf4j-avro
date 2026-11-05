@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -47,16 +48,26 @@ import org.spf4j.avro.AvroRuntimeException;
  * @see BlockingBinaryEncoder
  * @see DirectBinaryEncoder
  */
+@SuppressFBWarnings(value = "FCCD_FIND_CLASS_CIRCULAR_DEPENDENCY",
+    justification = "the classes of this package form one cohesive unit mirroring the Avro type system: model,"
+        + "builders, readers and writers are mutually referential by design")
 public class BufferedBinaryEncoder extends BinaryEncoder {
   private byte[] buf;
   private int pos;
   private ByteSink sink;
   private int bulkLimit;
 
+  @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
+      justification = "construction completes through the class's own initialization protocol (its template methods"
+          + "and registration with the owning model); the access to the partially constructed object"
+          + "stays inside the class's own constructor chain by design")
   BufferedBinaryEncoder(OutputStream out, int bufferSize) {
     configure(out, bufferSize);
   }
 
+  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+      justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
   BufferedBinaryEncoder configure(OutputStream out, int bufferSize) {
     Objects.requireNonNull(out, "OutputStream cannot be null");
     if (null != this.sink) {

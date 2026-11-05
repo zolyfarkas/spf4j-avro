@@ -15,6 +15,7 @@
  */
 
 package org.spf4j.avro.util.springframework;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.reflect.Nullable;
 
@@ -105,6 +106,9 @@ class NullSafeComparator<T> implements Comparator<T> {
     return this.nonNullComparator.compare(o1, o2);
   }
 
+  @SuppressFBWarnings(value = "NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION",
+      justification = "the annotation only tightens the nullness contract relative to the supertype declaration; it"
+          + "does not change behavior")
   @Override
   @SuppressWarnings("unchecked")
   public boolean equals(@Nullable Object other) {

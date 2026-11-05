@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro.data;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.Conversion;
 import org.spf4j.avro.LogicalType;
@@ -72,6 +73,10 @@ public class TimeConversions {
       return "time-millis";
     }
 
+    @SuppressFBWarnings(value = "COM_COPIED_OVERRIDDEN_METHOD",
+        justification = "the override deliberately restates the parent implementation because this class's contract"
+            + "(documentation and behavior under its own type) must evolve with the class, not silently"
+            + "inherit future parent changes")
     @Override
     public String adjustAndSetValue(String varName, String valParamName) {
       return varName + " = " + valParamName + ".truncatedTo(java.time.temporal.ChronoUnit.MILLIS);";
@@ -104,6 +109,10 @@ public class TimeConversions {
       return "time-micros";
     }
 
+    @SuppressFBWarnings(value = "COM_COPIED_OVERRIDDEN_METHOD",
+        justification = "the override deliberately restates the parent implementation because this class's contract"
+            + "(documentation and behavior under its own type) must evolve with the class, not silently"
+            + "inherit future parent changes")
     @Override
     public String adjustAndSetValue(String varName, String valParamName) {
       return varName + " = " + valParamName + ".truncatedTo(java.time.temporal.ChronoUnit.MICROS);";
@@ -136,6 +145,10 @@ public class TimeConversions {
       return "timestamp-millis";
     }
 
+    @SuppressFBWarnings(value = "COM_COPIED_OVERRIDDEN_METHOD",
+        justification = "the override deliberately restates the parent implementation because this class's contract"
+            + "(documentation and behavior under its own type) must evolve with the class, not silently"
+            + "inherit future parent changes")
     @Override
     public String adjustAndSetValue(String varName, String valParamName) {
       return varName + " = " + valParamName + ".truncatedTo(java.time.temporal.ChronoUnit.MILLIS);";
@@ -168,6 +181,10 @@ public class TimeConversions {
       return "timestamp-micros";
     }
 
+    @SuppressFBWarnings(value = "COM_COPIED_OVERRIDDEN_METHOD",
+        justification = "the override deliberately restates the parent implementation because this class's contract"
+            + "(documentation and behavior under its own type) must evolve with the class, not silently"
+            + "inherit future parent changes")
     @Override
     public String adjustAndSetValue(String varName, String valParamName) {
       return varName + " = " + valParamName + ".truncatedTo(java.time.temporal.ChronoUnit.MICROS);";
@@ -215,6 +232,10 @@ public class TimeConversions {
       return "timestamp-nanos";
     }
 
+    @SuppressFBWarnings(value = "COM_COPIED_OVERRIDDEN_METHOD",
+        justification = "the override deliberately restates the parent implementation because this class's contract"
+            + "(documentation and behavior under its own type) must evolve with the class, not silently"
+            + "inherit future parent changes")
     @Override
     public String adjustAndSetValue(String varName, String valParamName) {
       return varName + " = " + valParamName + ".truncatedTo(java.time.temporal.ChronoUnit.NANOS);";

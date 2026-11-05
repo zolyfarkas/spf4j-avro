@@ -117,6 +117,9 @@ public interface SchemaFormatter {
    * @see #getInstance(String)
    * @see #format(Schema)
    */
+  @SuppressFBWarnings(value = "MOM_MISLEADING_OVERLOAD_MODEL",
+      justification = "the overloads are the published API and each has distinct documented semantics; the similar"
+          + "names are the domain vocabulary of the datum model")
   static String format(String name, Schema schema) {
     return getInstance(name).format(schema);
   }

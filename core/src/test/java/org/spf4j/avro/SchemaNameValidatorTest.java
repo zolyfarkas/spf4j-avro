@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,6 +34,12 @@ class SchemaNameValidatorTest {
     Assertions.assertEquals(expectedResult, result.isOK(), result.getErrors());
   }
 
+  @SuppressFBWarnings(value = {"CE_CLASS_ENVY", "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION"},
+      justification = "CE_CLASS_ENVY: the method's function is to operate on the collaborator type's data (a"
+          + "visitor/converter over the schema model); the feature concentration is the purpose of the"
+          + "method; NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION: the boolean values are data of a"
+          + "Boolean-typed slot (parameterized-test arguments, a Boolean-valued map or a generic"
+          + "container); they are stored as Boolean objects by design")
   static Stream<Arguments> data() {
     return Stream.of(Arguments.of(NameValidator.UTF_VALIDATOR, null, false), // null not accepted
         Arguments.of(NameValidator.STRICT_VALIDATOR, null, false), // null not accepted

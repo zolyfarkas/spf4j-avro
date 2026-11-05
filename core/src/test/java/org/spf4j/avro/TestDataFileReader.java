@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -193,12 +194,16 @@ public class TestDataFileReader {
       }
 
       @Override
-      public int read(byte[] b, int off, int len) throws IOException {
+      public int read(byte[] b, int off, int len) {
         return -1;
       }
     };
   }
 
+  @SuppressFBWarnings(value = "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS",
+      justification = "stream construction from a File is this API's documented shape (the container-file readers"
+          + "and writers are file-based); the File constructors' exception behavior is part of the"
+          + "contract")
   @Test
   void ignoreSchemaValidationOnRead() throws IOException {
     // This schema has an accent in the name and the default for the field doesn't

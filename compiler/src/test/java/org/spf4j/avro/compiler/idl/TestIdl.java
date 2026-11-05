@@ -216,6 +216,10 @@ public class TestIdl {
       writeFile(expectedOut, generate());
     }
 
+    @SuppressFBWarnings(value = "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS",
+        justification = "stream construction from a File is this API's documented shape (the container-file readers"
+            + "and writers are file-based); the File constructors' exception behavior is part of the"
+            + "contract")
     private static String slurp(File f) throws IOException {
       BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8));
 

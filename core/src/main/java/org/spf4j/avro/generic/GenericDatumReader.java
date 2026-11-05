@@ -406,6 +406,9 @@ public class GenericDatumReader<D> implements DatumReader<D> {
     return l;
   }
 
+  @SuppressFBWarnings(value = "CFS_CONFUSING_FUNCTION_SEMANTICS",
+      justification = "the published contract is to complete/adapt and return the argument (fluent builder and"
+          + "logical-type API); callers rely on receiving the same reference back")
   private Object pruneArray(Object object) {
     if (object instanceof GenericArray<?>) {
       ((GenericArray<?>) object).prune();
@@ -761,6 +764,12 @@ public class GenericDatumReader<D> implements DatumReader<D> {
       return ctor.apply(s);
     }
 
+    @SuppressFBWarnings(value = {"EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS", "RFI_SET_ACCESSIBLE"},
+        justification = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS: this API's documented error model is unchecked:"
+            + "exceptions are wrapped in AvroRuntimeException at the boundary so callers program against"
+            + "the unchecked contract; RFI_SET_ACCESSIBLE: reflective field access is this class's function"
+            + "(the reflect datum layer); setAccessible is applied to the fields the layer itself reads and"
+            + "writes")
     private Function<String, Object> buildFunction(Class c) {
       final Constructor ctor;
       try {

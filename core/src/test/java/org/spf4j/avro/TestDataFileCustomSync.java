@@ -52,9 +52,12 @@ public class TestDataFileCustomSync {
     return baos.toByteArray();
   }
 
-  @SuppressFBWarnings(value = "WEAK_MESSAGE_DIGEST_MD5",
+  @SuppressFBWarnings(value = {"WEAK_MESSAGE_DIGEST_MD5", "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS"},
       justification = "the test reproduces the historical MD5-based sync-marker generation to build its fixture;"
-          + "the digest is a file-format marker, not a security mechanism")
+          + "the digest is a file-format marker, not a security mechanism;"
+          + "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS: this API's documented error model is unchecked:"
+          + "exceptions are wrapped in AvroRuntimeException at the boundary so callers program against"
+          + "the unchecked contract")
   private static byte[] generateSync() {
     try {
       MessageDigest digester = MessageDigest.getInstance("MD5");

@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.SchemaCompatibility.SchemaIncompatibilityType;
 
@@ -48,6 +49,9 @@ import static org.spf4j.avro.TestSchemas.STRING_SCHEMA;
 
 public class TestSchemaCompatibilityTypeMismatch {
 
+  @SuppressFBWarnings(value = "CE_CLASS_ENVY",
+      justification = "the method's function is to operate on the collaborator type's data (a visitor/converter"
+          + "over the schema model); the feature concentration is the purpose of the method")
   public static Stream<Arguments> data() {
     return Stream.of(
         Arguments.of(NULL_SCHEMA, INT_SCHEMA, "reader type: NULL not compatible with writer type: INT", "/"),

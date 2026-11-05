@@ -36,6 +36,10 @@ public class ByteBufferOutputStream extends OutputStream {
 
   private List<ByteBuffer> buffers;
 
+  @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
+      justification = "construction completes through the class's own initialization protocol (its template methods"
+          + "and registration with the owning model); the access to the partially constructed object"
+          + "stays inside the class's own constructor chain by design")
   public ByteBufferOutputStream() {
     reset();
   }
