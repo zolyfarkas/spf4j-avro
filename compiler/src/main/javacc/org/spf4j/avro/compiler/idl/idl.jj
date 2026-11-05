@@ -94,6 +94,30 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * @deprecated Use the new org.spf4j.avro.idl.IdlReader from avro-idl instead.
  */
 @Deprecated
+@SuppressFBWarnings(value = {"CC_CYCLOMATIC_COMPLEXITY", "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+    "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS", "STT_STRING_PARSING_A_FIELD",
+    "BED_BOGUS_EXCEPTION_DECLARATION", "USBR_UNNECESSARY_STORE_BEFORE_RETURN",
+    "PSC_PRESIZE_COLLECTIONS", "OCP_OVERLY_CONCRETE_PARAMETER", "IMPROPER_UNICODE"},
+    justification = "findings in the parts of this class JavaCC generates from the grammar below,"
+        + " which cannot carry annotations of their own: CC_CYCLOMATIC_COMPLEXITY - the ProtocolBody"
+        + " and AnyIdentifier productions generate decision tables whose branch count is the grammar's;"
+        + " EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS - the JavaCC-generated constructors wrap"
+        + " UnsupportedEncodingException in RuntimeException, and the productions' error model is the"
+        + " parser's published one; the real fix is a major rework, postponed per the user's 2026-11-05"
+        + " decision; PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS - false positive in DecimalTypeProperties:"
+        + " the two Json() invocations are two distinct parses (precision, then scale), each consuming"
+        + " input; STT_STRING_PARSING_A_FIELD - JsonString converts token text, which is the parser's"
+        + " input by definition; BED_BOGUS_EXCEPTION_DECLARATION - JavaCC declares 'throws"
+        + " ParseException' on every production, including Documentation, which only peeks at the token"
+        + " stream; USBR_UNNECESSARY_STORE_BEFORE_RETURN - store-then-return is the code shape JavaCC"
+        + " generates for productions that return a sub-production's result (Type, PrimitiveType,"
+        + " ResultType); restructuring the expansions would change lookahead dispatch;"
+        + " PSC_PRESIZE_COLLECTIONS - UnionDefinition's list is built incrementally from the input,"
+        + " whose member count is not known in advance; OCP_OVERLY_CONCRETE_PARAMETER - EnumConstant's"
+        + " List parameter is the production signature declared by this grammar;"
+        + " IMPROPER_UNICODE - VariableDeclarator case-maps the field-order keyword with"
+        + " java.util.Locale.ROOT explicitly, which is the locale-insensitive behavior the pattern"
+        + " exists to require; the detector flags the call form anyway")
 public class Idl implements Closeable {
   static JsonNodeFactory FACTORY = JsonNodeFactory.instance;
   private static final String OPTIONAL_NULLABLE_TYPE_PROPERTY = "org.spf4j.avro.compiler.idl.Idl.NullableType.optional";
@@ -108,7 +132,7 @@ public class Idl implements Closeable {
    * Return all warnings that were encountered while parsing.
    */
   public List<String> getWarningsAfterParsing() {
-    return parserWarnings;
+    return Collections.unmodifiableList(parserWarnings);
   }
 
   /**
@@ -131,14 +155,18 @@ public class Idl implements Closeable {
     this.allowUndefinedLogicalTypes = allowUndefinedLogicalTypes;
   }
 
-  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+  @SuppressFBWarnings(value = {"PATH_TRAVERSAL_IN", "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS"},
       justification = "the input file is named by the application invoking the IDL compiler; the caller is"
-          + " the trust boundary")
+          + " the trust boundary, and opening that file with a FileInputStream is this constructor's"
+          + " entire function")
   public Idl(File inputFile) throws IOException {
     this(new FileInputStream(inputFile), "UTF-8");
     this.inputDir = inputFile.getParentFile().toURI();
   }
 
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+      justification = "the ClassLoader is a shared service reference adopted deliberately: class loaders"
+          + " are not value objects and are never defensively copied")
   public Idl(File inputFile, ClassLoader resourceLoader) throws IOException {
     this(inputFile);
     this.resourceLoader = resourceLoader;
@@ -155,10 +183,11 @@ public class Idl implements Closeable {
     }
   }
 
-  @SuppressFBWarnings(value = "URLCONNECTION_SSRF_FD",
+  @SuppressFBWarnings(value = {"URLCONNECTION_SSRF_FD", "PATH_TRAVERSAL_IN"},
       justification = "the URL is the resolved location of an import declared by the IDL source being"
           + " compiled, or supplied directly by the embedding application; resolving imports from their"
-          + " declared locations is the compiler's function")
+          + " declared locations is the compiler's function, and for a file: URL the parent directory is"
+          + " derived from the path of that application-supplied URL")
   private Idl(URL input, Idl parent) throws IOException {
     this(input.openStream(), "UTF-8");
     this.inputDir = "file".equals(input.getProtocol())
@@ -1126,13 +1155,13 @@ private Schema NamedSchemaDeclaration(String doc, Map<String, JsonNode> props):
  {
    this.namespace = savedSpace;
 
-   for (String key : props.keySet())
-     if ("namespace".equals(key)) {               // already handled: ignore
-     } else if ("aliases".equals(key)) {          // aliases
+   for (Map.Entry<String, JsonNode> prop : props.entrySet())
+     if ("namespace".equals(prop.getKey())) {     // already handled: ignore
+     } else if ("aliases".equals(prop.getKey())) { // aliases
        for (String alias : getTextProps("aliases", props, token))
          s.addAlias(alias);
      } else {                                     // add all other properties
-       Accessor.addProp(s, key, props.get(key));
+       Accessor.addProp(s, prop.getKey(), prop.getValue());
      }
    LogicalType logicalType = LogicalTypes.fromSchema(s, allowUndefinedLogicalTypes);
    if (logicalType != null)
@@ -1183,10 +1212,10 @@ Protocol ProtocolDeclaration():
    name = Identifier()
  {
    p = new Protocol(name, doc, namespace);
-   for (String key : props.keySet())
-     if ("namespace".equals(key)) {               // already handled: ignore
+   for (Map.Entry<String, JsonNode> prop : props.entrySet())
+     if ("namespace".equals(prop.getKey())) {     // already handled: ignore
      } else {                                     // add all other properties
-       Accessor.addProp(p, key, props.get(key));
+       Accessor.addProp(p, prop.getKey(), prop.getValue());
      }
  }
  ProtocolBody(p)
@@ -1422,20 +1451,19 @@ void VariableDeclarator(Schema type, String defaultDoc, List<Field> fields):
   [ <EQUALS> defaultValue=Json() ]
   {
     Field.Order order = Field.Order.ASCENDING;
-    for (String key : props.keySet())
-      if ("order".equals(key))
-        order = Field.Order.valueOf(getTextProp(key,props,token).toUpperCase(java.util.Locale.ROOT));
+    if (props.containsKey("order"))
+      order = Field.Order.valueOf(getTextProp("order",props,token).toUpperCase(java.util.Locale.ROOT));
 
     boolean validate = SchemaResolver.isFullyResolvedSchema(type);
     Schema fieldType = fixOptionalSchema(type, defaultValue);
     Field field = Accessor.createField(name, fieldType, doc == null ? defaultDoc : doc, defaultValue, validate, order);
-    for (String key : props.keySet())
-      if ("order".equals(key)) {                  // already handled: ignore
-      } else if ("aliases".equals(key)) {         // aliases
+    for (Map.Entry<String, JsonNode> prop : props.entrySet())
+      if ("order".equals(prop.getKey())) {        // already handled: ignore
+      } else if ("aliases".equals(prop.getKey())) { // aliases
         for (String alias : getTextProps("aliases", props, token))
           field.addAlias(alias);
       } else {                                    // add all other properties
-        Accessor.addProp(field, key, props.get(key));
+        Accessor.addProp(field, prop.getKey(), prop.getValue());
       }
     fields.add(field);
     DocCommentHelper.clearDoc();
@@ -1529,8 +1557,8 @@ Schema UnannotatedType(Map<String, JsonNode> props):
       )
       {
         // NullableType also applies properties, inside any union with null it may create.
-        for (String key : props.keySet())
-          Accessor.addProp(s, key, props.get(key));
+        for (Map.Entry<String, JsonNode> prop : props.entrySet())
+          Accessor.addProp(s, prop.getKey(), prop.getValue());
         LogicalType logicalType = LogicalTypes.fromSchema(s, allowUndefinedLogicalTypes);
         if (logicalType != null)
           logicalType.addToSchema(s);
@@ -1553,8 +1581,8 @@ Schema NullableType(Map<String, JsonNode> props):
   ) [ <QUESTION_MARK> { optional = true; } ]
   {
     // By applying the properties here (before creating the union), type annotations modify the optional type instead of the union.
-    for (String key : props.keySet())
-      Accessor.addProp(s, key, props.get(key));
+    for (Map.Entry<String, JsonNode> prop : props.entrySet())
+      Accessor.addProp(s, prop.getKey(), prop.getValue());
     LogicalType logicalType = LogicalTypes.fromSchema(s, allowUndefinedLogicalTypes);
     if (logicalType != null)
       logicalType.addToSchema(s);
@@ -1600,7 +1628,7 @@ Schema ReferenceType():
 }
 {
   part = Identifier() { sb.append(part); }
-  ("." tok = AnyIdentifier() { sb.append(".").append(tok.image); })*
+  ("." tok = AnyIdentifier() { sb.append('.').append(tok.image); })*
   {
     String name = sb.toString();
     if ((name.indexOf('.') == -1) && namespace != null)
