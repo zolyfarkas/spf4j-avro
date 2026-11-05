@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.compiler.idl;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,6 +45,9 @@ public class TestCycle {
 
   private static final Logger LOG = LoggerFactory.getLogger(TestCycle.class);
 
+  @SuppressFBWarnings(value = "PSC_PRESIZE_COLLECTIONS",
+      justification = "the collection is populated incrementally from the schema/data being processed; its final"
+          + "size is not known when it is created")
   @Test
   void cycleGeneration() throws ParseException, IOException {
     final ClassLoader cl = Thread.currentThread().getContextClassLoader();

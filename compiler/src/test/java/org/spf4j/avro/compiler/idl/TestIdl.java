@@ -157,9 +157,9 @@ public class TestIdl {
       assertNull(messages.get("undocumentedMethod").getDoc());
 
       final String pattern1 = "Found documentation comment at line %d, column %d. Ignoring previous one at line %d, column %d: \"%s\""
-          + "\nDid you mean to use a multiline comment ( /* ... */ ) instead?";
+          + "%nDid you mean to use a multiline comment ( /* ... */ ) instead?";
       final String pattern2 = "Ignoring out-of-place documentation comment at line %d, column %d: \"%s\""
-          + "\nDid you mean to use a multiline comment ( /* ... */ ) instead?";
+          + "%nDid you mean to use a multiline comment ( /* ... */ ) instead?";
       assertEquals(Arrays.asList(String.format(pattern1, 21, 47, 21, 10, "Dangling Enum1"),
           String.format(pattern2, 21, 47, "Dangling Enum2"), String.format(pattern1, 23, 9, 22, 9, "Dangling Enum3"),
           String.format(pattern1, 24, 9, 23, 9, "Dangling Enum4"),

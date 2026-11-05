@@ -607,8 +607,7 @@ public class SchemaCompatibility {
       final int prime = 31;
       int result = 1;
       result = prime * result + ((mCompatibilityType == null) ? 0 : mCompatibilityType.hashCode());
-      result = prime * result + ((mIncompatibilities == null) ? 0 : mIncompatibilities.hashCode());
-      return result;
+      return prime * result + ((mIncompatibilities == null) ? 0 : mIncompatibilities.hashCode());
     }
 
     /** {@inheritDoc} */
@@ -732,8 +731,7 @@ public class SchemaCompatibility {
       result = prime * result + ((mReaderFragment == null) ? 0 : mReaderFragment.hashCode());
       result = prime * result + ((mWriterFragment == null) ? 0 : mWriterFragment.hashCode());
       result = prime * result + ((mMessage == null) ? 0 : mMessage.hashCode());
-      result = prime * result + ((mLocation == null) ? 0 : mLocation.hashCode());
-      return result;
+      return prime * result + ((mLocation == null) ? 0 : mLocation.hashCode());
     }
 
     /** {@inheritDoc} */

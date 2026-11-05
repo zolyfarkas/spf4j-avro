@@ -56,7 +56,7 @@ public class TracingAvroTypeException extends AvroTypeException implements PathT
       }
       for (int i = reversePath.size() - 1; i >= 0; i--) {
         PathElement step = reversePath.get(i);
-        sb.append(step.toString());
+        sb.append(step);
       }
     }
     return new AvroTypeException(sb.toString(), cause);

@@ -70,6 +70,9 @@ public class TestCaseFinder {
     }
   }
 
+  @SuppressFBWarnings(value = "SIC_INNER_SHOULD_BE_STATIC",
+      justification = "JUnit @Nested test classes must be non-static inner classes; the nesting is the framework's"
+          + "requirement")
   @Nested
   public class NonParameterized {
 
@@ -124,7 +127,7 @@ public class TestCaseFinder {
         firstTime = false;
       b.append("{ \"").append(p[0]).append("\", \"").append(p[1]).append("\" }");
     }
-    b.append("}");
+    b.append('}');
     return b.toString();
   }
 

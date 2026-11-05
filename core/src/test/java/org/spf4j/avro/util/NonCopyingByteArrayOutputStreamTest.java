@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro.util;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.nio.charset.StandardCharsets;
 
 import java.io.IOException;
@@ -51,6 +52,9 @@ public class NonCopyingByteArrayOutputStreamTest {
   /**
    * Test write limiting.
    */
+  @SuppressFBWarnings(value = "MDM_STRING_BYTES_ENCODING",
+      justification = "this test verifies output character encodings; conversions through the platform default"
+          + "charset inside it are part of the behavior under test")
   @Test
   public void testLimitedWrite() throws IOException {
     NonCopyingByteArrayOutputStream out = NonCopyingByteArrayOutputStream.capacityLimitedOutputStream(1, 4);

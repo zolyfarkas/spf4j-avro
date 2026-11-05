@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.spf4j.avro.AvroTypeException;
 import org.spf4j.avro.Schema;
@@ -128,7 +129,7 @@ public class TestAvroEncode {
 
     {
       schema = Schema.createRecord("R1", null, "org.spf4j.avro.reflect.TestAvroEncode", false,
-          Arrays.asList(new Schema.Field("value", Schema.create(Schema.Type.INT), null, null)));
+          Collections.singletonList(new Schema.Field("value", Schema.create(Schema.Type.INT), null, null)));
     }
 
     @Override
@@ -152,7 +153,7 @@ public class TestAvroEncode {
 
     {
       schema = Schema.createRecord("R1", null, null, false,
-          Arrays.asList(new Schema.Field("value", Schema.create(Schema.Type.STRING), null, null)));
+          Collections.singletonList(new Schema.Field("value", Schema.create(Schema.Type.STRING), null, null)));
     }
 
     @Override

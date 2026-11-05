@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.generic;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.spf4j.avro.TestCircularReferences.Reference;
 import static org.spf4j.avro.TestCircularReferences.Referenceable;
@@ -163,7 +164,7 @@ public class TestGenericData {
   public void testMapKeyEqualsStringAndUtf8Compatibility() {
     Field myMapField = new Field("my_map", Schema.createMap(Schema.create(Schema.Type.STRING)), null, null);
     Schema schema = Schema.createRecord("my_record", "doc", "mytest", false);
-    schema.setFields(Arrays.asList(myMapField));
+    schema.setFields(Collections.singletonList(myMapField));
     GenericRecord r0 = new GenericData.Record(schema);
     GenericRecord r1 = new GenericData.Record(schema);
 
@@ -218,7 +219,7 @@ public class TestGenericData {
   public void testMapValuesEqualsStringAndUtf8Compatibility() {
     Field myMapField = new Field("my_map", Schema.createMap(Schema.create(Schema.Type.STRING)), null, null);
     Schema schema = Schema.createRecord("my_record", "doc", "mytest", false);
-    schema.setFields(Arrays.asList(myMapField));
+    schema.setFields(Collections.singletonList(myMapField));
     GenericRecord r0 = new GenericData.Record(schema);
     GenericRecord r1 = new GenericData.Record(schema);
 
@@ -238,7 +239,7 @@ public class TestGenericData {
   public void testEqualsEmptyMaps() {
     Field myMapField = new Field("my_map", Schema.createMap(Schema.create(Schema.Type.STRING)), null, null);
     Schema schema = Schema.createRecord("my_record", "doc", "mytest", false);
-    schema.setFields(Arrays.asList(myMapField));
+    schema.setFields(Collections.singletonList(myMapField));
 
     GenericRecord r0 = new GenericData.Record(schema);
     r0.put("my_map", new HashMap<>());
@@ -253,7 +254,7 @@ public class TestGenericData {
   public void testEqualsEmptyMapAndNonEmptyMap() {
     Field myMapField = new Field("my_map", Schema.createMap(Schema.create(Schema.Type.STRING)), null, null);
     Schema schema = Schema.createRecord("my_record", "doc", "mytest", false);
-    schema.setFields(Arrays.asList(myMapField));
+    schema.setFields(Collections.singletonList(myMapField));
 
     GenericRecord r0 = new GenericData.Record(schema);
     r0.put("my_map", new HashMap<>());
@@ -270,7 +271,7 @@ public class TestGenericData {
   public void testEqualsMapAndSubset() {
     Field myMapField = new Field("my_map", Schema.createMap(Schema.create(Schema.Type.STRING)), null, null);
     Schema schema = Schema.createRecord("my_record", "doc", "mytest", false);
-    schema.setFields(Arrays.asList(myMapField));
+    schema.setFields(Collections.singletonList(myMapField));
 
     GenericRecord r0 = new GenericData.Record(schema);
     HashMap<CharSequence, String> m1 = new HashMap<>();
@@ -291,7 +292,7 @@ public class TestGenericData {
   public void testEqualsMapAndSameSizeMapWithDifferentKeys() {
     Field myMapField = new Field("my_map", Schema.createMap(Schema.create(Schema.Type.STRING)), null, null);
     Schema schema = Schema.createRecord("my_record", "doc", "mytest", false);
-    schema.setFields(Arrays.asList(myMapField));
+    schema.setFields(Collections.singletonList(myMapField));
 
     GenericRecord r0 = new GenericData.Record(schema);
     HashMap<CharSequence, String> m1 = new HashMap<>();
@@ -311,7 +312,7 @@ public class TestGenericData {
   public void testEqualsMapAndSameSizeMapWithDifferentValues() {
     Field myMapField = new Field("my_map", Schema.createMap(Schema.create(Schema.Type.STRING)), null, null);
     Schema schema = Schema.createRecord("my_record", "doc", "mytest", false);
-    schema.setFields(Arrays.asList(myMapField));
+    schema.setFields(Collections.singletonList(myMapField));
 
     GenericRecord r0 = new GenericData.Record(schema);
     HashMap<CharSequence, String> m1 = new HashMap<>();
@@ -331,14 +332,14 @@ public class TestGenericData {
   public void testArrayValuesEqualsStringAndUtf8Compatibility() {
     Field myArrayField = new Field("my_array", Schema.createArray(Schema.create(Schema.Type.STRING)), null, null);
     Schema schema = Schema.createRecord("my_record", "doc", "mytest", false);
-    schema.setFields(Arrays.asList(myArrayField));
+    schema.setFields(Collections.singletonList(myArrayField));
     GenericRecord r0 = new GenericData.Record(schema);
     GenericRecord r1 = new GenericData.Record(schema);
 
-    List<CharSequence> array1 = Arrays.asList("valueOne");
+    List<CharSequence> array1 = Collections.singletonList("valueOne");
     r0.put("my_array", array1);
 
-    List<CharSequence> array2 = Arrays.asList(new Utf8("valueOne"));
+    List<CharSequence> array2 = Collections.singletonList(new Utf8("valueOne"));
     r1.put("my_array", array2);
 
     assertEquals(r0, r1);
@@ -799,6 +800,9 @@ public class TestGenericData {
    * has the risk of detecting that same value as being a circular reference. For
    * Record, Map and Array this is correct, for the rest is is not.
    */
+  @SuppressFBWarnings(value = "PSC_PRESIZE_COLLECTIONS",
+      justification = "the collection is populated incrementally from the schema/data being processed; its final"
+          + "size is not known when it is created")
   @Test
   void toStringSameValues() throws IOException {
     List<Field> fields = new ArrayList<>();

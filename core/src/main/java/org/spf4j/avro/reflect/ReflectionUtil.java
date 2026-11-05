@@ -62,7 +62,7 @@ public class ReflectionUtil {
         fieldAccess = reflectAccess;
       }
     } catch (Throwable oops) {
-      throw new AvroRuntimeException("Unable to load a functional FieldAccess class!");
+      throw new AvroRuntimeException("Unable to load a functional FieldAccess class!", oops);
     }
   }
 

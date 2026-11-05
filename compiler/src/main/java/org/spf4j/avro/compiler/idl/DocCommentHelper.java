@@ -68,7 +68,7 @@ public class DocCommentHelper {
     if (oldDocComment != null) {
       WARNINGS.get()
           .add(String.format(
-              "Found documentation comment at line %d, column %d. Ignoring previous one at line %d, column %d: \"%s\"\n"
+              "Found documentation comment at line %d, column %d. Ignoring previous one at line %d, column %d: \"%s\"%n"
                   + "Did you mean to use a multiline comment ( /* ... */ ) instead?",
               newDocComment.line, newDocComment.column, oldDocComment.line, oldDocComment.column, oldDocComment.text));
     }
@@ -88,7 +88,7 @@ public class DocCommentHelper {
     if (oldDocComment != null) {
       WARNINGS.get()
           .add(String.format(
-              "Ignoring out-of-place documentation comment at line %d, column %d: \"%s\"\n"
+              "Ignoring out-of-place documentation comment at line %d, column %d: \"%s\"%n"
                   + "Did you mean to use a multiline comment ( /* ... */ ) instead?",
               oldDocComment.line, oldDocComment.column, oldDocComment.text));
     }

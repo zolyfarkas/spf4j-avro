@@ -138,8 +138,7 @@ public class TestReflectDatumWithAnonymousInstances {
     @Override
     public int hashCode() {
       int result = testEnum != null ? testEnum.hashCode() : 0;
-      result = 31 * result + (person != null ? person.hashCode() : 0);
-      return result;
+      return 31 * result + (person != null ? person.hashCode() : 0);
     }
 
     @Override
@@ -199,8 +198,7 @@ public class TestReflectDatumWithAnonymousInstances {
     @Override
     public int hashCode() {
       int result = name != null ? name.hashCode() : 0;
-      result = 31 * result + (address != null ? address.hashCode() : 0);
-      return result;
+      return 31 * result + (address != null ? address.hashCode() : 0);
     }
 
     @Override

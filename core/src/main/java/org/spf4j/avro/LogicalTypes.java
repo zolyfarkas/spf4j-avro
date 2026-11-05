@@ -524,8 +524,7 @@ public class LogicalTypes {
     @Override
     public int hashCode() {
       int result = precision;
-      result = 31 * result + scale;
-      return result;
+      return 31 * result + scale;
     }
   }
 

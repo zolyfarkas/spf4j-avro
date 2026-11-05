@@ -335,20 +335,9 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
    * RecordBuilder for TestRecordWithMapsAndArrays instances.
    */
   @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
-      justification = "CLI_CONSTANT_LIST_INDEX: checked-in output of the specific compiler: builder field access is"
-          + "by schema-fixed constant index (fields()[N]) because a record's field positions are fixed by"
-          + "its schema; the idiom comes from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in"
-          + "output of the specific compiler: builder field access is by schema-fixed constant index"
-          + "(fields()[N]) because a record's field positions are fixed by its schema; the idiom comes"
-          + "from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in output of the specific"
-          + "compiler: builder field access is by schema-fixed constant index (fields()[N]) because a"
-          + "record's field positions are fixed by its schema; the idiom comes from the codegen template;"
-          + "CLI_CONSTANT_LIST_INDEX: checked-in output of the specific compiler: builder field access is"
-          + "by schema-fixed constant index (fields()[N]) because a record's field positions are fixed by"
-          + "its schema; the idiom comes from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in"
-          + "output of the specific compiler: builder field access is by schema-fixed constant index"
-          + "(fields()[N]) because a record's field positions are fixed by its schema; the idiom comes"
-          + "from the codegen template")
+      justification = "checked-in output of the specific compiler: builder field access is by schema-fixed"
+          + " constant index (fields()[N]) because a record's field positions are fixed by its schema;"
+          + " the idiom comes from the codegen template")
   @AvroGenerated
   public static class Builder extends SpecificRecordBuilderBase<TestRecordWithMapsAndArrays>
       implements org.spf4j.avro.data.RecordBuilder<TestRecordWithMapsAndArrays> {
@@ -742,9 +731,12 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
 
   }
 
-  @SuppressFBWarnings(value = "CC_CYCLOMATIC_COMPLEXITY",
+  @SuppressFBWarnings(value = {"CC_CYCLOMATIC_COMPLEXITY", "RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE"},
       justification = "checked-in output of the specific compiler's coder template; the generated per-field switch"
-          + "is inherently branchy and this class is regenerated from the template, not hand-maintained")
+          + "is inherently branchy and this class is regenerated from the template, not hand-maintained;"
+          + "RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE: checked-in generated record coder: the redundant null"
+          + "check is part of the codegen template's defensive output and removing it would diverge from"
+          + "the shipped template")
   @Override
   public void customDecode(org.spf4j.avro.io.ResolvingDecoder in) throws java.io.IOException {
     org.spf4j.avro.Schema.Field[] fieldOrder = in.readFieldOrderIfDiff();

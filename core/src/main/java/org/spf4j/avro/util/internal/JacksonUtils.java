@@ -120,9 +120,9 @@ public class JacksonUtils {
       return JsonProperties.NULL_VALUE;
     }
 
-    if (schema != null && schema.getType().equals(Schema.Type.UNION)) {
+    if (schema != null && schema.getType() == Schema.Type.UNION) {
       for (Schema unionType : schema.getTypes()) {
-        if (unionType.getType().equals(Schema.Type.NULL)) {
+        if (unionType.getType() == Schema.Type.NULL) {
           continue;
         }
         Object unionObject = toObject(jsonNode, unionType);
@@ -136,39 +136,39 @@ public class JacksonUtils {
     if (jsonNode.isBoolean()) {
       return jsonNode.asBoolean();
     } else if (jsonNode.isInt()) {
-      if (schema == null || schema.getType().equals(Schema.Type.INT)) {
+      if (schema == null || schema.getType() == Schema.Type.INT) {
         return jsonNode.asInt();
-      } else if (schema.getType().equals(Schema.Type.LONG)) {
+      } else if (schema.getType() == Schema.Type.LONG) {
         return jsonNode.asLong();
-      } else if (schema.getType().equals(Schema.Type.FLOAT)) {
+      } else if (schema.getType() == Schema.Type.FLOAT) {
         return (float) jsonNode.asDouble();
-      } else if (schema.getType().equals(Schema.Type.DOUBLE)) {
+      } else if (schema.getType() == Schema.Type.DOUBLE) {
         return jsonNode.asDouble();
       }
     } else if (jsonNode.isLong()) {
-      if (schema == null || schema.getType().equals(Schema.Type.LONG)) {
+      if (schema == null || schema.getType() == Schema.Type.LONG) {
         return jsonNode.asLong();
-      } else if (schema.getType().equals(Schema.Type.INT)) {
+      } else if (schema.getType() == Schema.Type.INT) {
         if (jsonNode.canConvertToInt()) {
           return jsonNode.asInt();
         } else {
           return jsonNode.asLong();
         }
-      } else if (schema.getType().equals(Schema.Type.FLOAT)) {
+      } else if (schema.getType() == Schema.Type.FLOAT) {
         return (float) jsonNode.asDouble();
-      } else if (schema.getType().equals(Schema.Type.DOUBLE)) {
+      } else if (schema.getType() == Schema.Type.DOUBLE) {
         return jsonNode.asDouble();
       }
     } else if (jsonNode.isDouble() || jsonNode.isFloat()) {
-      if (schema == null || schema.getType().equals(Schema.Type.DOUBLE)) {
+      if (schema == null || schema.getType() == Schema.Type.DOUBLE) {
         return jsonNode.asDouble();
-      } else if (schema.getType().equals(Schema.Type.FLOAT)) {
+      } else if (schema.getType() == Schema.Type.FLOAT) {
         return (float) jsonNode.asDouble();
       }
     } else if (jsonNode.isTextual()) {
-      if (schema == null || schema.getType().equals(Schema.Type.STRING) || schema.getType().equals(Schema.Type.ENUM)) {
+      if (schema == null || schema.getType() == Schema.Type.STRING || schema.getType() == Schema.Type.ENUM) {
         return jsonNode.asText();
-      } else if (schema.getType().equals(Schema.Type.BYTES) || schema.getType().equals(Schema.Type.FIXED)) {
+      } else if (schema.getType() == Schema.Type.BYTES || schema.getType() == Schema.Type.FIXED) {
         return jsonNode.textValue().getBytes(StandardCharsets.ISO_8859_1);
       }
     } else if (jsonNode.isArray()) {
@@ -182,9 +182,9 @@ public class JacksonUtils {
       for (Iterator<String> it = jsonNode.fieldNames(); it.hasNext();) {
         String key = it.next();
         final Schema s;
-        if (schema != null && schema.getType().equals(Schema.Type.MAP)) {
+        if (schema != null && schema.getType() == Schema.Type.MAP) {
           s = schema.getValueType();
-        } else if (schema != null && schema.getType().equals(Schema.Type.RECORD)) {
+        } else if (schema != null && schema.getType() == Schema.Type.RECORD) {
           s = schema.getField(key).schema();
         } else {
           s = null;

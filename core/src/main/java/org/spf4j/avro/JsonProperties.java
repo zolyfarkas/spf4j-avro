@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.util.AbstractSet;
 import java.util.Collections;
@@ -333,6 +334,9 @@ public abstract class JsonProperties {
   }
 
   /** Return the defined properties as an unmodifiable Map. */
+  @SuppressFBWarnings(value = "PSC_PRESIZE_COLLECTIONS",
+      justification = "the collection is populated incrementally from the schema/data being processed; its final"
+          + "size is not known when it is created")
   public Map<String, Object> getObjectProps() {
     Map<String, Object> result = new LinkedHashMap<>();
     for (Map.Entry<String, JsonNode> e : props.entrySet())

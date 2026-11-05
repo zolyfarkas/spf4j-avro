@@ -182,6 +182,9 @@ public class int$ extends SpecificRecordBase implements SpecificRecord {
 
     @Override
     @SuppressWarnings("unchecked")
+    @SuppressFBWarnings(value = "USBR_UNNECESSARY_STORE_BEFORE_RETURN",
+        justification = "checked-in generated builder: build() constructs the record, applies builder state"
+            + " and returns it; the store-then-return shape is the codegen template's output")
     public int$ build() {
       try {
         int$ record = new int$();

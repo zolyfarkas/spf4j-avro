@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.Conversions;
 import org.spf4j.avro.LogicalTypes;
@@ -35,6 +36,10 @@ import java.time.temporal.ChronoUnit;
 
 public class TestSpecificToFromByteArray {
 
+  @SuppressFBWarnings(value = {"CNT_ROUGH_CONSTANT_VALUE", "SPP_USE_BIGDECIMAL_STRING_CTOR"},
+      justification = "CNT_ROUGH_CONSTANT_VALUE: 3.14f is a deliberate fixture value for the record's float field,"
+          + "not an approximation of pi; SPP_USE_BIGDECIMAL_STRING_CTOR: the inexact double-constructed"
+          + "decimal is the fixture under test; the round-trip assertions pin its exact serialized form")
   @Test
   void specificToFromByteBufferWithLogicalTypes() throws IOException {
     // Java 9+ comes with NANO precision and since we encode it using millis
@@ -52,6 +57,8 @@ public class TestSpecificToFromByteArray {
     assertEquals(record, copy);
   }
 
+  @SuppressFBWarnings(value = "CNT_ROUGH_CONSTANT_VALUE",
+      justification = "3.14f is a deliberate fixture value for the record's float field, not an approximation of pi")
   @Test
   void specificToFromByteBufferWithoutLogicalTypes() throws IOException {
     final TestRecordWithoutLogicalTypes record = new TestRecordWithoutLogicalTypes(true, 34, 35L, 3.14F, 3019.34, null,
@@ -64,26 +71,32 @@ public class TestSpecificToFromByteArray {
     assertEquals(record, copy);
   }
 
+  @SuppressFBWarnings(value = "CNT_ROUGH_CONSTANT_VALUE",
+      justification = "3.14f is a deliberate fixture value for the record's float field, not an approximation of pi")
   @Test
   void specificByteArrayIncompatibleWithLogicalTypes() throws IOException {
-    assertThrows(MissingSchemaException.class, () -> {
-      final TestRecordWithoutLogicalTypes withoutLogicalTypes = new TestRecordWithoutLogicalTypes(true, 34, 35L, 3.14F,
-          3019.34, null, (int) System.currentTimeMillis() / 1000, (int) System.currentTimeMillis() / 1000,
-          System.currentTimeMillis(),
-          new Conversions.DecimalConversion().toBytes(new BigDecimal("123.45"), null, LogicalTypes.decimal(9, 2)));
+    final TestRecordWithoutLogicalTypes withoutLogicalTypes = new TestRecordWithoutLogicalTypes(true, 34, 35L, 3.14F,
+        3019.34, null, (int) System.currentTimeMillis() / 1000, (int) System.currentTimeMillis() / 1000,
+        System.currentTimeMillis(),
+        new Conversions.DecimalConversion().toBytes(new BigDecimal("123.45"), null, LogicalTypes.decimal(9, 2)));
 
+    assertThrows(MissingSchemaException.class, () -> {
       final ByteBuffer b = withoutLogicalTypes.toByteBuffer();
       TestRecordWithLogicalTypes.fromByteBuffer(b);
     });
   }
 
+  @SuppressFBWarnings(value = {"CNT_ROUGH_CONSTANT_VALUE", "SPP_USE_BIGDECIMAL_STRING_CTOR"},
+      justification = "CNT_ROUGH_CONSTANT_VALUE: 3.14f is a deliberate fixture value for the record's float field,"
+          + "not an approximation of pi; SPP_USE_BIGDECIMAL_STRING_CTOR: the inexact double-constructed"
+          + "decimal is the fixture under test; the round-trip assertions pin its exact serialized form")
   @Test
   void specificByteArrayIncompatibleWithoutLogicalTypes() throws IOException {
-    assertThrows(MissingSchemaException.class, () -> {
-      final TestRecordWithLogicalTypes withLogicalTypes = new TestRecordWithLogicalTypes(true, 34, 35L, 3.14F, 3019.34,
-          null, LocalDate.now(), LocalTime.now(), Instant.now(), new BigDecimal("123.45"),
-          new BigDecimal(-23.456562323));
+    final TestRecordWithLogicalTypes withLogicalTypes = new TestRecordWithLogicalTypes(true, 34, 35L, 3.14F, 3019.34,
+        null, LocalDate.now(), LocalTime.now(), Instant.now(), new BigDecimal("123.45"),
+        new BigDecimal(-23.456562323));
 
+    assertThrows(MissingSchemaException.class, () -> {
       final ByteBuffer b = withLogicalTypes.toByteBuffer();
       TestRecordWithoutLogicalTypes.fromByteBuffer(b);
     });

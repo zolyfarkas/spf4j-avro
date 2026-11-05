@@ -30,6 +30,7 @@ import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -678,7 +679,7 @@ public class TestReflect {
     assertEquals(object, after);
 
     // check reflective setField works for records
-    if (s.getType().equals(Schema.Type.RECORD)) {
+    if (s.getType() == Schema.Type.RECORD) {
       Object copy = object.getClass().getDeclaredConstructor().newInstance();
       for (Field f : s.getFields()) {
         Object val = ReflectData.get().getField(object, f.name(), f.pos());
@@ -1392,7 +1393,7 @@ public class TestReflect {
     field.addAlias("alias1");
     field.addAlias("alias2");
     Schema avroMultiMeta = Schema.createRecord("ClassWithMultipleAliasesOnField", null,
-        "org.spf4j.avro.reflect.TestReflect", false, Arrays.asList(field));
+        "org.spf4j.avro.reflect.TestReflect", false, Collections.singletonList(field));
 
     Schema schema = ReflectData.get().getSchema(ClassWithMultipleAliasesOnField.class);
     assertEquals(avroMultiMeta, schema);

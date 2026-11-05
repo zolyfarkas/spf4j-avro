@@ -81,8 +81,7 @@ public class TestSchemaValidateDefault {
     return (byte[] bytes) -> {
       try {
         Decoder decoder = DecoderFactory.get().jsonDecoder(writerSchema, new ByteArrayInputStream(bytes));
-        T readValue = reader.read(null, decoder);
-        return readValue;
+        return reader.read(null, decoder);
       } catch (IOException e) {
         throw new IllegalStateException(String.format("Avro failed to decode %s to %s", new String(bytes, StandardCharsets.UTF_8), readClass),
             e);

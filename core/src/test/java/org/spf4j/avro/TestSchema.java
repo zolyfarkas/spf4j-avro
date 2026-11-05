@@ -677,7 +677,7 @@ public class TestSchema {
   void enumWriteUnknownField() throws IOException {
     Schema schema = Schema.createRecord("record1", "doc", "", false);
     String goodValue = "HELLO";
-    Schema enumSchema = Schema.createEnum("enum1", "doc", "", Arrays.asList(goodValue));
+    Schema enumSchema = Schema.createEnum("enum1", "doc", "", Collections.singletonList(goodValue));
     Field field1 = new Field("field1", enumSchema);
     schema.setFields(Collections.singletonList(field1));
 

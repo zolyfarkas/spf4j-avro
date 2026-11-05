@@ -300,8 +300,11 @@ public class SpecificData extends GenericData {
 
   private final ConcurrentMap<String, Class> classCache = new ConcurrentHashMap<>();
 
-  private static final Class NO_CLASS = new Object() {
-  }.getClass();
+  /** Marker class whose {@link Class} object serves as the "no class" sentinel in the class cache. */
+  private static final class NoClass {
+  }
+
+  private static final Class NO_CLASS = NoClass.class;
   private static final Schema NULL_SCHEMA = Schema.create(Schema.Type.NULL);
 
   /**
@@ -557,7 +560,7 @@ public class SpecificData extends GenericData {
             schema = SchemaParser
                 .parseSingle(schema.toString().replace(schema.getNamespace(), c.getPackage().getName()));
         } catch (NoSuchFieldException e) {
-          throw new AvroRuntimeException("Not a Specific class: " + c);
+          throw new AvroRuntimeException("Not a Specific class: " + c, e);
         } catch (IllegalAccessException e) {
           throw new AvroRuntimeException(e);
         }
@@ -597,7 +600,7 @@ public class SpecificData extends GenericData {
         p = Protocol.parse(p.toString().replace(p.getNamespace(), iface.getPackage().getName()));
       return p;
     } catch (NoSuchFieldException e) {
-      throw new AvroRuntimeException("Not a Specific protocol: " + iface);
+      throw new AvroRuntimeException("Not a Specific protocol: " + iface, e);
     } catch (IllegalAccessException e) {
       throw new AvroRuntimeException(e);
     }

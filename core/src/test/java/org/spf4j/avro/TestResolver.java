@@ -20,6 +20,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.spf4j.avro.data.TimeConversions;
 import org.spf4j.avro.generic.IndexedRecord;
@@ -95,9 +96,9 @@ class TestResolver {
 
     FastReaderBuilder reader = FastReaderBuilder.get();
     Schema writeRecord = Schema.createRecord("rec1", "", "", false,
-        Arrays.asList(new Schema.Field("f1", writeSchema, "")));
+        Collections.singletonList(new Schema.Field("f1", writeSchema, "")));
     Schema readRecord = Schema.createRecord("rec1", "", "", false,
-        Arrays.asList(new Schema.Field("f1", readSchema, "")));
+        Collections.singletonList(new Schema.Field("f1", readSchema, "")));
     DatumReader<Object> datumReader = reader.createDatumReader(writeRecord, readRecord);
     JsonDecoder e2 = DecoderFactory.get().jsonDecoder(readRecord, "{ \"f1\" : \"e2\" }");
     Object read = datumReader.read(null, e2);

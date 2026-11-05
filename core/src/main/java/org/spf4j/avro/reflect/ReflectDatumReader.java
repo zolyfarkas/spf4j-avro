@@ -324,7 +324,7 @@ public class ReflectDatumReader<T> extends SpecificDatumReader<T> {
       FieldAccessor accessor = ((FieldAccessor[]) state)[field.pos()];
       if (accessor != null) {
         if (accessor.supportsIO()
-            && (!Schema.Type.UNION.equals(field.schema().getType()) || accessor.isCustomEncoded())) {
+            && (Schema.Type.UNION != field.schema().getType() || accessor.isCustomEncoded())) {
           accessor.read(record, in);
           return;
         }
@@ -346,7 +346,7 @@ public class ReflectDatumReader<T> extends SpecificDatumReader<T> {
               accessor.set(record, convert(readWithoutConversion(oldDatum, field.schema(), in), field.schema(),
                   logicalType, conversion));
             } catch (IllegalAccessException e) {
-              throw new AvroRuntimeException("Failed to set " + field);
+              throw new AvroRuntimeException("Failed to set " + field, e);
             }
             return;
           }
@@ -357,14 +357,14 @@ public class ReflectDatumReader<T> extends SpecificDatumReader<T> {
             accessor.set(record, Optional.ofNullable(value));
             return;
           } catch (IllegalAccessException e) {
-            throw new AvroRuntimeException("Failed to set " + field);
+            throw new AvroRuntimeException("Failed to set " + field, e);
           }
         }
         try {
           accessor.set(record, readWithoutConversion(oldDatum, field.schema(), in));
           return;
         } catch (IllegalAccessException e) {
-          throw new AvroRuntimeException("Failed to set " + field);
+          throw new AvroRuntimeException("Failed to set " + field, e);
         }
       }
     }

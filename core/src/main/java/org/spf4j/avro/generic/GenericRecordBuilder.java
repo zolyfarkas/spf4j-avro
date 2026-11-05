@@ -254,8 +254,7 @@ public class GenericRecordBuilder extends RecordBuilderBase<Record> {
   public int hashCode() {
     final int prime = 31;
     int result = super.hashCode();
-    result = prime * result + ((record == null) ? 0 : record.hashCode());
-    return result;
+    return prime * result + ((record == null) ? 0 : record.hashCode());
   }
 
   @Override

@@ -64,7 +64,7 @@ public class ByteBufferRecord {
       return false;
     if (this.getTp() == null)
       return that.getTp() == null;
-    return this.getTp().equals(that.getTp());
+    return this.getTp() == that.getTp();
   }
 
   @Override

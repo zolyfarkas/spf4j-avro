@@ -311,8 +311,7 @@ public class TestReflectDatumReader {
       final int prime = 31;
       int result = 1;
       result = prime * result + id;
-      result = prime * result + ((relatedIds == null) ? 0 : relatedIds.hashCode());
-      return result;
+      return prime * result + ((relatedIds == null) ? 0 : relatedIds.hashCode());
     }
 
     @Override
@@ -365,8 +364,7 @@ public class TestReflectDatumReader {
       final int prime = 31;
       int result = 1;
       result = prime * result + id;
-      result = prime * result + Arrays.hashCode(relatedIds);
-      return result;
+      return prime * result + Arrays.hashCode(relatedIds);
     }
 
     @Override
@@ -416,8 +414,7 @@ public class TestReflectDatumReader {
       final int prime = 31;
       int result = 1;
       result = prime * result + id;
-      result = prime * result + ((relatedIds == null) ? 0 : relatedIds.hashCode());
-      return result;
+      return prime * result + ((relatedIds == null) ? 0 : relatedIds.hashCode());
     }
 
     @Override
@@ -470,8 +467,7 @@ public class TestReflectDatumReader {
       final int prime = 31;
       int result = 1;
       result = prime * result + id;
-      result = prime * result + ((relatedIds == null) ? 0 : relatedIds.hashCode());
-      return result;
+      return prime * result + ((relatedIds == null) ? 0 : relatedIds.hashCode());
     }
 
     @Override
@@ -518,8 +514,7 @@ public class TestReflectDatumReader {
       final int prime = 31;
       int result = 1;
       result = prime * result + id;
-      result = prime * result + ((relatedId == null) ? 0 : relatedId.hashCode());
-      return result;
+      return prime * result + ((relatedId == null) ? 0 : relatedId.hashCode());
     }
 
     @Override
@@ -556,8 +551,7 @@ public class TestReflectDatumReader {
     public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + id;
-      return result;
+      return prime * result + id;
     }
 
     @Override
@@ -687,8 +681,7 @@ public class TestReflectDatumReader {
       result = prime * result + (int) charId;
       result = prime * result + (int) (longId ^ (longId >>> 32));
       temp = Double.doubleToLongBits(doubleId);
-      result = 31 * result + (int) (temp ^ (temp >>> 32));
-      return result;
+      return 31 * result + (int) (temp ^ (temp >>> 32));
     }
 
     @Override

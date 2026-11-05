@@ -341,6 +341,9 @@ public class SpecificCompiler {
     }
   }
 
+  @SuppressFBWarnings(value = "PSC_PRESIZE_COLLECTIONS",
+      justification = "the collection is populated incrementally from the schema/data being processed; its final"
+          + "size is not known when it is created")
   public Collection<String> getUsedConversionClasses(Schema schema) {
     Collection<String> result = new HashSet<>();
     for (Conversion<?> conversion : getUsedConversions(schema)) {
@@ -461,22 +464,11 @@ public class SpecificCompiler {
       if (src != null && f.exists() && f.lastModified() >= src.lastModified())
         return f; // already up to date: ignore
       f.getParentFile().mkdirs();
-      Writer fw = null;
-      FileOutputStream fos = null;
-      try {
-        if (outputCharacterEncoding != null) {
-          fos = new FileOutputStream(f);
-          fw = new OutputStreamWriter(fos, outputCharacterEncoding);
-        } else {
-          fw = Files.newBufferedWriter(f.toPath(), UTF_8);
-        }
+      try (Writer fw = outputCharacterEncoding != null
+          ? new OutputStreamWriter(new FileOutputStream(f), outputCharacterEncoding)
+          : Files.newBufferedWriter(f.toPath(), UTF_8)) {
         fw.write(FILE_HEADER);
         fw.write(contents);
-      } finally {
-        if (fw != null)
-          fw.close();
-        if (fos != null)
-          fos.close();
       }
       return f;
     }
@@ -710,6 +702,9 @@ public class SpecificCompiler {
   }
 
   // annotate map and string schemas with string type
+  @SuppressFBWarnings(value = "PSC_PRESIZE_COLLECTIONS",
+      justification = "the collection is populated incrementally from the schema/data being processed; its final"
+          + "size is not known when it is created")
   private Protocol addStringType(Protocol p) {
     if (stringType != StringType.String)
       return p;
@@ -781,6 +776,8 @@ public class SpecificCompiler {
         types.add(addStringType(branch, seen));
       result = Schema.createUnion(types);
       break;
+    default:
+      break; // all other types pass through unchanged
     }
     result.addAllProps(s);
     if (s.getLogicalType() != null) {
@@ -1111,14 +1108,14 @@ public class SpecificCompiler {
    */
   public String javaSplit(String s) throws IOException {
     StringBuilder b = new StringBuilder(s.length());
-    b.append("\""); // initial quote
+    b.append('"'); // initial quote
     for (int i = 0; i < s.length(); i += maxStringChars) {
       if (i != 0)
         b.append("\",\""); // insert quote-comma-quote
       String chunk = s.substring(i, Math.min(s.length(), i + maxStringChars));
       b.append(escapeForJavaString(chunk)); // escape chunks
     }
-    b.append("\""); // final quote
+    b.append('"'); // final quote
     return b.toString();
   }
 

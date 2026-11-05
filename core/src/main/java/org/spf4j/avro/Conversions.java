@@ -276,7 +276,7 @@ public class Conversions {
           scaleAdjusted = true;
         } catch (ArithmeticException aex) {
           throw new AvroTypeException(
-              "Cannot encode decimal with scale " + valueScale + " as scale " + scale + " without rounding");
+              "Cannot encode decimal with scale " + valueScale + " as scale " + scale + " without rounding", aex);
         }
       }
 

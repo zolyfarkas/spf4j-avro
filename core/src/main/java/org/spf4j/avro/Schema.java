@@ -128,7 +128,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
   }
 
   static final JsonFactory FACTORY = new JsonFactory();
-  static final Logger LOG = LoggerFactory.getLogger(Schema.class);
+  private static final Logger LOG = LoggerFactory.getLogger(Schema.class);
   static final ObjectMapper MAPPER = new ObjectMapper(FACTORY);
 
   private static final int NO_HASHCODE = Integer.MIN_VALUE;
@@ -624,7 +624,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
   /** Returns true if this record is a union type containing null. */
   public boolean isNullable() {
     if (!isUnion()) {
-      return getType().equals(Schema.Type.NULL);
+      return getType() == Schema.Type.NULL;
     }
 
     for (Schema schema : getTypes()) {
@@ -811,8 +811,8 @@ public abstract class Schema extends JsonProperties implements Serializable {
       if (!(other instanceof Field))
         return false;
       Field that = (Field) other;
-      return (name.equals(that.name)) && (schema.equals(that.schema)) && defaultValueEquals(that.defaultValue)
-          && (order == that.order) && propsEqual(that);
+      return (name.equals(that.name)) && (order == that.order) && (schema.equals(that.schema))
+          && defaultValueEquals(that.defaultValue) && propsEqual(that);
     }
 
     @Override
@@ -2446,7 +2446,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
       order = Field.Order.valueOf(orderNode.textValue().toUpperCase(Locale.ENGLISH));
 
     JsonNode defaultValue = field.get("default");
-    if (defaultValue != null && (Type.FLOAT.equals(fieldSchema.getType()) || Type.DOUBLE.equals(fieldSchema.getType()))
+    if (defaultValue != null && (Type.FLOAT == fieldSchema.getType() || Type.DOUBLE == fieldSchema.getType())
         && defaultValue.isTextual())
       defaultValue = new DoubleNode(Double.parseDouble(defaultValue.textValue()));
 
@@ -2639,6 +2639,9 @@ public abstract class Schema extends JsonProperties implements Serializable {
     return applyAliases(writer, seen, aliases, fieldAliases);
   }
 
+  @SuppressFBWarnings(value = "PSC_PRESIZE_COLLECTIONS",
+      justification = "the collection is populated incrementally from the schema/data being processed; its final"
+          + "size is not known when it is created")
   @SuppressWarnings("DataFlowIssue")
   private static Schema applyAliases(Schema s, Map<Schema, Schema> seen, Map<Name, Name> aliases,
       Map<Name, Map<String, String>> fieldAliases) {

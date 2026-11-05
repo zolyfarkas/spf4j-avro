@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.util;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -224,6 +225,9 @@ public class UtfTextUtils {
     }
   }
 
+  @SuppressFBWarnings(value = "USBR_UNNECESSARY_STORE_BEFORE_RETURN",
+      justification = "the quad value is accumulated across the switch branches and returned at the single exit"
+          + "point; there is no single expression to return inline")
   private static int quad(byte[] bytes, int length) {
     int quad = 0xFFFFFFFF;
     switch (length) {

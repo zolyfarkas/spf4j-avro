@@ -151,7 +151,7 @@ public class TestSchemas {
 
     @Override
     public SchemaVisitorAction afterVisitNonTerminal(Schema nonTerminal) {
-      sb.append("!");
+      sb.append('!');
       String n = nonTerminal.getName();
       if (n.startsWith("ct")) {
         return SchemaVisitorAction.TERMINATE;

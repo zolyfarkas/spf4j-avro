@@ -133,6 +133,9 @@ public class GenericDatumWriter<D> implements DatumWriter<D> {
    *                                  IllegalArgumentException will be thrown out
    *                                  instead.
    */
+  @SuppressFBWarnings(value = "LEST_LOST_EXCEPTION_STACK_TRACE",
+      justification = "both branches rethrow the caught exception or its extracted ClassCastException cause"
+          + "unchanged; no stack trace is discarded")
   protected <T> Object convert(Schema schema, LogicalType logicalType, Conversion<T> conversion, Object datum) {
     try {
       if (conversion == null) {

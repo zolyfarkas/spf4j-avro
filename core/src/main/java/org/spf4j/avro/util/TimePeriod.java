@@ -356,15 +356,15 @@ public final class TimePeriod implements TemporalAmount, Serializable {
   @Override
   public String toString() {
     StringBuilder buffer = new StringBuilder();
-    buffer.append("P");
+    buffer.append('P');
     if (months != 0) {
       int years = (int) (months / MONTHS_PER_YEAR);
       int monthsLeft = (int) (months % MONTHS_PER_YEAR);
       if (years != 0) {
-        buffer.append(years).append("Y");
+        buffer.append(years).append('Y');
       }
       if (monthsLeft != 0) {
-        buffer.append(monthsLeft).append("M");
+        buffer.append(monthsLeft).append('M');
       }
     }
     if (days != 0 || (months == 0 && millis == 0)) {

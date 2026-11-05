@@ -96,6 +96,9 @@ public class TestSpecificCompiler {
   /**
    * Uses the system's java compiler to actually compile the generated code.
    */
+  @SuppressFBWarnings(value = "PSC_PRESIZE_COLLECTIONS",
+      justification = "the collection is populated incrementally from the schema/data being processed; its final"
+          + "size is not known when it is created")
   static void assertCompilesWithJavaCompiler(File dstDir, Collection<SpecificCompiler.OutputFile> outputs,
       boolean ignoreWarnings) throws IOException {
     if (outputs.isEmpty()) {
@@ -307,10 +310,12 @@ public class TestSpecificCompiler {
     }
   }
 
-  @SuppressFBWarnings(value = "DM_DEFAULT_ENCODING",
+  @SuppressFBWarnings(value = {"DM_DEFAULT_ENCODING", "MDM_STRING_BYTES_ENCODING"},
       justification = "the test compares a file written with the platform default encoding against one written with"
           + "an explicit encoding; decoding one side with the platform default charset is the behavior"
-          + "under test")
+          + "under test; MDM_STRING_BYTES_ENCODING: this test verifies output character encodings;"
+          + "conversions through the platform default charset inside it are part of the behavior under"
+          + "test")
   @Test
   void settingOutputCharacterEncoding() throws Exception {
     SpecificCompiler compiler = createCompiler();
@@ -900,6 +905,9 @@ public class TestSpecificCompiler {
     }
   }
 
+  @SuppressFBWarnings(value = "DM_STRING_VOID_CTOR",
+      justification = "the empty String is a stand-in velocity tool installed by the test to verify tool injection;"
+          + "a fresh instance keeps it distinct from any interned literal")
   @Test
   void additionalToolsAreInjectedIntoTemplate() throws Exception {
     SpecificCompiler compiler = createCompiler();

@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -50,36 +51,45 @@ public class TestBigDecimalConversion {
   }
 
   static Stream<Arguments> listBigDecimal() {
-    Iterator<BigDecimal> iterator = new Iterator<BigDecimal>() {
-      int index = 0;
-
-      BigDecimal step = new BigDecimal(-2.7d);
-
-      BigDecimal current = new BigDecimal(1.0d);
-
-      @Override
-      public boolean hasNext() {
-        if (index == 50) {
-          // test small bigdecimal
-          current = new BigDecimal(1.0d);
-          step = new BigDecimal(-0.71d);
-        }
-        return index < 100;
-      }
-
-      @Override
-      public BigDecimal next() {
-        if (!hasNext()) {
-          throw new NoSuchElementException();
-        }
-        index++;
-        current = current.multiply(step);
-        return current;
-      }
-    };
-    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false)
+    return StreamSupport.stream(Spliterators.spliteratorUnknownSize(new BigDecimalIterator(), Spliterator.ORDERED),
+        false)
         .map(Arguments::of);
 
   }
 
+
+  /**
+   * Generates the test decimals by repeated multiplication. The double-constructed steps are deliberate:
+   * the resulting arbitrary-scale values are the test data for the decimal conversion round-trip.
+   */
+  @SuppressFBWarnings(value = { "DMI_BIGDECIMAL_CONSTRUCTED_FROM_DOUBLE", "SPP_USE_BIGDECIMAL_STRING_CTOR" },
+      justification = "the imprecision of the double constructors is the test data: the iteration deliberately"
+          + " produces arbitrary-scale BigDecimals to exercise the decimal conversion's scale handling")
+  private static class BigDecimalIterator implements Iterator<BigDecimal> {
+    int index = 0;
+
+    BigDecimal step = new BigDecimal(-2.7d);
+
+    BigDecimal current = new BigDecimal(1.0d);
+
+    @Override
+    public boolean hasNext() {
+      if (index == 50) {
+        // test small bigdecimal
+        current = new BigDecimal(1.0d);
+        step = new BigDecimal(-0.71d);
+      }
+      return index < 100;
+    }
+
+    @Override
+    public BigDecimal next() {
+      if (!hasNext()) {
+        throw new NoSuchElementException();
+      }
+      index++;
+      current = current.multiply(step);
+      return current;
+    }
+  }
 }

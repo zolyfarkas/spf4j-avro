@@ -500,6 +500,8 @@ public class TestValidatingIO {
       case 'e':
         p++;
         break;
+      default:
+        break; // any other character is content
       }
     }
     throw new RuntimeException("Don't know how to skip");

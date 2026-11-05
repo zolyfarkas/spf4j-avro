@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -505,6 +506,10 @@ public class JsonDecoder extends ParsingDecoder implements Parser.ActionHandler 
     return n;
   }
 
+  @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE",
+      justification = "the null check on the buffered-field lookup decides whether the parser is swapped for the"
+          + "buffered field's tokens; the flagged redundancy is an artifact of the try-with-resources"
+          + "close() desugaring")
   @Override
   public Symbol doAction(Symbol input, Symbol top) throws IOException {
     if (top instanceof Symbol.FieldAdjustAction) {

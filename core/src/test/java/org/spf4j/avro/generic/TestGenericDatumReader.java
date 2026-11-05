@@ -102,7 +102,7 @@ public class TestGenericDatumReader {
     int schemaNum = (index - 1) % 50;
     if (index <= 50) {
       Schema schema = Schema.createRecord("record_" + schemaNum, "doc", "namespace", false,
-          Arrays.asList(new Schema.Field("field" + schemaNum, Schema.create(Schema.Type.STRING))));
+          Collections.singletonList(new Schema.Field("field" + schemaNum, Schema.create(Schema.Type.STRING))));
       list.add(schema);
     }
 

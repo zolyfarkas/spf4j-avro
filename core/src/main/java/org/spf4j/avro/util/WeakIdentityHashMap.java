@@ -17,6 +17,7 @@
  * under the License.
  */
 package org.spf4j.avro.util;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
@@ -64,6 +65,9 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
     return backingStore.containsValue(value);
   }
 
+  @SuppressFBWarnings(value = "PSC_PRESIZE_COLLECTIONS",
+      justification = "the collection is populated incrementally from the schema/data being processed; its final"
+          + "size is not known when it is created")
   @Override
   public Set<Map.Entry<K, V>> entrySet() {
     reap();
@@ -92,6 +96,9 @@ public class WeakIdentityHashMap<K, V> implements Map<K, V> {
     return Collections.unmodifiableSet(ret);
   }
 
+  @SuppressFBWarnings(value = "PSC_PRESIZE_COLLECTIONS",
+      justification = "the collection is populated incrementally from the schema/data being processed; its final"
+          + "size is not known when it is created")
   @Override
   public Set<K> keySet() {
     reap();

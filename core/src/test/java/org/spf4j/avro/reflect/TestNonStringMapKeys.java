@@ -236,8 +236,7 @@ public class TestNonStringMapKeys {
     }
     fileWriter.close();
 
-    byte[] bytes = baos.toByteArray();
-    return bytes;
+    return baos.toByteArray();
   }
 
   /**
@@ -311,8 +310,7 @@ public class TestNonStringMapKeys {
     GenericDatumReader<GenericRecord> datumReader = new GenericDatumReader<>(schema);
 
     Decoder decoder = DecoderFactory.get().jsonDecoder(schema, new String(bytes, UTF_8));
-    GenericRecord r = datumReader.read(null, decoder);
-    return r;
+    return datumReader.read(null, decoder);
   }
 
   /**

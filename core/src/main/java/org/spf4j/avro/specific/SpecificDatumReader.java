@@ -119,6 +119,8 @@ public class SpecificDatumReader<T> extends GenericDatumReader<T> {
     case MAP:
       stringClass = getPropAsClass(schema, SpecificData.KEY_CLASS_PROP);
       break;
+    default:
+      break; // not a string-bearing type: defer to the superclass implementation
     }
     if (stringClass != null)
       return stringClass;
@@ -130,8 +132,7 @@ public class SpecificDatumReader<T> extends GenericDatumReader<T> {
     if (name == null)
       return null;
     try {
-      Class clazz = ClassUtils.forName(getData().getClassLoader(), name);
-      return clazz;
+      return ClassUtils.forName(getData().getClassLoader(), name);
     } catch (ClassNotFoundException e) {
       throw new AvroRuntimeException(e);
     }

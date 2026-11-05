@@ -628,9 +628,11 @@ public class ReflectData extends SpecificData {
     return defaultValue;
   }
 
-  @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
-      justification = "positional access into a fixed-order list (schema fields or invocation arguments) whose"
-          + "layout is established by the surrounding code; the constant index names the slot")
+  @SuppressFBWarnings(value = { "CLI_CONSTANT_LIST_INDEX", "PSC_PRESIZE_COLLECTIONS" },
+      justification = "CLI_CONSTANT_LIST_INDEX: positional access into a fixed-order list (schema fields or"
+          + " invocation arguments) whose layout is established by the surrounding code; the constant index"
+          + " names the slot; PSC_PRESIZE_COLLECTIONS: the collection is populated incrementally from the"
+          + " schema/data being processed; its final size is not known when it is created")
   @Override
   protected Schema createSchema(Type type, Map<String, Schema> names) {
     if (type instanceof GenericArrayType) { // generic array
@@ -700,7 +702,7 @@ public class ReflectData extends SpecificData {
         try {
           return enc.using().getDeclaredConstructor().newInstance().getSchema();
         } catch (Exception e) {
-          throw new AvroRuntimeException("Could not create schema from custom serializer for " + c.getName());
+          throw new AvroRuntimeException("Could not create schema from custom serializer for " + c.getName(), e);
         }
       }
       AvroSchema explicit = c.getAnnotation(AvroSchema.class);
@@ -836,6 +838,9 @@ public class ReflectData extends SpecificData {
   }
 
   // construct a schema from a union annotation
+  @SuppressFBWarnings(value = "PSC_PRESIZE_COLLECTIONS",
+      justification = "the collection is populated incrementally from the schema/data being processed; its final"
+          + "size is not known when it is created")
   private Schema getAnnotatedUnion(Union union, Map<String, Schema> names) {
     List<Schema> branches = new ArrayList<>();
     for (Class branch : union.value())
@@ -871,7 +876,6 @@ public class ReflectData extends SpecificData {
   }
 
   private static Field[] getFields(Class<?> recordClass, boolean excludeJava) {
-    Field[] fieldsList;
     Map<String, Field> fields = new LinkedHashMap<>();
     Class<?> c = recordClass;
     do {
@@ -885,8 +889,7 @@ public class ReflectData extends SpecificData {
             throw new AvroTypeException(c + " contains two fields named: " + field);
       c = c.getSuperclass();
     } while (c != null);
-    fieldsList = fields.values().toArray(new Field[0]);
-    return fieldsList;
+    return fields.values().toArray(new Field[0]);
   }
 
   /** Create a schema for a field. */
@@ -896,7 +899,7 @@ public class ReflectData extends SpecificData {
       try {
         return enc.using().getDeclaredConstructor().newInstance().getSchema();
       } catch (Exception e) {
-        throw new AvroRuntimeException("Could not create schema from custom serializer for " + field.getName());
+        throw new AvroRuntimeException("Could not create schema from custom serializer for " + field.getName(), e);
       }
 
     AvroSchema explicit = field.getAnnotation(AvroSchema.class);
@@ -942,6 +945,9 @@ public class ReflectData extends SpecificData {
     return protocol;
   }
 
+  @SuppressFBWarnings(value = "PSC_PRESIZE_COLLECTIONS",
+      justification = "the collection is populated incrementally from the schema/data being processed; its final"
+          + "size is not known when it is created")
   private Message getMessage(Method method, Protocol protocol, Map<String, Schema> names,
       Map<? extends Type, Type> genericTypeMap) {
     List<Schema.Field> fields = new ArrayList<>();
@@ -1081,7 +1087,7 @@ public class ReflectData extends SpecificData {
       try {
         return new CustomEncodingWrapper(enc.using().getDeclaredConstructor().newInstance());
       } catch (Exception e) {
-        throw new AvroRuntimeException("Could not instantiate custom Encoding");
+        throw new AvroRuntimeException("Could not instantiate custom Encoding", e);
       }
     }
     return new CustomEncodingWrapper(null);

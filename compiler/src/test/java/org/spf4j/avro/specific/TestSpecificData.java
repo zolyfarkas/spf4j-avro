@@ -65,11 +65,14 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestSpecificData {
 
-  @SuppressFBWarnings(value = {"INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE", "DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED"},
+  @SuppressFBWarnings(value = {"INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE", "DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED", "IMC_IMMATURE_CLASS_PRINTSTACKTRACE"},
       justification = "test harness: printing the failure stack trace to the console is how this test driver"
           + "reports errors; nothing is exposed to a remote party;"
           + "DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED: the test deliberately exercises"
-          + "context-classloader handling; creating the classloader is the behavior under test")
+          + "context-classloader handling; creating the classloader is the behavior under test;"
+          + "IMC_IMMATURE_CLASS_PRINTSTACKTRACE: test harness: the stack trace is printed inside the"
+          + "worker thread so the failure context survives in the test output; the test itself asserts on"
+          + "the outcome")
   @Test
   void separateThreadContextClassLoader() throws Exception {
     Schema schema = new SchemaParser().parse(new File("src/test/resources/foo.Bar.avsc")).mainSchema();

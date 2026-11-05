@@ -310,22 +310,9 @@ public class FooBarSpecificRecord extends org.spf4j.avro.specific.SpecificRecord
    * RecordBuilder for FooBarSpecificRecord instances.
    */
   @SuppressFBWarnings(value = "CLI_CONSTANT_LIST_INDEX",
-      justification = "CLI_CONSTANT_LIST_INDEX: checked-in output of the specific compiler: builder field access is"
-          + "by schema-fixed constant index (fields()[N]) because a record's field positions are fixed by"
-          + "its schema; the idiom comes from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in"
-          + "output of the specific compiler: builder field access is by schema-fixed constant index"
-          + "(fields()[N]) because a record's field positions are fixed by its schema; the idiom comes"
-          + "from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in output of the specific"
-          + "compiler: builder field access is by schema-fixed constant index (fields()[N]) because a"
-          + "record's field positions are fixed by its schema; the idiom comes from the codegen template;"
-          + "CLI_CONSTANT_LIST_INDEX: checked-in output of the specific compiler: builder field access is"
-          + "by schema-fixed constant index (fields()[N]) because a record's field positions are fixed by"
-          + "its schema; the idiom comes from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in"
-          + "output of the specific compiler: builder field access is by schema-fixed constant index"
-          + "(fields()[N]) because a record's field positions are fixed by its schema; the idiom comes"
-          + "from the codegen template; CLI_CONSTANT_LIST_INDEX: checked-in output of the specific"
-          + "compiler: builder field access is by schema-fixed constant index (fields()[N]) because a"
-          + "record's field positions are fixed by its schema; the idiom comes from the codegen template")
+      justification = "checked-in output of the specific compiler: builder field access is by schema-fixed"
+          + " constant index (fields()[N]) because a record's field positions are fixed by its schema;"
+          + " the idiom comes from the codegen template")
   public static class Builder extends org.spf4j.avro.specific.SpecificRecordBuilderBase<FooBarSpecificRecord>
       implements org.spf4j.avro.data.RecordBuilder<FooBarSpecificRecord> {
 

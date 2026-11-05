@@ -85,7 +85,7 @@ public interface SchemaFormatter {
       justification = "the case-insensitive comparison runs over ASCII format identifiers only; no locale-sensitive"
           + "text is involved")
   static SchemaFormatter getInstance(String name) {
-    int slashPos = name.indexOf("/");
+    int slashPos = name.indexOf('/');
     // SchemaFormatterFactory.getFormatterForVariant(String) receives the name of
     // the variant in lowercase (as stated in its javadoc). We're doing a
     // case-insensitive comparison on the format name instead, so we don't have to

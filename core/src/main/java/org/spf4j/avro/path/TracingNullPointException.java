@@ -90,7 +90,7 @@ public class TracingNullPointException extends NullPointerException
       }
       for (int i = reversePath.size() - 1; i >= 0; i--) {
         PathElement step = reversePath.get(i);
-        sb.append(step.toString());
+        sb.append(step);
       }
     }
     NullPointerException summary = new NullPointerException(sb.toString());

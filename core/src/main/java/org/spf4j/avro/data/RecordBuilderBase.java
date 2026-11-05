@@ -143,8 +143,7 @@ public abstract class RecordBuilderBase<T extends IndexedRecord> implements Reco
     final int prime = 31;
     int result = 1;
     result = prime * result + Arrays.hashCode(fieldSetFlags);
-    result = prime * result + ((schema == null) ? 0 : schema.hashCode());
-    return result;
+    return prime * result + ((schema == null) ? 0 : schema.hashCode());
   }
 
   @Override

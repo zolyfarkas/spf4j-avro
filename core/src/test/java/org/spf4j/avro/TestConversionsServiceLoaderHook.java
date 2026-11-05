@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -47,6 +48,9 @@ import org.junit.Test;
  */
 public class TestConversionsServiceLoaderHook {
 
+  @SuppressFBWarnings(value = "JUA_DONT_ASSERT_INSTANCEOF_IN_TESTS",
+      justification = "this is a JUnit 4 test (org.junit.Assert), which has no assertInstanceOf; the instanceof"
+          + "assertion is the available idiom")
   @Test
   public void testConversionDiscoveredThroughConversionsClass() {
     Map<String, Conversion<?>> defaults = Conversions.defaultConversions();

@@ -179,7 +179,7 @@ public class ReflectDatumWriter<T> extends SpecificDatumWriter<T> {
     if (state != null) {
       FieldAccessor accessor = ((FieldAccessor[]) state)[f.pos()];
       if (accessor != null) {
-        if (accessor.supportsIO() && (!Schema.Type.UNION.equals(f.schema().getType()) || accessor.isCustomEncoded())) {
+        if (accessor.supportsIO() && (Schema.Type.UNION != f.schema().getType() || accessor.isCustomEncoded())) {
           accessor.write(record, out);
           return;
         }

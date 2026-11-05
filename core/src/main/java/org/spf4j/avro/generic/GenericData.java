@@ -374,7 +374,7 @@ public class GenericData {
             + "schemas and configuration objects instead of defensively copying them on construction and"
             + "configuration paths")
     public Record(Schema schema) {
-      if (schema == null || !Type.RECORD.equals(schema.getType()))
+      if (schema == null || Type.RECORD != schema.getType())
         throw new AvroRuntimeException("Not a record schema: " + schema);
       this.schema = schema;
       this.values = new Object[schema.getFields().size()];
@@ -468,7 +468,7 @@ public class GenericData {
             + "schemas and configuration objects instead of defensively copying them on construction and"
             + "configuration paths")
     public AbstractArray(Schema schema) {
-      if (schema == null || !Type.ARRAY.equals(schema.getType()))
+      if (schema == null || Type.ARRAY != schema.getType())
         throw new AvroRuntimeException("Not an array schema: " + schema);
       this.schema = schema;
     }
@@ -671,10 +671,8 @@ public class GenericData {
     }
 
     @SuppressFBWarnings(value = {"EI_EXPOSE_REP", "EI_EXPOSE_REP2"},
-        justification = "EI_EXPOSE_REP: Fixed.bytes() returns the backing array by design; the zero-copy contract is"
-            + "documented and callers must not modify the returned bytes; EI_EXPOSE_REP2: Fixed.bytes()"
-            + "returns the backing array by design; the zero-copy contract is documented and callers must"
-            + "not modify the returned bytes")
+        justification = "Fixed.bytes() returns the backing array by design; the zero-copy contract is documented"
+            + " and callers must not modify the returned bytes")
     public void bytes(byte[] bytes) {
       this.bytes = bytes;
     }
@@ -857,7 +855,7 @@ public class GenericData {
         return;
       }
       seenObjects.put(datum, datum);
-      buffer.append("{");
+      buffer.append('{');
       int count = 0;
       Schema schema = getRecordSchema(datum);
       for (Field f : schema.getFields()) {
@@ -867,7 +865,7 @@ public class GenericData {
         if (++count < schema.getFields().size())
           buffer.append(", ");
       }
-      buffer.append("}");
+      buffer.append('}');
       seenObjects.remove(datum);
     } else if (isArray(datum)) {
       if (seenObjects.containsKey(datum)) {
@@ -876,7 +874,7 @@ public class GenericData {
       }
       seenObjects.put(datum, datum);
       Collection<?> array = getArrayAsCollection(datum);
-      buffer.append("[");
+      buffer.append('[');
       long last = array.size() - 1;
       int i = 0;
       for (Object element : array) {
@@ -884,7 +882,7 @@ public class GenericData {
         if (i++ < last)
           buffer.append(", ");
       }
-      buffer.append("]");
+      buffer.append(']');
       seenObjects.remove(datum);
     } else if (isMap(datum)) {
       if (seenObjects.containsKey(datum)) {
@@ -892,7 +890,7 @@ public class GenericData {
         return;
       }
       seenObjects.put(datum, datum);
-      buffer.append("{");
+      buffer.append('{');
       int count = 0;
       @SuppressWarnings(value = "unchecked")
       Map<Object, Object> map = (Map<Object, Object>) datum;
@@ -904,7 +902,7 @@ public class GenericData {
         if (++count < map.size())
           buffer.append(", ");
       }
-      buffer.append("}");
+      buffer.append('}');
       seenObjects.remove(datum);
     } else if (isString(datum) || isEnum(datum)) {
       buffer.append("\"");

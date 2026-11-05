@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -57,6 +58,9 @@ public class TestExtendedJsonDecimalEndToEnd {
       "{\"type\":\"record\",\"name\":\"R\",\"fields\":[{\"name\":\"amount\",\"type\":"
           + "{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":10,\"scale\":2}}]}");
 
+  @SuppressFBWarnings(value = "JUA_DONT_ASSERT_INSTANCEOF_IN_TESTS",
+      justification = "this is a JUnit 4 test (org.junit.Assert), which has no assertInstanceOf; the instanceof"
+          + "assertion is the available idiom")
   @Test
   public void testDecimalNaturalReadEndToEndValue() throws IOException {
     GenericData data = new GenericData();

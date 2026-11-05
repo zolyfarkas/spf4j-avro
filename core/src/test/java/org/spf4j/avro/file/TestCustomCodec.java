@@ -17,10 +17,12 @@
  */
 
 package org.spf4j.avro.file;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -30,6 +32,9 @@ import org.junit.jupiter.api.Test;
 
 public class TestCustomCodec {
 
+  @SuppressFBWarnings(value = "IMC_IMMATURE_CLASS_PRINTSTACKTRACE",
+      justification = "test harness: the stack trace is printed inside the worker thread so the failure context"
+          + "survives in the test output; the test itself asserts on the outcome")
   @Test
   void customCodec() {
     CustomCodec customCodec = new CustomCodec();
@@ -47,7 +52,7 @@ public class TestCustomCodec {
       compressed.rewind();
       decompressed = customCodec.decompress(compressed);
     } catch (IOException e) {
-      e.printStackTrace();
+      fail(e);
     }
 
     assertEquals(testString, new String(decompressed.array(), UTF_8));

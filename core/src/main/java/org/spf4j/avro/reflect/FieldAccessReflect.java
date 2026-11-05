@@ -33,7 +33,7 @@ class FieldAccessReflect extends FieldAccess {
       try {
         return new ReflectionBasesAccessorCustomEncoded(field, enc.using().getDeclaredConstructor().newInstance());
       } catch (Exception e) {
-        throw new AvroRuntimeException("Could not instantiate custom Encoding");
+        throw new AvroRuntimeException("Could not instantiate custom Encoding", e);
       }
     return new ReflectionBasedAccessor(field);
   }

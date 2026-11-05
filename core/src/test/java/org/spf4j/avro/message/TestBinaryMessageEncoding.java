@@ -18,6 +18,7 @@
  */
 
 package org.spf4j.avro.message;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -67,6 +68,9 @@ public class TestBinaryMessageEncoding {
     assertEquals(V2_RECORDS.get(0), copy, "Record should be identical after round-trip");
   }
 
+  @SuppressFBWarnings(value = "PSC_PRESIZE_COLLECTIONS",
+      justification = "the collection is populated incrementally from the schema/data being processed; its final"
+          + "size is not known when it is created")
   @Test
   void schemaEvolution() throws Exception {
     List<ByteBuffer> buffers = new ArrayList<>();

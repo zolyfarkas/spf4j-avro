@@ -111,6 +111,9 @@ public class TestZstandardCodecOptimizations {
     }
   }
 
+  @SuppressFBWarnings(value = "PSC_PRESIZE_COLLECTIONS",
+      justification = "the collection is populated incrementally from the schema/data being processed; its final"
+          + "size is not known when it is created")
   @Test
   public void testConcurrentSharedCodecInstanceByteExact() throws Exception {
     final ZstandardCodec codec = new ZstandardCodec(3, false, false);
