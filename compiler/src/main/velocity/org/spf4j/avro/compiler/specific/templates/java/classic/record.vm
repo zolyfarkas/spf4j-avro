@@ -633,10 +633,6 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
 #if ($this.isCustomCodable($schema))
   @Override protected boolean hasCustomCoders() { return true; }
 
-  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "WEM_WEAK_EXCEPTION_MESSAGING",
-      justification = "the size-mismatch ConcurrentModificationException messages emitted by the encode"
-          + " macros carry both the declared and the actual element counts; the messaging is deliberate"
-          + " and complete - the detector rates messages assembled from locals as weak")
   @Override public void customEncode(org.spf4j.avro.io.Encoder out)
     throws java.io.IOException
   {
@@ -651,17 +647,10 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
 #end
   }
 
-  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = {"NP_NULL_INSTANCEOF",
-      "NP_LOAD_OF_KNOWN_NULL_VALUE", "WEM_WEAK_EXCEPTION_MESSAGING"},
-      justification = "NP_NULL_INSTANCEOF / NP_LOAD_OF_KNOWN_NULL_VALUE: the decode macros emit the"
-          + " Utf8-reuse idiom (x instanceof Utf8 ? (Utf8) x : null) uniformly for record fields and"
-          + " for map keys and values decoded into fresh locals; for the fresh locals the value is"
-          + " provably null, so the idiom reduces to readString(null), the intended no-reuse call;"
-          + " WEM_WEAK_EXCEPTION_MESSAGING: the 'Corrupt ResolvingDecoder.' IOException marks a decoder"
-          + " invariant violation for which no further context exists at the throw site")
   @Override public void customDecode(org.spf4j.avro.io.ResolvingDecoder in)
     throws java.io.IOException
   {
+#set ($freshTarget = false)
     org.spf4j.avro.Schema.Field[] fieldOrder = in.readFieldOrderIfDiff();
     if (fieldOrder == null) {
 ## Common case: order of fields hasn't changed, so read them in a
@@ -694,7 +683,8 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
 #set ($fieldno = $fieldno + 1)
 #end
         default:
-          throw new java.io.IOException("Corrupt ResolvingDecoder.");
+          throw new java.io.IOException("Corrupt ResolvingDecoder: unexpected field position "
+              + fieldOrder[i].pos() + " at reader field order index " + i + ".");
         }
       }
     }
@@ -702,20 +692,31 @@ public class ${this.mangleTypeIdentifier($schema.getName())} extends ${this.getS
 #end
 #if ($this.canGenerateEqualsAndHashCode($schema))
 
-  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "USBR_UNNECESSARY_STORE_BEFORE_RETURN",
-      justification = "the accumulator is updated once per field by the generated per-field statements"
-          + " and returned at the single exit; the store-then-return shape is inherent to the codegen"
-          + " template's per-field expansion")
   @Override
   public int hashCode() {
-    int result = 1;
+#set ($hashFieldCount = 0)
 #foreach ($field in $schema.getFields())
 #if (!${this.ignoredField($field)})
+#set ($hashFieldCount = $hashFieldCount + 1)
+#end
+#end
+#if ($hashFieldCount == 0)
+    return 1;
+#else
+    int result = 1;
+#set ($hashFieldIdx = 0)
+#foreach ($field in $schema.getFields())
+#if (!${this.ignoredField($field)})
+#set ($hashFieldIdx = $hashFieldIdx + 1)
 #set ($n = ${this.mangle($field.name(), $schema.isError())})
+#if ($hashFieldIdx == $hashFieldCount)
+    return 31 * result + ${this.hashCodeFor($field.schema(), "this." + $n)};
+#else
     result = 31 * result + ${this.hashCodeFor($field.schema(), "this." + $n)};
 #end
 #end
-    return result;
+#end
+#end
   }
 
   @Override
@@ -930,6 +931,10 @@ $II    ${var} = new ${st}(in.readString());
 $II    $var = in.readString();
 #elseif ($st.equals("org.spf4j.avro.util.Utf8"))
 $II    $var = in.readString(${var});
+#elseif ($freshTarget)
+## The target is a fresh local that is provably null here (a map key or
+## value being decoded): there is no previous Utf8 to reuse.
+$II    $var = in.readString(null);
 #else
 $II    $var = in.readString(${var} instanceof Utf8 ? (Utf8)${var} : null);
 #end
@@ -955,6 +960,8 @@ $I        $et e${nv} = (ga${nv} != null ? ga${nv}.peek() : null);
 #set ($nv = $nv + 1)
 #set ($maxnv = $nv)
 #set ($indent = $indent + 4)
+## Array elements come from peek() and may hold a reusable Utf8: never fresh.
+#set ($freshTarget = false)
 #decodeVar($indent $var $s.ElementType "${rs}.getElementType()")
 #set ($nv = $nv - 1)
 #set ($indent = $indent - 4)
@@ -978,13 +985,17 @@ $I    } else m${nv}.clear();
 $I    for ( ; 0 < size${nv}; size${nv} = in.mapNext()) {
 $I      for ( ; size${nv} != 0; size${nv}--) {
 $I        $kt k${nv} = null;
+#set ($freshTarget = true)
 #decodeString( "$I    " "k${nv}" $s )
+#set ($freshTarget = false)
 $I        $vt v${nv} = null;
 #set ($var = "v${nv}")
 #set ($nv = $nv + 1)
 #set ($maxnv = $nv)
 #set ($indent = $indent + 4)
+#set ($freshTarget = true)
 #decodeVar($indent $var $s.ValueType "${rs}.getValueType()")
+#set ($freshTarget = false)
 #set ($nv = $nv - 1)
 #set ($indent = $indent - 4)
 #set ($I = $this.indent($indent))
