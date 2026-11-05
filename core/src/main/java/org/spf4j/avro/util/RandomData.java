@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.util;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.LogicalType;
 import org.spf4j.avro.LogicalTypes;
@@ -202,6 +203,9 @@ public class RandomData implements Iterable<Object> {
     return bytes;
   }
 
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "the paths are this command-line tool's own arguments; the operator who invokes it is the"
+          + "trust boundary and there is no untrusted input source to sanitize against")
   public static void main(String[] args) throws Exception {
     if (args.length < 3 || args.length > 4) {
       System.out.println("Usage: RandomData <schemafile> <outputfile> <count> [codec]");

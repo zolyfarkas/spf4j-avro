@@ -143,7 +143,7 @@ public class TestEncoders {
 
   @Test
   void jsonEncoderNewlineDelimited() throws IOException {
-    OutputStream out = new ByteArrayOutputStream();
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
     Schema ints = Schema.create(Type.INT);
     Encoder e = FACTORY.jsonEncoder(ints, out);
     String separator = System.getProperty("line.separator");
@@ -151,7 +151,7 @@ public class TestEncoders {
     writer.write(1, e);
     writer.write(2, e);
     e.flush();
-    assertEquals("1" + separator + "2", out.toString());
+    assertEquals("1" + separator + "2", out.toString(StandardCharsets.UTF_8));
   }
 
   @Test
@@ -353,15 +353,15 @@ public class TestEncoders {
   @Test
   public void testJsonEncoderInitAutoFlush() throws IOException {
     Schema s = Schema.create(Type.INT);
-    OutputStream baos = new ByteArrayOutputStream();
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
     OutputStream out = new BufferedOutputStream(baos);
     JsonEncoder enc = FACTORY.jsonEncoder(s, out, false);
     enc.configure(out, false);
     enc.writeInt(24);
     enc.flush();
-    assertEquals("", baos.toString());
+    assertEquals("", baos.toString(StandardCharsets.UTF_8));
     out.flush();
-    assertEquals("24", baos.toString());
+    assertEquals("24", baos.toString(StandardCharsets.UTF_8));
   }
 
   @Test
@@ -375,9 +375,9 @@ public class TestEncoders {
     writer.write(1, e);
     writer.write(2, e);
     e.flush();
-    assertEquals("", baos.toString());
+    assertEquals("", baos.toString(StandardCharsets.UTF_8));
     out.flush();
-    assertEquals("1" + separator + "2", baos.toString());
+    assertEquals("1" + separator + "2", baos.toString(StandardCharsets.UTF_8));
     out.close();
   }
 }

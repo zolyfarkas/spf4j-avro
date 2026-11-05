@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import java.nio.charset.StandardCharsets;
 
 import org.spf4j.avro.generic.GenericData;
 import org.spf4j.avro.io.Decoder;
@@ -83,7 +84,7 @@ public class TestSchemaValidateDefault {
         T readValue = reader.read(null, decoder);
         return readValue;
       } catch (IOException e) {
-        throw new IllegalStateException(String.format("Avro failed to decode %s to %s", new String(bytes), readClass),
+        throw new IllegalStateException(String.format("Avro failed to decode %s to %s", new String(bytes, StandardCharsets.UTF_8), readClass),
             e);
       }
     };

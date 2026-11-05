@@ -85,7 +85,7 @@ public class DataFileReader12<D> implements FileReader<D>, Closeable {
 
     this.sync = getMeta(SYNC);
     String codec = getMetaString(CODEC);
-    if (codec != null && !codec.equals(NULL_CODEC)) {
+    if (codec != null && !NULL_CODEC.equals(codec)) {
       throw new UnknownAvroCodecException("Unknown codec: " + codec);
     }
     this.schema = parseSchema();

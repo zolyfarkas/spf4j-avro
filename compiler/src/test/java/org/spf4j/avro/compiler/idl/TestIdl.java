@@ -224,7 +224,7 @@ public class TestIdl {
     }
 
     private static void writeFile(File f, String s) throws IOException {
-      FileWriter w = new FileWriter(f);
+      FileWriter w = new FileWriter(f, StandardCharsets.UTF_8);
       w.write(s);
       w.close();
     }

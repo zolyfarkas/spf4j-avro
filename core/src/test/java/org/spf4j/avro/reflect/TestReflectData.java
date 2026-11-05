@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro.reflect;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.AvroTypeException;
 import org.spf4j.avro.JsonSchemaParser;
@@ -49,6 +50,9 @@ public class TestReflectData {
     assertNull(ReflectData.get().getConversionByClass(java.math.BigDecimal.class, null));
   }
 
+  @SuppressFBWarnings(value = "DM_GC",
+      justification = "the test verifies that entries are evicted from the weak-reference schema cache; explicitly"
+          + "requesting garbage collection is the behavior under test")
   @Test
   @SuppressWarnings("unchecked")
   void weakSchemaCaching() throws Exception {

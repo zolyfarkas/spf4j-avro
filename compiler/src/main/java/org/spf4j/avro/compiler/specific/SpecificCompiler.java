@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.compiler.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -819,8 +820,8 @@ public class SpecificCompiler {
    */
   public boolean isStringable(Schema schema) {
     String t = getStringType(schema);
-    return !(t.equals("java.lang.String") || t.equals("java.lang.CharSequence")
-        || t.equals("org.spf4j.avro.util.Utf8"));
+    return !("java.lang.String".equals(t) || "java.lang.CharSequence".equals(t)
+        || "org.spf4j.avro.util.Utf8".equals(t));
   }
 
   private static final Schema NULL_SCHEMA = Schema.create(Schema.Type.NULL);
@@ -1514,6 +1515,9 @@ public class SpecificCompiler {
     }
   }
 
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "the paths are this command-line tool's own arguments; the operator who invokes it is the"
+          + "trust boundary and there is no untrusted input source to sanitize against")
   public static void main(String[] args) throws Exception {
     // compileSchema(new File(args[0]), new File(args[1]));
     compileProtocol(new File(args[0]), new File(args[1]));

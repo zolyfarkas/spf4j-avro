@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.file.CodecFactory;
 import org.spf4j.avro.file.DataFileReader;
@@ -184,6 +185,9 @@ public class TestDataFile {
     }
   }
 
+  @SuppressFBWarnings(value = "DMI_RANDOM_USED_ONLY_ONCE",
+      justification = "the seeded Random is invoked from the loop body once per split iteration; the detector"
+          + "counts call sites, not executions")
   private void testSplits(CodecFactory codec) throws IOException {
     File file = makeFile(codec);
     try (DataFileReader<Object> reader = new DataFileReader<>(file, new GenericDatumReader<>())) {
@@ -394,6 +398,9 @@ public class TestDataFile {
     }
   }
 
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "the paths are this command-line tool's own arguments; the operator who invokes it is the"
+          + "trust boundary and there is no untrusted input source to sanitize against")
   public static void main(String[] args) throws Exception {
     File input = new File(args[0]);
     Schema projection = null;

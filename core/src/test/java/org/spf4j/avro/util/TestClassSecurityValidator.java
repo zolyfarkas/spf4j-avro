@@ -124,7 +124,7 @@ public class TestClassSecurityValidator {
   void testBuildComplexPredicate() {
     ClassSecurityValidator.setGlobal(ClassSecurityValidator.composite(
         ClassSecurityValidator.builder().add(TestInnerClass.class).add(TestClassSecurityValidator.class).build(),
-        ClassSecurityValidator.DEFAULT, c -> c.getPackageName().equals("java.lang")));
+        ClassSecurityValidator.DEFAULT, c -> "java.lang".equals(c.getPackageName())));
 
     // Test that the defaults work since we included them
     testDefault();

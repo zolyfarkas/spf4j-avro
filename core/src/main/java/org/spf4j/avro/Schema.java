@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -97,6 +98,10 @@ import static org.spf4j.avro.LogicalType.LOGICAL_TYPE_PROP;
  * property.
  * </ul>
  */
+@SuppressFBWarnings(value = "SE_NO_SUITABLE_CONSTRUCTOR",
+    justification = "Schema objects are never Java-deserialized directly: writeReplace substitutes"
+        + "SerializableSchema (the schema's JSON text), and reconstruction goes through the parser, so"
+        + "there is no field-deserialization path for a no-arg constructor to serve")
 @SuppressWarnings("unused")
 public abstract class Schema extends JsonProperties implements Serializable {
 
@@ -2353,9 +2358,9 @@ public abstract class Schema extends JsonProperties implements Serializable {
         return parseRecord(schema, context, currentNameSpace, isTypeError);
       } else if ("enum".equals(type)) { // enum
         return parseEnum(schema, context, currentNameSpace);
-      } else if (type.equals("array")) { // array
+      } else if ("array".equals(type)) { // array
         return parseArray(schema, context, currentNameSpace);
-      } else if (type.equals("map")) { // map
+      } else if ("map".equals(type)) { // map
         return parseMap(schema, context, currentNameSpace);
       } else if ("fixed".equals(type)) { // fixed
         return parseFixed(schema, context, currentNameSpace);

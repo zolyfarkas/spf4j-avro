@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro.util;
+import java.nio.charset.StandardCharsets;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -37,7 +38,7 @@ public class NonCopyingByteArrayOutputStreamTest {
   public void testDefaultWriteWorks() throws IOException {
     NonCopyingByteArrayOutputStream out = new NonCopyingByteArrayOutputStream(1);
     out.write('a');
-    final byte[] b = "string".getBytes();
+    final byte[] b = "string".getBytes(StandardCharsets.UTF_8);
     out.write(b, 0, b.length);
     out.close();
     final ByteBuffer buffer = out.asByteBuffer();
@@ -55,7 +56,7 @@ public class NonCopyingByteArrayOutputStreamTest {
     NonCopyingByteArrayOutputStream out = NonCopyingByteArrayOutputStream.capacityLimitedOutputStream(1, 4);
     out.write('a');
     // it's impossible to go over the limit in a write(bytes) call.
-    final byte[] b = "longstring".getBytes();
+    final byte[] b = "longstring".getBytes(StandardCharsets.UTF_8);
     assertThrows(SystemLimitException.class, () -> out.write(b),
         "Buffer size 11 (bytes) exceeds maximum allowed size 4.");
     // we can still write up to the limit...the buffer has not been written to yet.
@@ -74,14 +75,14 @@ public class NonCopyingByteArrayOutputStreamTest {
   @Test
   public void testLimitedWriteBytes() {
     NonCopyingByteArrayOutputStream out = NonCopyingByteArrayOutputStream.capacityLimitedOutputStream(1, 4);
-    out.writeBytes("abcd".getBytes());
-    assertThrows(SystemLimitException.class, () -> out.writeBytes("e".getBytes()));
+    out.writeBytes("abcd".getBytes(StandardCharsets.UTF_8));
+    assertThrows(SystemLimitException.class, () -> out.writeBytes("e".getBytes(StandardCharsets.UTF_8)));
   }
 
   @Test
   public void testInitialCapacityIsClampedToLimit() throws IOException {
     NonCopyingByteArrayOutputStream out = NonCopyingByteArrayOutputStream.capacityLimitedOutputStream(1024, 4);
-    out.write("abcd".getBytes());
+    out.write("abcd".getBytes(StandardCharsets.UTF_8));
     assertThrows(SystemLimitException.class, () -> out.write('e'));
   }
 

@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -52,6 +53,9 @@ public class GenerateBlockingData {
     blockCount = 0;
   }
 
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "the paths are this command-line tool's own arguments; the operator who invokes it is the"
+          + "trust boundary and there is no untrusted input source to sanitize against")
   public static void main(String[] args) throws Exception {
     if (args.length != 3) {
       System.out.println("Usage: GenerateBlockingData <schemafile> <outputfile> <count>");

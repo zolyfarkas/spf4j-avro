@@ -52,7 +52,7 @@ public class TestAllCodecs {
     // *increase* compared to the input size, our input data
     // is extremely easy to compress and all Avro's compression algorithms
     // should have a compression ratio greater than 1 (except 'null').
-    Assertions.assertTrue(compressedSize < inputSize || codec.equals("null"));
+    Assertions.assertTrue(compressedSize < inputSize || "null".equals(codec));
 
     // Decompress the data
     ByteBuffer decompressedBuffer = codecInstance.decompress(compressedBuffer);

@@ -156,7 +156,7 @@ public class CaseFinder {
       String input;
       input = processHereDoc(in, line);
 
-      if (label.equals(NEW_CASE_NAME)) {
+      if (NEW_CASE_NAME.equals(label)) {
         cases.add(new Object[] { input, null });
         line = in.readLine();
         continue;

@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.file;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -61,6 +62,9 @@ public class TestZstandardCodecOptimizations {
     return data;
   }
 
+  @SuppressFBWarnings(value = "DMI_RANDOM_USED_ONLY_ONCE",
+      justification = "this helper's contract is reproducible bytes for a given seed, so it builds a fresh"
+          + "Random(seed) per call; the single nextBytes call is the whole point of the helper")
   private static byte[] random(int size, long seed) {
     byte[] data = new byte[size];
     new Random(seed).nextBytes(data);

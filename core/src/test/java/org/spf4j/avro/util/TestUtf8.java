@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.util;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -139,6 +140,10 @@ public class TestUtf8 {
     }
   }
 
+  @SuppressFBWarnings(value = "OBJECT_DESERIALIZATION",
+      justification = "the test Java-serializes the library's own objects and reads them straight back to verify"
+          + "the Serializable/Externalizable contracts; the bytes are produced by the test itself and no"
+          + "untrusted data is deserialized")
   @Test
   void serialization() throws IOException, ClassNotFoundException {
     try (ByteArrayOutputStream bos = new ByteArrayOutputStream();

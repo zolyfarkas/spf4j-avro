@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 package org.spf4j.avro.compiler.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -174,7 +176,7 @@ public class TestSpecificCompiler {
     assertFalse(compiler.privateFields());
     compiler.compileToDestination(this.src, this.OUTPUT_DIR);
     assertTrue(this.outputFile.exists());
-    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile, StandardCharsets.UTF_8))) {
       String line;
       while ((line = reader.readLine()) != null) {
         // No line, once trimmed, should start with a deprecated field declaration
@@ -193,7 +195,7 @@ public class TestSpecificCompiler {
     compiler.compileToDestination(this.src, this.OUTPUT_DIR);
     assertTrue(this.outputFile.exists());
     boolean foundAllArgsConstructor = false;
-    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile, StandardCharsets.UTF_8))) {
       String line;
       while (!foundAllArgsConstructor && (line = reader.readLine()) != null) {
         foundAllArgsConstructor = line.contains("All-args constructor");
@@ -255,7 +257,7 @@ public class TestSpecificCompiler {
     assertTrue(compiler.privateFields());
     compiler.compileToDestination(this.src, this.OUTPUT_DIR);
     assertTrue(this.outputFile.exists());
-    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile, StandardCharsets.UTF_8))) {
       String line = null;
       while ((line = reader.readLine()) != null) {
         // No line, once trimmed, should start with a public field declaration
@@ -275,7 +277,7 @@ public class TestSpecificCompiler {
     compiler.compileToDestination(this.src, this.OUTPUT_DIR);
     assertTrue(this.outputFile.exists());
     int foundSetters = 0;
-    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile, StandardCharsets.UTF_8))) {
       String line;
       while ((line = reader.readLine()) != null) {
         // We should find the setter in the main class
@@ -295,7 +297,7 @@ public class TestSpecificCompiler {
     assertFalse(compiler.isCreateSetters());
     compiler.compileToDestination(this.src, this.OUTPUT_DIR);
     assertTrue(this.outputFile.exists());
-    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile, StandardCharsets.UTF_8))) {
       String line;
       while ((line = reader.readLine()) != null) {
         // No setter should be found
@@ -305,6 +307,10 @@ public class TestSpecificCompiler {
     }
   }
 
+  @SuppressFBWarnings(value = "DM_DEFAULT_ENCODING",
+      justification = "the test compares a file written with the platform default encoding against one written with"
+          + "an explicit encoding; decoding one side with the platform default charset is the behavior"
+          + "under test")
   @Test
   void settingOutputCharacterEncoding() throws Exception {
     SpecificCompiler compiler = createCompiler();
@@ -806,7 +812,7 @@ public class TestSpecificCompiler {
     SpecificCompiler compiler = createCompiler();
     compiler.compileToDestination(this.src, OUTPUT_DIR);
     assertTrue(this.outputFile.exists());
-    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile, StandardCharsets.UTF_8))) {
       String line;
       while ((line = reader.readLine()) != null) {
         line = line.trim();
@@ -823,7 +829,7 @@ public class TestSpecificCompiler {
     compiler.compileToDestination(this.src, OUTPUT_DIR);
     assertTrue(this.outputFile.exists());
     int optionalFound = 0;
-    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile, StandardCharsets.UTF_8))) {
       String line;
       while ((line = reader.readLine()) != null) {
         line = line.trim();
@@ -843,7 +849,7 @@ public class TestSpecificCompiler {
     compiler.compileToDestination(this.src, OUTPUT_DIR);
     assertTrue(this.outputFile.exists());
     int optionalFound = 0;
-    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile, StandardCharsets.UTF_8))) {
       String line;
       while ((line = reader.readLine()) != null) {
         line = line.trim();
@@ -863,7 +869,7 @@ public class TestSpecificCompiler {
     compiler.compileToDestination(this.src, OUTPUT_DIR);
     assertTrue(this.outputFile.exists());
     int optionalFound = 0;
-    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile, StandardCharsets.UTF_8))) {
       String line;
       while ((line = reader.readLine()) != null) {
         line = line.trim();
@@ -881,7 +887,7 @@ public class TestSpecificCompiler {
     compiler.setOptionalGettersForNullableFieldsOnly(true);
     compiler.compileToDestination(this.src, OUTPUT_DIR);
     assertTrue(this.outputFile.exists());
-    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile, StandardCharsets.UTF_8))) {
       String line;
       while ((line = reader.readLine()) != null) {
         line = line.trim();
@@ -901,7 +907,7 @@ public class TestSpecificCompiler {
     compiler.compileToDestination(this.src, this.OUTPUT_DIR);
     assertTrue(this.outputFile.exists());
     int itWorksFound = 0;
-    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile, StandardCharsets.UTF_8))) {
       String line;
       while ((line = reader.readLine()) != null) {
         line = line.trim();
@@ -920,7 +926,7 @@ public class TestSpecificCompiler {
     File avsc = new File("src/main/resources/logical-uuid.avsc");
     compiler.compileToDestination(avsc, OUTPUT_DIR);
     assertTrue(this.outputFile.exists());
-    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(this.outputFile, StandardCharsets.UTF_8))) {
       String line;
       while ((line = reader.readLine()) != null) {
         line = line.trim();

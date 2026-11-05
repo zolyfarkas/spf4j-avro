@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.io;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,6 +36,9 @@ public class TestBinaryEncoderFidelity {
   static byte[] complexdata;
   EncoderFactory factory = EncoderFactory.get();
 
+  @SuppressFBWarnings(value = "DMI_RANDOM_USED_ONLY_ONCE",
+      justification = "the seeded Random generates every value of the deterministic encoder-fidelity corpus; it is"
+          + "used throughout the method, the detector counts call sites")
   public static void generateData(Encoder e, boolean useReadOnlyByteBuffer) throws IOException {
     // generate a bunch of data that should test the bounds of a BinaryEncoder
     Random r = new Random(665321);

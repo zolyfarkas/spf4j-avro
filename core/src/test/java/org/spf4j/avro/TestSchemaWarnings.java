@@ -44,7 +44,7 @@ public class TestSchemaWarnings {
   @BeforeEach
   public void setupStdErr() {
     capturedErr.reset();
-    System.setErr(new PrintStream(capturedErr));
+    System.setErr(new PrintStream(capturedErr, false, StandardCharsets.UTF_8));
   }
 
   @AfterAll

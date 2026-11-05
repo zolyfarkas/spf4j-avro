@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro.reflect;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.*;
@@ -117,6 +118,9 @@ public class TestByteBuffer {
     }
   }
 
+  @SuppressFBWarnings(value = "WEAK_MESSAGE_DIGEST_MD5",
+      justification = "test helper that checksums buffers with MD5 to compare their content in tests; not a"
+          + "security use")
   String getmd5(ByteBuffer buffer) throws NoSuchAlgorithmException {
     MessageDigest mdEnc = MessageDigest.getInstance("MD5");
     mdEnc.reset();

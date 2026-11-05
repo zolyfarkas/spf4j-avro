@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -461,6 +462,10 @@ public class Protocol extends JsonProperties {
   }
 
   /** Return the MD5 hash of the text of this protocol. */
+  @SuppressFBWarnings(value = "WEAK_MESSAGE_DIGEST_MD5",
+      justification = "MD5 is the protocol fingerprint the Avro specification defines for the RPC handshake and it"
+          + "is compared against the peer's value; it is an interoperability checksum, not a security"
+          + "control, and changing the digest would break wire compatibility")
   public byte[] getMD5() {
     if (md5 == null)
       try {
@@ -680,6 +685,9 @@ public class Protocol extends JsonProperties {
     return new TwoWayMessage(messageName, doc, mProps, request, response, Schema.createUnion(errs));
   }
 
+  @SuppressFBWarnings(value = "PATH_TRAVERSAL_IN",
+      justification = "the paths are this command-line tool's own arguments; the operator who invokes it is the"
+          + "trust boundary and there is no untrusted input source to sanitize against")
   public static void main(String[] args) throws Exception {
     System.out.println(Protocol.parse(new File(args[0])));
   }

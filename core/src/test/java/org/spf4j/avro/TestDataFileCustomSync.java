@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,6 +52,9 @@ public class TestDataFileCustomSync {
     return baos.toByteArray();
   }
 
+  @SuppressFBWarnings(value = "WEAK_MESSAGE_DIGEST_MD5",
+      justification = "the test reproduces the historical MD5-based sync-marker generation to build its fixture;"
+          + "the digest is a file-format marker, not a security mechanism")
   private static byte[] generateSync() {
     try {
       MessageDigest digester = MessageDigest.getInstance("MD5");

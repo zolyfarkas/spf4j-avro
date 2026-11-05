@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -148,6 +149,10 @@ public class TestSpecificData {
     assertEquals("str", record.get("y"));
   }
 
+  @SuppressFBWarnings(value = "OBJECT_DESERIALIZATION",
+      justification = "the test Java-serializes the library's own objects and reads them straight back to verify"
+          + "the Serializable/Externalizable contracts; the bytes are produced by the test itself and no"
+          + "untrusted data is deserialized")
   @Test
   void externalizeable() throws Exception {
     final TestRecord before = new TestRecord();

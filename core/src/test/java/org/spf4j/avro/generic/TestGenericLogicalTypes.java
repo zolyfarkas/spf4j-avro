@@ -17,6 +17,7 @@
  */
 
 package org.spf4j.avro.generic;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.spf4j.avro.Conversion;
 import org.spf4j.avro.Conversions;
@@ -130,7 +131,7 @@ public class TestGenericLogicalTypes {
     fixedSchema.addAlias(durationSchema.getFullName());
     durationSchema.addAlias(fixedSchema.getFullName());
 
-    Random rng = new Random();
+    Random rng = ThreadLocalRandom.current();
     TimePeriod d1 = TimePeriod.of(rng.nextInt(1000), rng.nextInt(1000), rng.nextInt(1000));
     ByteBuffer b1 = ByteBuffer.allocate(12).order(ByteOrder.LITTLE_ENDIAN).putInt((int) d1.getMonths())
         .putInt((int) d1.getDays()).putInt((int) d1.getMillis());

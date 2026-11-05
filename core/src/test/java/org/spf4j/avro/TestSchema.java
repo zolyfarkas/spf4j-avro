@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -223,6 +224,10 @@ public class TestSchema {
     return Schema.createRecord("name", "doc", "namespace", false);
   }
 
+  @SuppressFBWarnings(value = "OBJECT_DESERIALIZATION",
+      justification = "the test Java-serializes the library's own objects and reads them straight back to verify"
+          + "the Serializable/Externalizable contracts; the bytes are produced by the test itself and no"
+          + "untrusted data is deserialized")
   @Test
   void serialization() throws IOException, ClassNotFoundException {
     try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -589,7 +594,7 @@ public class TestSchema {
   @Test
   void testContentAfterAvscInFile() throws Exception {
     File avscFile = Files.createTempFile("testContentAfterAvscInFile", null).toFile();
-    try (FileWriter writer = new FileWriter(avscFile)) {
+    try (FileWriter writer = new FileWriter(avscFile, StandardCharsets.UTF_8)) {
       writer.write("{\"type\": \"string\"}; DROP TABLE STUDENTS");
       writer.flush();
     }

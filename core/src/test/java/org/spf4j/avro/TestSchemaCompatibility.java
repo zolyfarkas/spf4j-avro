@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import java.nio.charset.StandardCharsets;
 
 import static java.util.Arrays.asList;
 import static org.spf4j.avro.SchemaCompatibility.Incompatibility;
@@ -516,7 +517,7 @@ public class TestSchemaCompatibility {
 
   private Schema readSchemaFromResources(String name) throws IOException {
     try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(name)) {
-      final String result = new BufferedReader(new InputStreamReader(inputStream)).lines()
+      final String result = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)).lines()
           .collect(Collectors.joining("\n"));
 
       return SchemaParser.parseSingle(result);

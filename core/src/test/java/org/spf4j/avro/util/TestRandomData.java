@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.util;
+import java.util.concurrent.ThreadLocalRandom;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,7 +53,7 @@ public class TestRandomData {
   public void setUp() throws Exception {
     file = Files.createTempFile("randomData", ".avro").toFile();
     seed = System.currentTimeMillis();
-    count = new Random().nextInt(50) + 75;
+    count = ThreadLocalRandom.current().nextInt(50) + 75;
 
     genericData = GenericData.get();
     specificData = SpecificData.get();

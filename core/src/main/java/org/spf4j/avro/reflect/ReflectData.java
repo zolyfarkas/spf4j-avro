@@ -1024,7 +1024,7 @@ public class ReflectData extends SpecificData {
   private void consumeFieldAlias(Field field, Schema.Field recordField) {
     AvroAlias[] aliases = field.getAnnotationsByType(AvroAlias.class);
     for (AvroAlias alias : aliases) {
-      if (!alias.space().equals(AvroAlias.NULL)) {
+      if (!AvroAlias.NULL.equals(alias.space())) {
         throw new AvroRuntimeException(
             "Namespaces are not allowed on field aliases. " + "Offending field: " + recordField.name());
       }

@@ -62,7 +62,7 @@ public class SchemaNormalization {
    * and <code>"SHA-256"</code> is used for 256-bit fingerprints.
    */
   public static byte[] fingerprint(String fpName, byte[] data) throws NoSuchAlgorithmException {
-    if (fpName.equals("CRC-64-AVRO")) {
+    if ("CRC-64-AVRO".equals(fpName)) {
       long fp = fingerprint64(data);
       byte[] result = new byte[8];
       for (int i = 0; i < 8; i++) {

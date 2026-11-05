@@ -206,6 +206,23 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <!-- @SuppressFBWarnings / @Nullable; CLASS-retention annotations,
+           not needed at runtime, hence provided scope (mirrors core) -->
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-annotations</artifactId>
+      <version>4.7.3</version>
+      <scope>provided</scope>
+      <exclusions>
+        <!-- jsr305 is banned by this build's enforcer (license hygiene
+             inherited from upstream Avro); the annotations used here
+             (@SuppressFBWarnings, @Nullable) do not need it -->
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
       <version>${commons-text.version}</version>

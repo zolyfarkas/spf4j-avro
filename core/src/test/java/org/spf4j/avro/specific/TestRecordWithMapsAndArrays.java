@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.specific;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.spf4j.avro.generic.GenericArray;
 import org.spf4j.avro.specific.SpecificData;
@@ -653,6 +654,9 @@ public class TestRecordWithMapsAndArrays extends SpecificRecordBase implements S
 
   }
 
+  @SuppressFBWarnings(value = "CC_CYCLOMATIC_COMPLEXITY",
+      justification = "checked-in output of the specific compiler's coder template; the generated per-field switch"
+          + "is inherently branchy and this class is regenerated from the template, not hand-maintained")
   @Override
   public void customDecode(org.spf4j.avro.io.ResolvingDecoder in) throws java.io.IOException {
     org.spf4j.avro.Schema.Field[] fieldOrder = in.readFieldOrderIfDiff();

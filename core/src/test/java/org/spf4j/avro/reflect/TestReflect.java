@@ -193,6 +193,11 @@ public class TestReflect {
       return mapField.equals(that.mapField) && Arrays.equals(this.arrayField, that.arrayField)
           && listField.equals(that.listField);
     }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(mapField, Arrays.hashCode(arrayField), listField);
+    }
   }
 
   @Test
@@ -229,6 +234,11 @@ public class TestReflect {
       R2 that = (R2) o;
       return Arrays.equals(this.arrayField, that.arrayField) && collectionField.equals(that.collectionField);
     }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(Arrays.hashCode(arrayField), collectionField);
+    }
   }
 
   @Test
@@ -250,6 +260,11 @@ public class TestReflect {
         return false;
       R3 that = (R3) o;
       return Arrays.equals(this.intArray, that.intArray);
+    }
+
+    @Override
+    public int hashCode() {
+      return Arrays.hashCode(intArray);
     }
   }
 
@@ -274,6 +289,11 @@ public class TestReflect {
       R4 that = (R4) o;
       return this.value == that.value && Arrays.equals(this.shorts, that.shorts) && this.b == that.b
           && this.c == that.c;
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(value, Arrays.hashCode(shorts), b, c);
     }
   }
 
@@ -304,6 +324,11 @@ public class TestReflect {
         return false;
       return this.value == ((R7) o).value;
     }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(value);
+    }
   }
 
   public static class R8 extends R6 {
@@ -314,6 +339,11 @@ public class TestReflect {
       if (!(o instanceof R8))
         return false;
       return this.value == ((R8) o).value;
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(value);
     }
   }
 
@@ -326,6 +356,11 @@ public class TestReflect {
       if (!(o instanceof R9))
         return false;
       return Arrays.equals(this.r6s, ((R9) o).r6s);
+    }
+
+    @Override
+    public int hashCode() {
+      return Arrays.hashCode(r6s);
     }
   }
 
@@ -354,6 +389,11 @@ public class TestReflect {
       if (this.value == null)
         return ((R9_1) o).value == null;
       return this.value.equals(((R9_1) o).value);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hashCode(value);
     }
   }
 
@@ -427,6 +467,11 @@ public class TestReflect {
         return false;
       return this.text.equals(((R10) o).text);
     }
+
+    @Override
+    public int hashCode() {
+      return Objects.hashCode(text);
+    }
   }
 
   @Test
@@ -450,6 +495,11 @@ public class TestReflect {
       if (this.text == null)
         return that.text == null;
       return this.text.equals(that.text);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hashCode(text);
     }
   }
 
@@ -795,6 +845,11 @@ public class TestReflect {
       if (!(o instanceof AvroEncRecord))
         return false;
       return date.equals(((AvroEncRecord) o).date);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hashCode(date);
     }
   }
 
@@ -1379,6 +1434,11 @@ public class TestReflect {
     @Override
     public boolean equals(Object obj) {
       return obj instanceof NullableBytesTest && Arrays.equals(((NullableBytesTest) obj).bytes, this.bytes);
+    }
+
+    @Override
+    public int hashCode() {
+      return Arrays.hashCode(bytes);
     }
   }
 

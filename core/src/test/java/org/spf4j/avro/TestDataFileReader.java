@@ -224,7 +224,7 @@ public class TestDataFileReader {
   @Test
   void invalidMagicLength() throws IOException {
     File f = dataDir.resolve("testInvalidMagicLength.avro").toFile();
-    try (FileWriter w = new FileWriter(f)) {
+    try (FileWriter w = new FileWriter(f, StandardCharsets.UTF_8)) {
       w.write("-");
     }
     try (SeekableFileInput fileInput = new SeekableFileInput(f)) {
@@ -236,7 +236,7 @@ public class TestDataFileReader {
   @Test
   void invalidMagicBytes() throws IOException {
     File f = dataDir.resolve("testInvalidMagicBytes.avro").toFile();
-    try (FileWriter w = new FileWriter(f)) {
+    try (FileWriter w = new FileWriter(f, StandardCharsets.UTF_8)) {
       w.write("invalid");
     }
     try (SeekableFileInput fileInput = new SeekableFileInput(f)) {

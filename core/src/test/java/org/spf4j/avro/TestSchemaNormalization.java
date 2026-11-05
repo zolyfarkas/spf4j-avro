@@ -115,7 +115,7 @@ public class TestSchemaNormalization {
       for (int j = 1; j < 129; j = j << 1) {
         boolean overflow = (0 != (fp & overflowBit));
         fp >>>= 1;
-        if (0 != (j & b1))
+        if (0 != (j & (b1 & 0xFF)))
           fp |= ONE; // shift in the input bit
         if (overflow) {
           fp ^= poly; // hi-order coeff of poly kills overflow bit

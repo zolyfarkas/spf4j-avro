@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro.reflect;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,6 +50,9 @@ import org.junit.jupiter.api.Test;
  */
 public class TestNonStringMapKeys {
 
+  @SuppressFBWarnings(value = "PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS",
+      justification = "the two buildCompany() calls must produce two distinct instances with equal content; their"
+          + "identity difference is what the round-trip comparison under test relies on")
   @Test
   void nonStringMapKeys() throws Exception {
 
@@ -332,7 +336,6 @@ public class TestNonStringMapKeys {
     HashMap<Integer, EmployeeInfo2> employees = new HashMap<>();
     co.setEmployees(employees);
 
-    EmployeeId2 empId = new EmployeeId2(1);
     EmployeeInfo2 empInfo = new EmployeeInfo2("Foo");
     HashMap<Integer, String> companyMap = new HashMap<>();
     empInfo.setCompanyMap(companyMap);
