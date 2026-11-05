@@ -136,10 +136,45 @@
             </execution>
           </executions>
         </plugin>
-        <plugin> <!-- SpotBugs setup mirrored verbatim from spf4j (2026-11-05). -->
+        <plugin> <!-- SpotBugs setup mirrored verbatim from spf4j (2026-11-05),
+               with ONE forced deviation: SpotBugs 4.7.3's bundled ASM (9.4)
+               cannot parse Java 21 runtime classes (class file major 65),
+               which its forked JVM must scan when Maven runs on JDK 21 —
+               spf4j never hits this because it builds on JDK 8. Overriding
+               ASM to 9.7 in the plugin realm (the same ASM line SpotBugs
+               4.8.x ships) makes the spf4j-pinned plugin/detectors run
+               unmodified. Plugin, detector and rule configuration are
+               spf4j's exact versions. -->
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
           <version>4.7.3.0</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.ow2.asm</groupId>
+              <artifactId>asm</artifactId>
+              <version>9.7</version>
+            </dependency>
+            <dependency>
+              <groupId>org.ow2.asm</groupId>
+              <artifactId>asm-analysis</artifactId>
+              <version>9.7</version>
+            </dependency>
+            <dependency>
+              <groupId>org.ow2.asm</groupId>
+              <artifactId>asm-commons</artifactId>
+              <version>9.7</version>
+            </dependency>
+            <dependency>
+              <groupId>org.ow2.asm</groupId>
+              <artifactId>asm-tree</artifactId>
+              <version>9.7</version>
+            </dependency>
+            <dependency>
+              <groupId>org.ow2.asm</groupId>
+              <artifactId>asm-util</artifactId>
+              <version>9.7</version>
+            </dependency>
+          </dependencies>
           <configuration>
             <failOnError>true</failOnError>
             <effort>Max</effort><!-- Min, Default, Max -->
