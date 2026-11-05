@@ -107,6 +107,9 @@ public class TestDataFile {
     return new File(DIR, "test-" + codec + ".avro");
   }
 
+  @SuppressFBWarnings(value = "CRLF_INJECTION_LOGS",
+      justification = "test diagnostics: the logged values are the test's own fixtures, generated sources and file"
+          + "names; line-separator handling of log output belongs to the logging backend's layout")
   @ParameterizedTest
   @MethodSource("codecs")
   public void runTestsInOrder(CodecFactory codec) throws Exception {

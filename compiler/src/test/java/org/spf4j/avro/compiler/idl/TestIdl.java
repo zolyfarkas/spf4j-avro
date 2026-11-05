@@ -77,7 +77,11 @@ public class TestIdl {
     assertTrue(TEST_OUTPUT_DIR.exists());
 
     tests = new ArrayList<>();
-    for (File inF : requireNonNull(TEST_INPUT_DIR.listFiles())) {
+    File[] inputFiles = TEST_INPUT_DIR.listFiles();
+    if (inputFiles == null) {
+      throw new IllegalStateException("cannot list test input folder " + TEST_INPUT_DIR);
+    }
+    for (File inF : inputFiles) {
       if (!inF.getName().endsWith(".avdl"))
         continue;
       if (inF.getName().startsWith("."))

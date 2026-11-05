@@ -501,10 +501,11 @@ public class FastReaderBuilder {
         zeroByteElements, readerSchema));
   }
 
-  @SuppressFBWarnings(value = "CFS_CONFUSING_FUNCTION_SEMANTICS",
-      justification = "the array reader's contract is to fill and return the reuse container when one is"
-          + " supplied (the datum readers' reuse protocol); returning the adapted argument is the"
-          + " documented behavior")
+  @SuppressFBWarnings(value = {"CFS_CONFUSING_FUNCTION_SEMANTICS", "URV_CHANGE_RETURN_TYPE"},
+      justification = "the array reader's contract is to fill and return the reuse container when one is  supplied"
+          + "(the datum readers' reuse protocol); returning the adapted argument is the  documented"
+          + "behavior; URV_CHANGE_RETURN_TYPE: the method is part of this class's internal stage"
+          + "machinery; its signature follows the stage hierarchy's conventions")
   private Object readArray(Object reuse, Decoder decoder, FieldReader elementReader, Schema elementType,
       boolean zeroByteElements, Schema readerSchema) throws IOException {
     // Open a decode scope so the zero-byte element allocation cap is cumulative

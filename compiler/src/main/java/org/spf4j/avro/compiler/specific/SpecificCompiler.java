@@ -659,6 +659,10 @@ public class SpecificCompiler {
     return record.getFields().size();
   }
 
+  @SuppressFBWarnings(value = "CRLF_INJECTION_LOGS",
+      justification = "the logged values are identifiers and names produced by the local operation; line-separator"
+          + "handling of log output belongs to the logging backend's layout (the disposition spf4j itself"
+          + "takes for this pattern)")
   protected void validateRecordForCompilation(Schema record) {
     this.createAllArgsConstructor = calcAllArgConstructorParameterUnits(record) <= MAX_FIELD_PARAMETER_UNIT_COUNT;
 

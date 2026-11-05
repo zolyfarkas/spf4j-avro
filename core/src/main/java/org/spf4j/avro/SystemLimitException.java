@@ -163,6 +163,10 @@ public class SystemLimitException extends AvroRuntimeException {
    *                     parsable as an int
    * @return The value from the system property
    */
+  @SuppressFBWarnings(value = "CRLF_INJECTION_LOGS",
+      justification = "the logged values are identifiers and names produced by the local operation; line-separator"
+          + "handling of log output belongs to the logging backend's layout (the disposition spf4j itself"
+          + "takes for this pattern)")
   private static int getLimitFromProperty(String property, int defaultValue) {
     String o = System.getProperty(property);
     int i = defaultValue;
@@ -186,6 +190,10 @@ public class SystemLimitException extends AvroRuntimeException {
    *                     parsable as a long
    * @return The value from the system property
    */
+  @SuppressFBWarnings(value = "CRLF_INJECTION_LOGS",
+      justification = "the logged values are identifiers and names produced by the local operation; line-separator"
+          + "handling of log output belongs to the logging backend's layout (the disposition spf4j itself"
+          + "takes for this pattern)")
   private static long getLongLimitFromProperty(String property, long defaultValue) {
     String prop = System.getProperty(property);
     long limit = defaultValue;

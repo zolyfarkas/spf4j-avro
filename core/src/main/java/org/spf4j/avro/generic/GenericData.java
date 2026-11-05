@@ -504,6 +504,9 @@ public class GenericData {
       return GenericData.get().compare(this, o, this.getSchema(), true) == 0;
     }
 
+    @SuppressFBWarnings(value = "COM_PARENT_DELEGATED_CALL",
+        justification = "the class intentionally inherits the parent's hash semantics: its equality is the parent's,"
+            + "so the hash code must be the parent's")
     @Override
     public int hashCode() {
       return super.hashCode();
@@ -642,9 +645,12 @@ public class GenericData {
     private Schema schema;
     private byte[] bytes;
 
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2",
+    @SuppressFBWarnings(value = {"EI_EXPOSE_REP2", "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS"},
         justification = "Fixed.bytes() returns the backing array by design; the zero-copy contract is documented and"
-            + "callers must not modify the returned bytes")
+            + "callers must not modify the returned bytes; PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS:"
+            + "construction completes through the class's own initialization protocol (its template methods"
+            + "and registration with the owning model); the access to the partially constructed object"
+            + "stays inside the class's own constructor chain by design")
     public Fixed(Schema schema) {
       setSchema(schema);
     }

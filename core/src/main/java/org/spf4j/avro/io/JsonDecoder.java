@@ -71,6 +71,10 @@ public class JsonDecoder extends ParsingDecoder implements Parser.ActionHandler 
     configure(in);
   }
 
+  @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
+      justification = "construction completes through the class's own initialization protocol (its template methods"
+          + "and registration with the owning model); the access to the partially constructed object"
+          + "stays inside the class's own constructor chain by design")
   private JsonDecoder(Symbol root, String in) throws IOException {
     super(root);
     configure(in);

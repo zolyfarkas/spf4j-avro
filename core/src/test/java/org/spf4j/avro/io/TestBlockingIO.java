@@ -266,7 +266,6 @@ public class TestBlockingIO {
           + "being implemented; it is intentionally unused by this implementation")
   private static void serialize(Encoder cos, JsonParser p, ByteArrayOutputStream os) throws IOException {
     boolean[] isArray = new boolean[100];
-    int[] counts = new int[100];
     int stackTop = -1;
 
     while (p.nextToken() != null) {
@@ -285,17 +284,14 @@ public class TestBlockingIO {
         if (stackTop >= 0 && isArray[stackTop]) {
           cos.setItemCount(1);
           cos.startItem();
-          counts[stackTop]++;
         }
         cos.writeArrayStart();
         isArray[++stackTop] = true;
-        counts[stackTop] = 0;
         continue;
       case VALUE_STRING:
         if (stackTop >= 0 && isArray[stackTop]) {
           cos.setItemCount(1);
           cos.startItem();
-          counts[stackTop]++;
         }
         byte[] bb = p.getText().getBytes(StandardCharsets.UTF_8);
         cos.writeBytes(bb);
@@ -304,16 +300,13 @@ public class TestBlockingIO {
         if (stackTop >= 0 && isArray[stackTop]) {
           cos.setItemCount(1);
           cos.startItem();
-          counts[stackTop]++;
         }
         cos.writeMapStart();
         isArray[++stackTop] = false;
-        counts[stackTop] = 0;
         continue;
       case FIELD_NAME:
         cos.setItemCount(1);
         cos.startItem();
-        counts[stackTop]++;
         cos.writeBytes(p.getCurrentName().getBytes(StandardCharsets.UTF_8));
         break;
       default:

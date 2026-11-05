@@ -169,9 +169,11 @@ public class TestSchemaBuilder {
     assertEquals("default", f.getObjectProp("unknwon", "default"));
   }
 
-  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+  @SuppressFBWarnings(value = {"NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION", "UCC_UNRELATED_COLLECTION_CONTENTS"},
       justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
-          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design;"
+          + "UCC_UNRELATED_COLLECTION_CONTENTS: the collection under test holds heterogeneous JSON values"
+          + "by design; mixed element types are the data under test")
   @Test
   void arrayObjectProp() {
     List<Object> values = new ArrayList<>();
@@ -204,9 +206,11 @@ public class TestSchemaBuilder {
     assertEquals("abc", iter.next());
   }
 
-  @SuppressFBWarnings(value = "NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION",
+  @SuppressFBWarnings(value = {"NAB_NEEDLESS_BOOLEAN_CONSTANT_CONVERSION", "UCC_UNRELATED_COLLECTION_CONTENTS"},
       justification = "the boolean values are data of a Boolean-typed slot (parameterized-test arguments, a"
-          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design")
+          + "Boolean-valued map or a generic container); they are stored as Boolean objects by design;"
+          + "UCC_UNRELATED_COLLECTION_CONTENTS: the collection under test holds heterogeneous JSON values"
+          + "by design; mixed element types are the data under test")
   @Test
   void fieldArrayObjectProp() {
     List<Object> values = new ArrayList<>();

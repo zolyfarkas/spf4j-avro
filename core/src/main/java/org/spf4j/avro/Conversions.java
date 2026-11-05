@@ -102,6 +102,10 @@ public class Conversions {
     return new LinkedHashMap<>(DEFAULT_CONVERSIONS);
   }
 
+  @SuppressFBWarnings(value = "CRLF_INJECTION_LOGS",
+      justification = "the logged values are identifiers and names produced by the local operation; line-separator"
+          + "handling of log output belongs to the logging backend's layout (the disposition spf4j itself"
+          + "takes for this pattern)")
   private static void registerConversion(final Map<String, Conversion<?>> map, final Conversion<?> conversion) {
     Conversion<?> existing = map.put(conversion.getLogicalTypeName(), conversion);
     if (existing != null) {

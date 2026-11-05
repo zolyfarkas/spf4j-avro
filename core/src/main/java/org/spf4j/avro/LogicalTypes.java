@@ -89,6 +89,10 @@ public class LogicalTypes {
    * @throws NullPointerException if {@code logicalTypeName} or {@code factory} is
    *                              {@code null}
    */
+  @SuppressFBWarnings(value = "CRLF_INJECTION_LOGS",
+      justification = "the logged values are identifiers and names produced by the local operation; line-separator"
+          + "handling of log output belongs to the logging backend's layout (the disposition spf4j itself"
+          + "takes for this pattern)")
   public static void register(String logicalTypeName, LogicalTypeFactory factory) {
     Objects.requireNonNull(logicalTypeName, "Logical type name cannot be null");
     Objects.requireNonNull(factory, "Logical type factory cannot be null");
@@ -167,9 +171,12 @@ public class LogicalTypes {
     }
   }
 
-  @SuppressFBWarnings(value = "CC_CYCLOMATIC_COMPLEXITY",
+  @SuppressFBWarnings(value = {"CC_CYCLOMATIC_COMPLEXITY", "CRLF_INJECTION_LOGS"},
       justification = "the method is a decision table over the specification's resolution rules; its complexity is"
-          + "intrinsic to the rule set and it is covered by the resolver and parser test suites")
+          + "intrinsic to the rule set and it is covered by the resolver and parser test suites;"
+          + "CRLF_INJECTION_LOGS: the logged values are identifiers and names produced by the local"
+          + "operation; line-separator handling of log output belongs to the logging backend's layout"
+          + "(the disposition spf4j itself takes for this pattern)")
   private static LogicalType fromSchemaImpl(Schema schema, boolean throwErrors) {
     final LogicalType logicalType;
     final String typeName = schema.getProp(LogicalType.LOGICAL_TYPE_PROP);

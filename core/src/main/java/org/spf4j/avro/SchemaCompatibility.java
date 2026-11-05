@@ -225,6 +225,10 @@ public class SchemaCompatibility {
      *                       schema.
      * @return the compatibility of the reader/writer schema pair.
      */
+    @SuppressFBWarnings(value = "CRLF_INJECTION_LOGS",
+        justification = "the logged values are identifiers and names produced by the local operation; line-separator"
+            + "handling of log output belongs to the logging backend's layout (the disposition spf4j itself"
+            + "takes for this pattern)")
     private SchemaCompatibilityResult getCompatibility(String referenceToken, final Schema reader, final Schema writer,
         final Deque<String> location) {
       location.addFirst(referenceToken);

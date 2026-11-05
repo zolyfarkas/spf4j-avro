@@ -92,7 +92,12 @@ public class SpecificData extends GenericData {
 
   private static final Function<Class<?>, SpecificData> MODEL_CACHE = new ClassValueCache<>(SpecificData::findModel);
 
-  @SuppressFBWarnings(value = "RFI_SET_ACCESSIBLE", justification = "reflective access is this layer's function: the datum layer materializes and inspects the classes it is asked to handle; setAccessible is applied only to those classes' own members")
+  @SuppressFBWarnings(value = {"RFI_SET_ACCESSIBLE", "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS"},
+      justification = "reflective access is this layer's function: the datum layer materializes and inspects the"
+          + "classes it is asked to handle; setAccessible is applied only to those classes' own members;"
+          + "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS: this API's documented error model is unchecked:"
+          + "exceptions are wrapped in AvroRuntimeException at the boundary so callers program against"
+          + "the unchecked contract")
   private static Constructor<?> findConstructor(Class<?> c) {
     boolean useSchema = SchemaConstructable.class.isAssignableFrom(c);
     try {
@@ -104,7 +109,12 @@ public class SpecificData extends GenericData {
     }
   }
 
-  @SuppressFBWarnings(value = "RFI_SET_ACCESSIBLE", justification = "reflective access is this layer's function: the datum layer materializes and inspects the classes it is asked to handle; setAccessible is applied only to those classes' own members")
+  @SuppressFBWarnings(value = {"RFI_SET_ACCESSIBLE", "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS"},
+      justification = "reflective access is this layer's function: the datum layer materializes and inspects the"
+          + "classes it is asked to handle; setAccessible is applied only to those classes' own members;"
+          + "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS: this API's documented error model is unchecked:"
+          + "exceptions are wrapped in AvroRuntimeException at the boundary so callers program against"
+          + "the unchecked contract")
   private static SpecificData findModel(Class<?> c) {
     Field specificDataField;
     try {

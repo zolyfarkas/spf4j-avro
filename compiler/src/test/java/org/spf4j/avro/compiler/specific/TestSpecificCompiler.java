@@ -93,6 +93,30 @@ public class TestSpecificCompiler {
     assertCompilesWithJavaCompiler(dstDir, outputs, true);
   }
 
+  @SuppressFBWarnings(value = "CRLF_INJECTION_LOGS",
+      justification = "the diagnostics logged here describe the test's own generated sources; line-separator"
+          + " handling of log output belongs to the logging backend's layout")
+  private static void handleDiagnostic(Diagnostic<?> diagnostic, List<Diagnostic<?>> warnings) {
+    switch (diagnostic.getKind()) {
+    case ERROR:
+      // Do not add these to warnings because they will fail the compilation, anyway.
+      LOG.error("{}", diagnostic);
+      break;
+    case WARNING:
+    case MANDATORY_WARNING:
+      String message = diagnostic.getMessage(Locale.ROOT);
+      if (!NON_TRANSIENT_INSTANCE_FIELD_MESSAGE.equals(message)) {
+        LOG.warn("{}", diagnostic);
+        warnings.add(diagnostic);
+      }
+      break;
+    case NOTE:
+    case OTHER:
+      LOG.debug("{}", diagnostic);
+      break;
+    }
+  }
+
   /**
    * Uses the system's java compiler to actually compile the generated code.
    */
@@ -114,26 +138,7 @@ public class TestSpecificCompiler {
     }
 
     final List<Diagnostic<?>> warnings = new ArrayList<>();
-    DiagnosticListener<JavaFileObject> diagnosticListener = diagnostic -> {
-      switch (diagnostic.getKind()) {
-      case ERROR:
-        // Do not add these to warnings because they will fail the compilation, anyway.
-        LOG.error("{}", diagnostic);
-        break;
-      case WARNING:
-      case MANDATORY_WARNING:
-        String message = diagnostic.getMessage(Locale.ROOT);
-        if (!NON_TRANSIENT_INSTANCE_FIELD_MESSAGE.equals(message)) {
-          LOG.warn("{}", diagnostic);
-          warnings.add(diagnostic);
-        }
-        break;
-      case NOTE:
-      case OTHER:
-        LOG.debug("{}", diagnostic);
-        break;
-      }
-    };
+    DiagnosticListener<JavaFileObject> diagnosticListener = diagnostic -> handleDiagnostic(diagnostic, warnings);
     JavaCompiler.CompilationTask cTask = compiler.getTask(null, fileManager, diagnosticListener,
         Collections.singletonList("-Xlint:all"), null, fileManager.getJavaFileObjects(javaFiles.toArray(new File[0])));
     boolean compilesWithoutError = cTask.call();
@@ -310,14 +315,17 @@ public class TestSpecificCompiler {
     }
   }
 
-  @SuppressFBWarnings(value = {"DM_DEFAULT_ENCODING", "MDM_STRING_BYTES_ENCODING", "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS"},
+  @SuppressFBWarnings(value = {"DM_DEFAULT_ENCODING", "MDM_STRING_BYTES_ENCODING", "IOI_USE_OF_FILE_STREAM_CONSTRUCTORS", "OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE"},
       justification = "the test compares a file written with the platform default encoding against one written with"
           + "an explicit encoding; decoding one side with the platform default charset is the behavior"
           + "under test; MDM_STRING_BYTES_ENCODING: this test verifies output character encodings;"
           + "conversions through the platform default charset inside it are part of the behavior under"
           + "test; IOI_USE_OF_FILE_STREAM_CONSTRUCTORS: stream construction from a File is this API's"
           + "documented shape (the container-file readers and writers are file-based); the File"
-          + "constructors' exception behavior is part of the contract")
+          + "constructors' exception behavior is part of the contract;"
+          + "OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE: the stream is closed explicitly mid-test (the"
+          + "comment at the close site explains the delete ordering); the obligation is satisfied before"
+          + "the file is deleted and regenerated")
   @Test
   void settingOutputCharacterEncoding() throws Exception {
     SpecificCompiler compiler = createCompiler();

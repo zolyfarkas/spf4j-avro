@@ -45,9 +45,11 @@ public class TestCycle {
 
   private static final Logger LOG = LoggerFactory.getLogger(TestCycle.class);
 
-  @SuppressFBWarnings(value = "PSC_PRESIZE_COLLECTIONS",
+  @SuppressFBWarnings(value = {"PSC_PRESIZE_COLLECTIONS", "CRLF_INJECTION_LOGS"},
       justification = "the collection is populated incrementally from the schema/data being processed; its final"
-          + "size is not known when it is created")
+          + "size is not known when it is created; CRLF_INJECTION_LOGS: test diagnostics: the logged"
+          + "values are the test's own fixtures, generated sources and file names; line-separator"
+          + "handling of log output belongs to the logging backend's layout")
   @Test
   void cycleGeneration() throws ParseException, IOException {
     final ClassLoader cl = Thread.currentThread().getContextClassLoader();

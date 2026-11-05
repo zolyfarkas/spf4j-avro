@@ -1084,6 +1084,10 @@ public abstract class Schema extends JsonProperties implements Serializable {
       this.isError = isError;
     }
 
+    @SuppressFBWarnings(value = "PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS",
+        justification = "construction completes through the class's own initialization protocol (its template methods"
+            + "and registration with the owning model); the access to the partially constructed object"
+            + "stays inside the class's own constructor chain by design")
     public RecordSchema(Name name, String doc, boolean isError, List<Field> fields) {
       super(Type.RECORD, name, doc);
       this.isError = isError;
@@ -1788,6 +1792,9 @@ public abstract class Schema extends JsonProperties implements Serializable {
      * Parse a schema from the provided string. If named, the schema is added to the
      * names known to this parser.
      */
+    @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+        justification = "this API's documented error model is unchecked: exceptions are wrapped in"
+            + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
     public Schema parse(String s) {
       try {
         return parse(FACTORY.createParser(s), false, true);
@@ -2300,9 +2307,11 @@ public abstract class Schema extends JsonProperties implements Serializable {
     return isValidDefault(this, jsonValue);
   }
 
-  @SuppressFBWarnings(value = "EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS",
+  @SuppressFBWarnings(value = {"EXS_EXCEPTION_SOFTENING_NO_CONSTRAINTS", "MOM_MISLEADING_OVERLOAD_MODEL"},
       justification = "this API's documented error model is unchecked: exceptions are wrapped in"
-          + "AvroRuntimeException at the boundary so callers program against the unchecked contract")
+          + "AvroRuntimeException at the boundary so callers program against the unchecked contract;"
+          + "MOM_MISLEADING_OVERLOAD_MODEL: the overloads are the published API and each has distinct"
+          + "documented semantics; the similar names are the domain vocabulary of the datum model")
   private static boolean isValidDefault(Schema schema, JsonNode defaultValue) {
     if (defaultValue == null)
       return false;
@@ -2455,6 +2464,10 @@ public abstract class Schema extends JsonProperties implements Serializable {
     return result;
   }
 
+  @SuppressFBWarnings(value = "CRLF_INJECTION_LOGS",
+      justification = "the logged values are identifiers and names produced by the local operation; line-separator"
+          + "handling of log output belongs to the logging backend's layout (the disposition spf4j itself"
+          + "takes for this pattern)")
   private static Schema parseRecord(JsonNode schema, ParseContext context, String currentNameSpace,
       boolean isTypeError) {
     Name name = parseName(schema, currentNameSpace);

@@ -209,10 +209,12 @@ public class TestValidatingIO {
     }
   }
 
-  @SuppressFBWarnings(value = {"PREDICTABLE_RANDOM", "SF_SWITCH_FALLTHROUGH"},
+  @SuppressFBWarnings(value = {"PREDICTABLE_RANDOM", "SF_SWITCH_FALLTHROUGH", "UCC_UNRELATED_COLLECTION_CONTENTS"},
       justification = "the Random is seeded and generates a deterministic test corpus on purpose; reproducibility,"
           + "not unpredictability, is the requirement; SF_SWITCH_FALLTHROUGH: the 'e'/'c'/'U' cases"
-          + "consume their integer payload and intentionally fall into the punctuation case group")
+          + "consume their integer payload and intentionally fall into the punctuation case group;"
+          + "UCC_UNRELATED_COLLECTION_CONTENTS: the collection under test holds heterogeneous JSON values"
+          + "by design; mixed element types are the data under test")
   public static Object[] randomValues(String calls) {
     Random r = new Random(0L);
     InputScanner cs = new InputScanner(calls.toCharArray());
@@ -752,6 +754,9 @@ public class TestValidatingIO {
     System.out.println();
   }
 
+  @SuppressFBWarnings(value = "CRLF_INJECTION_LOGS",
+      justification = "test diagnostics: the logged values are the test's own fixtures, generated sources and file"
+          + "names; line-separator handling of log output belongs to the logging backend's layout")
   static void print(Encoding encoding, int skipLevel, Schema writerSchema, Schema readerSchema, Object[] writtenValues,
       Object[] expectedValues) {
     LOG.debug("{} Skip Level {}", encoding, skipLevel);
@@ -759,6 +764,9 @@ public class TestValidatingIO {
     printSchemaAndValues("Reader", readerSchema, expectedValues);
   }
 
+  @SuppressFBWarnings(value = "CRLF_INJECTION_LOGS",
+      justification = "test diagnostics: the logged values are the test's own fixtures, generated sources and file"
+          + "names; line-separator handling of log output belongs to the logging backend's layout")
   private static void printSchemaAndValues(String schemaType, Schema schema, Object[] values) {
     LOG.debug("{} Schema {}", schemaType, schema);
     for (Object value : values) {

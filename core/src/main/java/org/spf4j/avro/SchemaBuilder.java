@@ -449,6 +449,9 @@ public class SchemaBuilder {
       return names;
     }
 
+    @SuppressFBWarnings(value = "CFS_CONFUSING_FUNCTION_SEMANTICS",
+        justification = "the published contract is to complete/adapt and return the argument (fluent builder and"
+            + "logical-type API); callers rely on receiving the same reference back")
     final Schema addAliasesTo(Schema schema) {
       if (null != aliases) {
         for (String alias : aliases) {

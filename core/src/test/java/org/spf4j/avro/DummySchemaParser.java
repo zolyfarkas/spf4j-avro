@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,9 @@ public class DummySchemaParser implements FormattedSchemaParser {
   public static final String ERROR_MESSAGE = "Syntax error";
   public static final String IO_ERROR_MESSAGE = "I/O error";
 
+  @SuppressFBWarnings(value = "CRLF_INJECTION_LOGS",
+      justification = "test diagnostics: the logged values are the test's own fixtures, generated sources and file"
+          + "names; line-separator handling of log output belongs to the logging backend's layout")
   @Override
   public Schema parse(ParseContext parseContext, URI baseUri, CharSequence formattedSchema)
       throws IOException, SchemaParseException {

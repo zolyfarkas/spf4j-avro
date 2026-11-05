@@ -95,7 +95,6 @@ public class TestSpecificData {
     StandardJavaFileManager fileManager = javac.getStandardFileManager(null, null, null);
     Iterable<? extends JavaFileObject> units = fileManager.getJavaFileObjects("target/foo/Bar.java");
 
-    JavaCompiler.CompilationTask task1 = javac.getTask(null, fileManager, null, null, null, units);
 
     // FIXME: This part uses JavacTask which makes it depend on the tools.jar and
     // thus will only run in JDK 8
@@ -187,6 +186,9 @@ public class TestSpecificData {
       return Stream.concat(errors, subError).collect(Collectors.toList());
     }
 
+    @SuppressFBWarnings(value = "TR_TAIL_RECURSION",
+        justification = "the recursion depth is the interface hierarchy depth of a generated class (single digits);"
+            + "the tail recursion mirrors the hierarchy walk")
     private List<TypeMirror> allInterfaces(TypeElement e) {
       List<TypeMirror> allInterfaces = new ArrayList<>(e.getInterfaces());
 

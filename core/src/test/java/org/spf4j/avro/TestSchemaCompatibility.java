@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package org.spf4j.avro;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.nio.charset.StandardCharsets;
 
 import static java.util.Arrays.asList;
@@ -386,6 +387,9 @@ public class TestSchemaCompatibility {
   /**
    * Tests reader/writer compatibility validation.
    */
+  @SuppressFBWarnings(value = "CRLF_INJECTION_LOGS",
+      justification = "test diagnostics: the logged values are the test's own fixtures, generated sources and file"
+          + "names; line-separator handling of log output belongs to the logging backend's layout")
   @Test
   void readerWriterCompatibility() {
     for (ReaderWriter readerWriter : COMPATIBLE_READER_WRITER_TEST_CASES) {
@@ -484,6 +488,9 @@ public class TestSchemaCompatibility {
   /**
    * Tests the reader/writer compatibility at decoding time.
    */
+  @SuppressFBWarnings(value = "CRLF_INJECTION_LOGS",
+      justification = "test diagnostics: the logged values are the test's own fixtures, generated sources and file"
+          + "names; line-separator handling of log output belongs to the logging backend's layout")
   @Test
   void readerWriterDecodingCompatibility() throws Exception {
     for (DecodingTestCase testCase : DECODING_COMPATIBILITY_TEST_CASES) {
