@@ -42,7 +42,7 @@ public class TestAllowUndefinedLogicalTypes {
 
   private static final String DEFINED_LT_SCHEMA = "{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}";
 
-  private static void assertParseThrows(Schema.Parser parser) {
+  private static void assertParseThrows(final Schema.Parser parser) {
     try {
       parser.parse(UNDEFINED_LT_SCHEMA);
       fail("expected IllegalArgumentException for an undefined logical type");

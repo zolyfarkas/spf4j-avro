@@ -56,7 +56,7 @@ public class TestRegisteredFactoryPrecedence {
 
   private static final LogicalTypes.LogicalTypeFactory EXTENDED_DATE_FACTORY = new LogicalTypes.LogicalTypeFactory() {
     @Override
-    public LogicalType fromSchema(Schema schema) {
+    public LogicalType fromSchema(final Schema schema) {
       CONSULTED.set(true);
       if (schema.getType() == Schema.Type.INT) {
         return LogicalTypes.date();

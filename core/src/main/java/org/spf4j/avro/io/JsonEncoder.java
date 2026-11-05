@@ -55,7 +55,10 @@ public class JsonEncoder extends ParsingEncoder implements Parser.ActionHandler 
   // Package-private (not private) so ExtendedJsonEncoder, in this package,
   // can write natural-JSON forms directly; upstream's public API is
   // unchanged. The same minimal-seam approach as JsonDecoder's widenings
-  // for ExtendedJsonDecoder.
+  // for ExtendedJsonDecoder. VisibilityModifier is suppressed for this
+  // field only: the package-private seam is the design (see above), and a
+  // private field with an accessor would expose strictly more.
+  @SuppressWarnings("checkstyle:VisibilityModifier")
   JsonGenerator out;
   private boolean includeNamespace = true;
 

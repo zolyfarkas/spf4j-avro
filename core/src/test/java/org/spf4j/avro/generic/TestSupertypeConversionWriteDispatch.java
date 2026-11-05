@@ -53,7 +53,7 @@ import org.spf4j.avro.io.EncoderFactory;
 public class TestSupertypeConversionWriteDispatch {
 
   /** Conversion with converted type {@code Object} (the "any" shape). */
-  public static class ObjectConversion extends Conversion<Object> {
+  public static final class ObjectConversion extends Conversion<Object> {
     @Override
     public Class<Object> getConvertedType() {
       return Object.class;
@@ -65,18 +65,18 @@ public class TestSupertypeConversionWriteDispatch {
     }
 
     @Override
-    public CharSequence toCharSequence(Object value, Schema schema, LogicalType type) {
+    public CharSequence toCharSequence(final Object value, final Schema schema, final LogicalType type) {
       return "converted:" + value;
     }
 
     @Override
-    public Object fromCharSequence(CharSequence value, Schema schema, LogicalType type) {
+    public Object fromCharSequence(final CharSequence value, final Schema schema, final LogicalType type) {
       return value.toString();
     }
   }
 
   /** Conversion with converted type {@code Map} (the "json_record" shape). */
-  public static class MapConversion extends Conversion<Map> {
+  public static final class MapConversion extends Conversion<Map> {
     @Override
     @SuppressWarnings("unchecked")
     public Class<Map> getConvertedType() {
@@ -89,18 +89,18 @@ public class TestSupertypeConversionWriteDispatch {
     }
 
     @Override
-    public ByteBuffer toBytes(Map value, Schema schema, LogicalType type) {
+    public ByteBuffer toBytes(final Map value, final Schema schema, final LogicalType type) {
       return ByteBuffer.wrap(("map:" + value.size()).getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
-    public Map fromBytes(ByteBuffer value, Schema schema, LogicalType type) {
+    public Map fromBytes(final ByteBuffer value, final Schema schema, final LogicalType type) {
       throw new UnsupportedOperationException("read side not exercised by this test");
     }
   }
 
   /** Conversion with converted type {@code Schema} (the "avsc" shape). */
-  public static class SchemaConversion extends Conversion<Schema> {
+  public static final class SchemaConversion extends Conversion<Schema> {
     @Override
     public Class<Schema> getConvertedType() {
       return Schema.class;
@@ -112,34 +112,34 @@ public class TestSupertypeConversionWriteDispatch {
     }
 
     @Override
-    public CharSequence toCharSequence(Schema value, Schema schema, LogicalType type) {
+    public CharSequence toCharSequence(final Schema value, final Schema schema, final LogicalType type) {
       return value.getType().getName();
     }
 
     @Override
-    public Schema fromCharSequence(CharSequence value, Schema schema, LogicalType type) {
+    public Schema fromCharSequence(final CharSequence value, final Schema schema, final LogicalType type) {
       throw new UnsupportedOperationException("read side not exercised by this test");
     }
   }
 
-  private static Schema stringSchemaWith(String logicalTypeName) {
+  private static Schema stringSchemaWith(final String logicalTypeName) {
     Schema schema = Schema.create(Schema.Type.STRING);
     new LogicalType(logicalTypeName).addToSchema(schema);
     return schema;
   }
 
-  private static Schema bytesSchemaWith(String logicalTypeName) {
+  private static Schema bytesSchemaWith(final String logicalTypeName) {
     Schema schema = Schema.create(Schema.Type.BYTES);
     new LogicalType(logicalTypeName).addToSchema(schema);
     return schema;
   }
 
-  private static Schema recordWith(Schema fieldType) {
+  private static Schema recordWith(final Schema fieldType) {
     return Schema.createRecord("R", null, null, false,
         Arrays.asList(new Schema.Field("f", fieldType, null, null)));
   }
 
-  private static byte[] write(GenericData data, Schema schema, Object fieldValue) throws IOException {
+  private static byte[] write(final GenericData data, final Schema schema, final Object fieldValue) throws IOException {
     GenericData.Record record = new GenericData.Record(schema);
     record.put("f", fieldValue);
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -149,7 +149,7 @@ public class TestSupertypeConversionWriteDispatch {
     return bos.toByteArray();
   }
 
-  private static GenericRecord readBack(Schema schema, byte[] bytes) throws IOException {
+  private static GenericRecord readBack(final Schema schema, final byte[] bytes) throws IOException {
     return new GenericDatumReader<GenericRecord>(schema)
         .read(null, DecoderFactory.get().binaryDecoder(bytes, null));
   }

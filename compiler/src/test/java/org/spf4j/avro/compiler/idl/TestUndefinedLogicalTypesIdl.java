@@ -48,7 +48,7 @@ public class TestUndefinedLogicalTypesIdl {
     return new Idl(cl.getResourceAsStream(RESOURCE), "UTF-8");
   }
 
-  private static void assertUndefinedLtRetained(Protocol protocol) {
+  private static void assertUndefinedLtRetained(final Protocol protocol) {
     Schema record = protocol.getType("org.spf4j.avro.test.UndefinedLtRecord");
     Schema value = record.getField("value").schema();
     assertEquals("undefined-idl-lt", value.getProp("logicalType"));

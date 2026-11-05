@@ -65,7 +65,8 @@ public class TestExtendedGenericDatumWriter {
     return record;
   }
 
-  private static String write(GenericData.Record record, DatumWriter<GenericData.Record> writer, boolean extended)
+  private static String write(final GenericData.Record record, final DatumWriter<GenericData.Record> writer,
+      final boolean extended)
       throws IOException {
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     Encoder encoder = extended ? new ExtendedJsonEncoder(SCHEMA, bos) : EncoderFactory.get().jsonEncoder(SCHEMA, bos);

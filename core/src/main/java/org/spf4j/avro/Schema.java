@@ -246,7 +246,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
    * attach API (programmatic schemas use the GenericData-carried resolver
    * instead, see {@code GenericData#setSchemaResolver}).
    */
-  void setSchemaResolverStamp(SchemaResolver resolver) {
+  void setSchemaResolverStamp(final SchemaResolver resolver) {
     if (this.schemaResolver == null) {
       this.schemaResolver = resolver;
     }
@@ -1240,7 +1240,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
     }
 
     @Override
-    public void addProp(String name, String value) {
+    public void addProp(final String name, final String value) {
       if ("stringSymbols".equals(name)) {
         validateStringSymbols(TextNode.valueOf(value));
       }
@@ -1248,7 +1248,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
     }
 
     @Override
-    public void addProp(String name, Object value) {
+    public void addProp(final String name, final Object value) {
       if ("stringSymbols".equals(name) && value != null) {
         validateStringSymbols(value instanceof JsonNode ? (JsonNode) value : JacksonUtils.toJsonNode(value));
       }
@@ -1267,7 +1267,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
      * {@link #getEnumStringSymbol(String)}), so collisions are tracked in a
      * scratch copy and {@link #ordinals} keeps declared symbols only.
      */
-    private void validateStringSymbols(JsonNode node) {
+    private void validateStringSymbols(final JsonNode node) {
       @SuppressWarnings("unchecked")
       Map<String, String> strSymbols = (Map<String, String>) JacksonUtils.toObject(node);
       if (strSymbols != null) {
@@ -1689,7 +1689,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
      * fail parsing. This is per-instance configuration of this parser only;
      * there is no thread-local or system-property fallback.
      */
-    public Parser setAllowUndefinedLogicalTypes(boolean allowUndefinedLogicalTypes) {
+    public Parser setAllowUndefinedLogicalTypes(final boolean allowUndefinedLogicalTypes) {
       context.setAllowUndefinedLogicalTypes(allowUndefinedLogicalTypes);
       return this;
     }
@@ -1767,7 +1767,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
      * any other parse with a registered resolver.
      * </p>
      */
-    public Schema parse(JsonNode node) {
+    public Schema parse(final JsonNode node) {
       NameValidator saved = VALIDATE_NAMES.get();
       boolean savedValidateDefaults = VALIDATE_DEFAULTS.get();
       try {
@@ -2122,7 +2122,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
    * the set {@code JsonDecoder} accepts when reading a float or double
    * from a JSON string.
    */
-  private static boolean isNonNumericFloatingText(JsonNode value) {
+  private static boolean isNonNumericFloatingText(final JsonNode value) {
     if (!value.isTextual()) {
       return false;
     }
@@ -2386,7 +2386,7 @@ public abstract class Schema extends JsonProperties implements Serializable {
     }
   }
 
-  private static Schema parsePrimitive(JsonNode schema, String type, ParseContext context) {
+  private static Schema parsePrimitive(final JsonNode schema, final String type, final ParseContext context) {
     Schema result = create(PRIMITIVES.get(type));
     parsePropertiesAndLogicalType(schema, result, SCHEMA_RESERVED, context);
     return result;
@@ -2509,8 +2509,8 @@ public abstract class Schema extends JsonProperties implements Serializable {
     return result;
   }
 
-  private static void parsePropertiesAndLogicalType(JsonNode jsonNode, Schema result, Set<String> propertiesToSkip,
-      ParseContext context) {
+  private static void parsePropertiesAndLogicalType(final JsonNode jsonNode, final Schema result, final Set<String> propertiesToSkip,
+      final ParseContext context) {
     parseProperties(jsonNode, result, propertiesToSkip);
     // Stamp before constructing the logical type: a logical type factory
     // reads the stamp from its own schema at construction time (the "any"

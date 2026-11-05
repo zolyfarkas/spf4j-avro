@@ -233,7 +233,7 @@ public class ResolvingDecoder extends ValidatingDecoder implements JsonExtension
    * (a promotion) occupies that terminal's slot and is consumed as it.
    * </p>
    */
-  private void advanceBy(Schema schema) throws IOException {
+  private void advanceBy(final Schema schema) throws IOException {
     switch (schema.getType()) {
     case NULL:
       advanceTerminal(Symbol.NULL);
@@ -279,24 +279,34 @@ public class ResolvingDecoder extends ValidatingDecoder implements JsonExtension
       advanceTerminal(Symbol.MAP_START);
       advanceTerminal(Symbol.MAP_END);
       break;
-    case UNION: {
-      advanceTerminal(Symbol.UNION);
-      Symbol top = parser.popSymbol();
-      if (top instanceof Symbol.UnionAdjustAction) {
-        Symbol.UnionAdjustAction adjust = (Symbol.UnionAdjustAction) top;
-        parser.pushSymbol(adjust.symToParse);
-        advanceBy(schema.getTypes().get(adjust.rindex));
-      } else {
-        throw new UnsupportedOperationException(
-            "Direct extension decode of a writer-selected union branch of " + schema
-                + " through a ResolvingDecoder is not supported: the branch was selected"
-                + " by the writer, whose index the extension decoder has already consumed");
-      }
+    case UNION:
+      advanceByUnion(schema);
       break;
-    }
     default:
       throw new UnsupportedOperationException(
           "Direct extension decode of schema " + schema + " through a ResolvingDecoder is not supported");
+    }
+  }
+
+  /**
+   * Advance the grammar past a union value the extension decoder already
+   * consumed. Only the reader-selected form is supported: the grammar's
+   * {@code UnionAdjustAction} names the branch to walk. A writer-selected
+   * branch cannot be walked, because the extension decoder has already
+   * consumed the writer's branch index from the stream.
+   */
+  private void advanceByUnion(final Schema schema) throws IOException {
+    advanceTerminal(Symbol.UNION);
+    Symbol top = parser.popSymbol();
+    if (top instanceof Symbol.UnionAdjustAction) {
+      Symbol.UnionAdjustAction adjust = (Symbol.UnionAdjustAction) top;
+      parser.pushSymbol(adjust.symToParse);
+      advanceBy(schema.getTypes().get(adjust.rindex));
+    } else {
+      throw new UnsupportedOperationException(
+          "Direct extension decode of a writer-selected union branch of " + schema
+              + " through a ResolvingDecoder is not supported: the branch was selected"
+              + " by the writer, whose index the extension decoder has already consumed");
     }
   }
 
@@ -309,7 +319,7 @@ public class ResolvingDecoder extends ValidatingDecoder implements JsonExtension
    * {@code ENUM} also consume the check/adjust action that follows the
    * terminal in the grammar.
    */
-  private void advanceTerminal(Symbol expected) throws IOException {
+  private void advanceTerminal(final Symbol expected) throws IOException {
     for (;;) {
       if (parser.depth() <= 0) {
         throw new AvroTypeException("Attempt to process a " + expected + " but the grammar is exhausted.");
@@ -414,8 +424,20 @@ public class ResolvingDecoder extends ValidatingDecoder implements JsonExtension
     }
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>
+   * This implementation delegates the read to the wrapped
+   * {@link JsonExtensionDecoder} and then advances the resolving grammar
+   * past {@code schema}; without an extension decoder it returns
+   * {@code null} and leaves the grammar untouched. Subclasses that
+   * override it must preserve that pairing: a value consumed from the
+   * stream must be matched by exactly one grammar advance.
+   * </p>
+   */
   @Override
-  public BigDecimal readBigDecimal(Schema schema) throws IOException {
+  public BigDecimal readBigDecimal(final Schema schema) throws IOException {
     JsonExtensionDecoder ext = extensionDecoder();
     if (ext == null) {
       return null;
@@ -427,8 +449,20 @@ public class ResolvingDecoder extends ValidatingDecoder implements JsonExtension
     return result;
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>
+   * This implementation delegates the read to the wrapped
+   * {@link JsonExtensionDecoder} and then advances the resolving grammar
+   * past {@code schema}; without an extension decoder it returns
+   * {@code null} and leaves the grammar untouched. Subclasses that
+   * override it must preserve that pairing: a value consumed from the
+   * stream must be matched by exactly one grammar advance.
+   * </p>
+   */
   @Override
-  public BigInteger readBigInteger(Schema schema) throws IOException {
+  public BigInteger readBigInteger(final Schema schema) throws IOException {
     JsonExtensionDecoder ext = extensionDecoder();
     if (ext == null) {
       return null;
@@ -440,22 +474,55 @@ public class ResolvingDecoder extends ValidatingDecoder implements JsonExtension
     return result;
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>
+   * This implementation delegates the read to the wrapped
+   * {@link JsonExtensionDecoder} and then advances the resolving grammar
+   * past {@code schema}. Subclasses that override it must preserve that
+   * pairing: a value consumed from the stream must be matched by exactly
+   * one grammar advance.
+   * </p>
+   */
   @Override
-  public <T> T readValue(Schema schema, Class<T> clasz) throws IOException {
+  public <T> T readValue(final Schema schema, final Class<T> clasz) throws IOException {
     T result = requireExtensionDecoder().readValue(schema, clasz);
     advanceBy(schema);
     return result;
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>
+   * This implementation delegates the read to the wrapped
+   * {@link JsonExtensionDecoder} and then advances the resolving grammar
+   * past {@code schema}. Subclasses that override it must preserve that
+   * pairing: a value consumed from the stream must be matched by exactly
+   * one grammar advance.
+   * </p>
+   */
   @Override
-  public JsonNode readValueAsTree(Schema schema) throws IOException {
+  public JsonNode readValueAsTree(final Schema schema) throws IOException {
     JsonNode result = requireExtensionDecoder().readValueAsTree(schema);
     advanceBy(schema);
     return result;
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>
+   * This implementation delegates the buffering to the wrapped
+   * {@link JsonExtensionDecoder} and then advances the resolving grammar
+   * past {@code schema}. Subclasses that override it must preserve that
+   * pairing: a value consumed from the stream must be matched by exactly
+   * one grammar advance.
+   * </p>
+   */
   @Override
-  public JsonParser bufferValue(Schema schema) throws IOException {
+  public JsonParser bufferValue(final Schema schema) throws IOException {
     JsonParser result = requireExtensionDecoder().bufferValue(schema);
     advanceBy(schema);
     return result;

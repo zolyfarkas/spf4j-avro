@@ -215,7 +215,7 @@ public abstract class Conversion<T> {
    *         fully written to {@code enc}); {@code false} to let the caller
    *         use the default conversion path
    */
-  public boolean tryDirectEncode(T object, final Encoder enc, final Schema schema) throws IOException {
+  public boolean tryDirectEncode(final T object, final Encoder enc, final Schema schema) throws IOException {
     return false;
   }
 
@@ -230,7 +230,7 @@ public abstract class Conversion<T> {
    * @param context the IO context of the current datum operation
    * @return {@code true} if direct encoding was done
    */
-  public boolean tryDirectEncode(T object, final Encoder enc, final Schema schema, final DatumContext context)
+  public boolean tryDirectEncode(final T object, final Encoder enc, final Schema schema, final DatumContext context)
       throws IOException {
     return tryDirectEncode(object, enc, schema);
   }

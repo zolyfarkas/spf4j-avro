@@ -49,12 +49,12 @@ public final class DatumContext {
 
   private final GenericData data;
 
-  private DatumContext(GenericData data) {
+  private DatumContext(final GenericData data) {
     this.data = Objects.requireNonNull(data, "data");
   }
 
   /** Create a context carrying the given datum model. */
-  public static DatumContext of(GenericData data) {
+  public static DatumContext of(final GenericData data) {
     return new DatumContext(data);
   }
 
@@ -82,7 +82,7 @@ public final class DatumContext {
    * {@link #resolveEffectiveSchemaResolver(GenericData, Schema)} applied to
    * this context's datum model.
    */
-  public SchemaResolver getEffectiveSchemaResolver(Schema schema) {
+  public SchemaResolver getEffectiveSchemaResolver(final Schema schema) {
     return resolveEffectiveSchemaResolver(data, schema);
   }
 
@@ -116,7 +116,7 @@ public final class DatumContext {
    * @param schema the schema of the value being converted, or {@code null}
    * @return the effective resolver; never {@code null}
    */
-  public static SchemaResolver resolveEffectiveSchemaResolver(GenericData data, Schema schema) {
+  public static SchemaResolver resolveEffectiveSchemaResolver(final GenericData data, final Schema schema) {
     String resolverName = schema != null ? schema.getProp(RESOLVER_PROP) : null;
     if (data != null) {
       if (resolverName != null) {

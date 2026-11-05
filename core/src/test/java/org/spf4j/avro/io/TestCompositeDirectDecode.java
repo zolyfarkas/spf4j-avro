@@ -86,7 +86,7 @@ public class TestCompositeDirectDecode {
   static {
     LogicalTypes.register(LT, new LogicalTypes.LogicalTypeFactory() {
       @Override
-      public LogicalType fromSchema(Schema schema) {
+      public LogicalType fromSchema(final Schema schema) {
         return new LogicalType(LT);
       }
 
@@ -97,7 +97,7 @@ public class TestCompositeDirectDecode {
     });
     LogicalTypes.register(ARRAY_LT, new LogicalTypes.LogicalTypeFactory() {
       @Override
-      public LogicalType fromSchema(Schema schema) {
+      public LogicalType fromSchema(final Schema schema) {
         return new LogicalType(ARRAY_LT);
       }
 
@@ -108,7 +108,7 @@ public class TestCompositeDirectDecode {
     });
     LogicalTypes.register(ROOT_BYTES_LT, new LogicalTypes.LogicalTypeFactory() {
       @Override
-      public LogicalType fromSchema(Schema schema) {
+      public LogicalType fromSchema(final Schema schema) {
         return new LogicalType(ROOT_BYTES_LT);
       }
 
@@ -120,7 +120,7 @@ public class TestCompositeDirectDecode {
   }
 
   /** Direct-decodes a record value by buffering it, as the "any" conversion does. */
-  public static class BufferingConversion extends Conversion<String> {
+  public static final class BufferingConversion extends Conversion<String> {
     @Override
     public Class<String> getConvertedType() {
       return String.class;
@@ -132,7 +132,8 @@ public class TestCompositeDirectDecode {
     }
 
     @Override
-    public Optional<String> tryDirectDecode(Decoder dec, Schema schema, DatumContext context) throws IOException {
+    public Optional<String> tryDirectDecode(final Decoder dec, final Schema schema,
+        final DatumContext context) throws IOException {
       if (dec instanceof JsonExtensionDecoder) {
         JsonParser parser = ((JsonExtensionDecoder) dec).bufferValue(schema);
         JsonNode node = new ObjectMapper().readTree(parser);
@@ -143,10 +144,10 @@ public class TestCompositeDirectDecode {
   }
 
   /** Direct-decodes a value by reading it as a tree, through the extension decoder. */
-  public static class TreeConversion extends Conversion<String> {
+  public static final class TreeConversion extends Conversion<String> {
     private final String logicalTypeName;
 
-    public TreeConversion(String logicalTypeName) {
+    public TreeConversion(final String logicalTypeName) {
       this.logicalTypeName = logicalTypeName;
     }
 
@@ -161,7 +162,8 @@ public class TestCompositeDirectDecode {
     }
 
     @Override
-    public Optional<String> tryDirectDecode(Decoder dec, Schema schema, DatumContext context) throws IOException {
+    public Optional<String> tryDirectDecode(final Decoder dec, final Schema schema,
+        final DatumContext context) throws IOException {
       if (dec instanceof JsonExtensionDecoder) {
         JsonNode node = ((JsonExtensionDecoder) dec).readValueAsTree(schema);
         return Optional.of(node.toString());
@@ -175,7 +177,7 @@ public class TestCompositeDirectDecode {
    * the logical-types library's json_record conversion does through
    * {@code JsonConversions.tryDirectDecode}.
    */
-  public static class MapValueConversion extends Conversion<Map> {
+  public static final class MapValueConversion extends Conversion<Map> {
     @Override
     @SuppressWarnings("unchecked")
     public Class<Map> getConvertedType() {
@@ -188,7 +190,7 @@ public class TestCompositeDirectDecode {
     }
 
     @Override
-    public Optional<Map> tryDirectDecode(Decoder dec, Schema schema) throws IOException {
+    public Optional<Map> tryDirectDecode(final Decoder dec, final Schema schema) throws IOException {
       if (dec instanceof JsonExtensionDecoder) {
         try {
           return Optional.ofNullable(((JsonExtensionDecoder) dec).readValue(schema, Map.class));
@@ -221,20 +223,21 @@ public class TestCompositeDirectDecode {
             new Schema.Field("after", Schema.create(Schema.Type.STRING), null, null)));
   }
 
-  private static GenericRecord readExtendedJson(Schema schema, String json, GenericData data) throws IOException {
+  private static GenericRecord readExtendedJson(final Schema schema, final String json,
+      final GenericData data) throws IOException {
     GenericDatumReader<GenericRecord> reader = new GenericDatumReader<>(schema, schema, data);
     return reader.read(null,
         new ExtendedJsonDecoder(schema, new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8))));
   }
 
-  private static GenericData data(boolean fast, Conversion<?> conversion) {
+  private static GenericData data(final boolean fast, final Conversion<?> conversion) {
     GenericData data = new GenericData();
     data.setFastReaderEnabled(fast);
     data.addLogicalTypeConversion(conversion);
     return data;
   }
 
-  private void assertMapScenario(boolean fast) throws IOException {
+  private void assertMapScenario(final boolean fast) throws IOException {
     Schema schema = mapOuterSchema();
     String json = "{\"m\":{\"k\":{\"x\":1,\"y\":\"a\",\"ys\":[\"p\",\"q\"]},"
         + "\"k2\":{\"x\":2,\"y\":\"b\",\"ys\":[]}},\"after\":\"done\"}";
@@ -257,7 +260,7 @@ public class TestCompositeDirectDecode {
     assertMapScenario(true);
   }
 
-  private void assertFieldScenario(boolean fast, Conversion<String> conversion) throws IOException {
+  private void assertFieldScenario(final boolean fast, final Conversion<String> conversion) throws IOException {
     Schema schema = fieldOuterSchema();
     String json = "{\"v\":{\"x\":3,\"y\":\"c\",\"ys\":[\"z\"]},\"after\":\"next\"}";
     GenericRecord rec = readExtendedJson(schema, json, data(fast, conversion));
@@ -294,7 +297,7 @@ public class TestCompositeDirectDecode {
         Arrays.asList(new Schema.Field("arr", arraySchema, null, null),
             new Schema.Field("after", Schema.create(Schema.Type.STRING), null, null)));
     String json = "{\"arr\":[1,2,3],\"after\":\"done\"}";
-    for (boolean fast : new boolean[] { false, true }) {
+    for (boolean fast : new boolean[] {false, true}) {
       GenericRecord rec = readExtendedJson(schema, json, data(fast, new TreeConversion(ARRAY_LT)));
       assertEquals("[1,2,3]", rec.get("arr").toString());
       assertEquals("done", rec.get("after").toString());
@@ -313,7 +316,7 @@ public class TestCompositeDirectDecode {
     // is validated.
     Schema bytes = Schema.create(Schema.Type.BYTES);
     new LogicalType(ROOT_BYTES_LT).addToSchema(bytes);
-    for (boolean fast : new boolean[] { false, true }) {
+    for (boolean fast : new boolean[] {false, true}) {
       GenericDatumReader<Object> reader = new GenericDatumReader<>(bytes, bytes,
           data(fast, new MapValueConversion()));
       Object result = reader.read(null, new ExtendedJsonDecoder(bytes,

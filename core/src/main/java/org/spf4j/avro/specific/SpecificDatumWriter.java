@@ -94,7 +94,8 @@ public class SpecificDatumWriter<T> extends GenericDatumWriter<T> {
   }
 
   @SuppressWarnings("unchecked")
-  private boolean tryDirectEncodeField(Conversion<?> conversion, Object value, Encoder out, Schema fieldSchema)
+  private boolean tryDirectEncodeField(final Conversion<?> conversion, final Object value, final Encoder out,
+      final Schema fieldSchema)
       throws IOException {
     return ((Conversion<Object>) conversion).tryDirectEncode(value, out, fieldSchema, DatumContext.of(getData()));
   }

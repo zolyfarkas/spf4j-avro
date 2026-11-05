@@ -104,7 +104,8 @@ public class GenericDatumWriter<D> implements DatumWriter<D> {
   }
 
   @SuppressWarnings("unchecked")
-  private boolean tryDirectEncode(Conversion<?> conversion, Object datum, Encoder out, Schema schema)
+  private boolean tryDirectEncode(final Conversion<?> conversion, final Object datum, final Encoder out,
+      final Schema schema)
       throws IOException {
     return ((Conversion<Object>) conversion).tryDirectEncode(datum, out, schema, DatumContext.of(getData()));
   }

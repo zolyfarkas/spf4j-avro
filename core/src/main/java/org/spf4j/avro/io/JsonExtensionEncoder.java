@@ -43,15 +43,15 @@ public interface JsonExtensionEncoder {
    * decimal Java object) directly into the JSON stream, advancing the
    * encoder grammar by {@code schema}.
    */
-  void writeValue(final Object value, final Schema schema) throws IOException;
+  void writeValue(Object value, Schema schema) throws IOException;
 
   /**
    * Write {@code decimal} as a raw JSON number, with its scale preserved
    * ({@code 1.10} is written as {@code 1.10}), instead of the standard
    * bytes-as-string form.
    */
-  void writeDecimal(final BigDecimal decimal, final Schema schema) throws IOException;
+  void writeDecimal(BigDecimal decimal, Schema schema) throws IOException;
 
   /** Write {@code value} as a raw JSON number instead of a long/string. */
-  void writeBigInteger(final BigInteger value, final Schema schema) throws IOException;
+  void writeBigInteger(BigInteger value, Schema schema) throws IOException;
 }

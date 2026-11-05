@@ -101,7 +101,7 @@ public class Conversions {
     return new LinkedHashMap<>(DEFAULT_CONVERSIONS);
   }
 
-  private static void registerConversion(Map<String, Conversion<?>> map, Conversion<?> conversion) {
+  private static void registerConversion(final Map<String, Conversion<?>> map, final Conversion<?> conversion) {
     Conversion<?> existing = map.put(conversion.getLogicalTypeName(), conversion);
     if (existing != null) {
       LOG.info("Conversion: {} is being overwritten with {}", existing, conversion);
@@ -177,7 +177,7 @@ public class Conversions {
      * standard decimal logical type.)
      */
     @Override
-    public Optional<BigDecimal> tryDirectDecode(Decoder dec, Schema schema) throws IOException {
+    public Optional<BigDecimal> tryDirectDecode(final Decoder dec, final Schema schema) throws IOException {
       if (dec instanceof JsonExtensionDecoder) {
         BigDecimal bigD = ((JsonExtensionDecoder) dec).readBigDecimal(schema);
         if (bigD != null) {
@@ -208,7 +208,7 @@ public class Conversions {
      * applied to the standard decimal logical type.)
      */
     @Override
-    public boolean tryDirectEncode(BigDecimal object, Encoder enc, Schema schema) throws IOException {
+    public boolean tryDirectEncode(final BigDecimal object, final Encoder enc, final Schema schema) throws IOException {
       if (enc instanceof JsonExtensionEncoder) {
         BigDecimal value = validate((LogicalTypes.Decimal) schema.getLogicalType(), object);
         ((JsonExtensionEncoder) enc).writeDecimal(value, schema);

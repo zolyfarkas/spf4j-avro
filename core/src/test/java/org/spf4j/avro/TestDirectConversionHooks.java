@@ -62,49 +62,56 @@ public class TestDirectConversionHooks {
 
   /** A conversion whose direct hooks are distinguishable from its default path. */
   public static class StubConversion extends Conversion<String> {
-    final AtomicInteger directDecodeCalls = new AtomicInteger();
-    final AtomicInteger directEncodeCalls = new AtomicInteger();
-    final AtomicReference<DatumContext> lastDecodeContext = new AtomicReference<>();
-    final AtomicReference<DatumContext> lastEncodeContext = new AtomicReference<>();
+    private final AtomicInteger directDecodeCalls = new AtomicInteger();
+    private final AtomicInteger directEncodeCalls = new AtomicInteger();
+    private final AtomicReference<DatumContext> lastDecodeContext = new AtomicReference<>();
+    private final AtomicReference<DatumContext> lastEncodeContext = new AtomicReference<>();
 
+    /** {@inheritDoc} */
     @Override
     public Class<String> getConvertedType() {
       return String.class;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getLogicalTypeName() {
       return "uuid";
     }
 
+    /** {@inheritDoc} */
     @Override
-    public Optional<String> tryDirectDecode(Decoder dec, Schema schema, DatumContext context) throws IOException {
+    public Optional<String> tryDirectDecode(final Decoder dec, final Schema schema,
+        final DatumContext context) throws IOException {
       directDecodeCalls.incrementAndGet();
       lastDecodeContext.set(context);
       return Optional.of("direct:" + dec.readString());
     }
 
+    /** {@inheritDoc} */
     @Override
-    public boolean tryDirectEncode(String object, Encoder enc, Schema schema, DatumContext context)
-        throws IOException {
+    public boolean tryDirectEncode(final String object, final Encoder enc, final Schema schema,
+        final DatumContext context) throws IOException {
       directEncodeCalls.incrementAndGet();
       lastEncodeContext.set(context);
       enc.writeString("direct:" + object);
       return true;
     }
 
+    /** {@inheritDoc} */
     @Override
-    public String fromCharSequence(CharSequence value, Schema schema, LogicalType type) {
+    public String fromCharSequence(final CharSequence value, final Schema schema, final LogicalType type) {
       return "converted:" + value;
     }
 
+    /** {@inheritDoc} */
     @Override
-    public CharSequence toCharSequence(String value, Schema schema, LogicalType type) {
+    public CharSequence toCharSequence(final String value, final Schema schema, final LogicalType type) {
       return "converted:" + value;
     }
   }
 
-  private static byte[] writeRaw(String value) throws IOException {
+  private static byte[] writeRaw(final String value) throws IOException {
     GenericData.Record record = new GenericData.Record(SCHEMA);
     record.put("f", new Utf8(value));
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -167,7 +174,7 @@ public class TestDirectConversionHooks {
     data.setFastReaderEnabled(false);
     data.addLogicalTypeConversion(new StubConversion() {
       @Override
-      public Optional<String> tryDirectDecode(Decoder dec, Schema schema, DatumContext context) {
+      public Optional<String> tryDirectDecode(final Decoder dec, final Schema schema, final DatumContext context) {
         return Optional.empty();
       }
     });

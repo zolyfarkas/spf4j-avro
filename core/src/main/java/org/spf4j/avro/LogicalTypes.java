@@ -134,7 +134,7 @@ public class LogicalTypes {
    * types keep the lenient behavior of
    * {@link #fromSchemaIgnoreInvalid(Schema)} and yield {@code null}.
    */
-  public static LogicalType fromSchema(Schema schema, final boolean allowUndefinedLogicalTypes) {
+  public static LogicalType fromSchema(final Schema schema, final boolean allowUndefinedLogicalTypes) {
     String typeName = schema.getProp(LogicalType.LOGICAL_TYPE_PROP);
     if (typeName != null && !allowUndefinedLogicalTypes && isUndefinedLogicalType(typeName)) {
       throw new IllegalArgumentException("Undefined logical type " + typeName + " for " + schema);
@@ -142,7 +142,7 @@ public class LogicalTypes {
     return fromSchemaImpl(schema, false);
   }
 
-  private static boolean isUndefinedLogicalType(String typeName) {
+  private static boolean isUndefinedLogicalType(final String typeName) {
     switch (typeName) {
     case TIMESTAMP_MILLIS:
     case DECIMAL:

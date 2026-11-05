@@ -154,7 +154,7 @@ public class TestUnresolvedSchemaFlows {
     Schema later = new Schema.Parser().parse(LATER);
     org.spf4j.avro.SchemaResolver resolver = new org.spf4j.avro.SchemaResolver() {
       @Override
-      public Schema resolveSchema(String id) {
+      public Schema resolveSchema(final String id) {
         if ("test.Later".equals(id)) {
           return later;
         }
@@ -162,7 +162,7 @@ public class TestUnresolvedSchemaFlows {
       }
 
       @Override
-      public String getId(Schema schema) {
+      public String getId(final Schema schema) {
         return null;
       }
     };

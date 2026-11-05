@@ -83,7 +83,7 @@ public class ExtendedGenericDatumWriter<D> extends GenericDatumWriter<D> {
     super(root, data);
   }
 
-  public static boolean equals(Object a, Object defaultValue) {
+  public static boolean equals(final Object a, final Object defaultValue) {
     if (a == defaultValue) {
       return true;
     }

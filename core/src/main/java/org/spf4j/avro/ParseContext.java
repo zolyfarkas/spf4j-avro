@@ -294,19 +294,19 @@ public class ParseContext {
     }
     Schemas.visit(schema, new SchemaVisitor<Void>() {
       @Override
-      public SchemaVisitor.SchemaVisitorAction visitTerminal(Schema terminal) {
+      public SchemaVisitor.SchemaVisitorAction visitTerminal(final Schema terminal) {
         terminal.setSchemaResolverStamp(schemaResolver);
         return SchemaVisitor.SchemaVisitorAction.CONTINUE;
       }
 
       @Override
-      public SchemaVisitor.SchemaVisitorAction visitNonTerminal(Schema nonTerminal) {
+      public SchemaVisitor.SchemaVisitorAction visitNonTerminal(final Schema nonTerminal) {
         nonTerminal.setSchemaResolverStamp(schemaResolver);
         return SchemaVisitor.SchemaVisitorAction.CONTINUE;
       }
 
       @Override
-      public SchemaVisitor.SchemaVisitorAction afterVisitNonTerminal(Schema nonTerminal) {
+      public SchemaVisitor.SchemaVisitorAction afterVisitNonTerminal(final Schema nonTerminal) {
         return SchemaVisitor.SchemaVisitorAction.CONTINUE;
       }
 
@@ -329,7 +329,7 @@ public class ParseContext {
   private boolean allowUndefinedLogicalTypes;
 
   /** Set whether undefined logical types are tolerated for this context's parses. */
-  public void setAllowUndefinedLogicalTypes(boolean allowUndefinedLogicalTypes) {
+  public void setAllowUndefinedLogicalTypes(final boolean allowUndefinedLogicalTypes) {
     this.allowUndefinedLogicalTypes = allowUndefinedLogicalTypes;
   }
 

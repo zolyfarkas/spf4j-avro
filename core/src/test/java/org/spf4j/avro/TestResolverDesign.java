@@ -48,12 +48,12 @@ public class TestResolverDesign {
   private static SchemaResolver stubResolver() {
     return new SchemaResolver() {
       @Override
-      public Schema resolveSchema(String id) {
+      public Schema resolveSchema(final String id) {
         throw new IllegalArgumentException("Unknown schema with id " + id);
       }
 
       @Override
-      public String getId(Schema schema) {
+      public String getId(final Schema schema) {
         return null;
       }
     };
@@ -66,12 +66,12 @@ public class TestResolverDesign {
       + "{\"name\":\"items\",\"type\":{\"type\":\"array\",\"items\":\"Inner\"}},"
       + "{\"name\":\"maybe\",\"type\":[\"null\",\"Inner\"]}]}";
 
-  private static List<Schema> allNodes(Schema root) {
+  private static List<Schema> allNodes(final Schema root) {
     List<Schema> nodes = new ArrayList<>();
     Set<Schema> seen = Collections.newSetFromMap(new IdentityHashMap<>());
     Schemas.visit(root, new SchemaVisitor<Void>() {
       @Override
-      public SchemaVisitorAction visitTerminal(Schema terminal) {
+      public SchemaVisitorAction visitTerminal(final Schema terminal) {
         if (seen.add(terminal)) {
           nodes.add(terminal);
         }
@@ -79,7 +79,7 @@ public class TestResolverDesign {
       }
 
       @Override
-      public SchemaVisitorAction visitNonTerminal(Schema nonTerminal) {
+      public SchemaVisitorAction visitNonTerminal(final Schema nonTerminal) {
         if (seen.add(nonTerminal)) {
           nodes.add(nonTerminal);
         }
@@ -87,7 +87,7 @@ public class TestResolverDesign {
       }
 
       @Override
-      public SchemaVisitorAction afterVisitNonTerminal(Schema nonTerminal) {
+      public SchemaVisitorAction afterVisitNonTerminal(final Schema nonTerminal) {
         return SchemaVisitorAction.CONTINUE;
       }
 
@@ -170,7 +170,7 @@ public class TestResolverDesign {
     assertTrue(DatumContext.resolveEffectiveSchemaResolver(null, unstamped) instanceof AvroNamesRefResolver);
   }
 
-  private static Schema anySchema(String resolverName) {
+  private static Schema anySchema(final String resolverName) {
     return new Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AnyRec\",\"resolver\":\"" + resolverName
         + "\",\"fields\":[{\"name\":\"avsc\",\"type\":\"string\"},{\"name\":\"content\",\"type\":\"string\"}]}");
   }

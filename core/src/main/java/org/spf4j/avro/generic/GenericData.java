@@ -300,8 +300,8 @@ public class GenericData {
    *
    * @return this datum model, for chaining
    */
-  public GenericData setSchemaResolver(SchemaResolver schemaResolver) {
-    this.schemaResolver = schemaResolver;
+  public GenericData setSchemaResolver(final SchemaResolver resolver) {
+    this.schemaResolver = resolver;
     return this;
   }
 
@@ -314,7 +314,7 @@ public class GenericData {
    *
    * @return this datum model, for chaining
    */
-  public GenericData registerSchemaResolver(String name, SchemaResolver resolver) {
+  public GenericData registerSchemaResolver(final String name, final SchemaResolver resolver) {
     namedSchemaResolvers.put(Objects.requireNonNull(name, "name"),
         Objects.requireNonNull(resolver, "resolver"));
     return this;
@@ -324,7 +324,7 @@ public class GenericData {
    * The schema resolver registered under {@code name} on this datum model,
    * or {@code null} when no resolver was registered under that name.
    */
-  public SchemaResolver getSchemaResolver(String name) {
+  public SchemaResolver getSchemaResolver(final String name) {
     return namedSchemaResolvers.get(name);
   }
 

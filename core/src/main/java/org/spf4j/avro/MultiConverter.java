@@ -43,7 +43,7 @@ import org.spf4j.avro.io.Encoder;
  *
  * @param <T> a Java type that generic data is converted to
  */
-public class MultiConverter<T> extends Conversion<T> {
+public final class MultiConverter<T> extends Conversion<T> {
 
   /** Selects which delegate conversion applies to a logical type. */
   public interface Chooser {
@@ -55,12 +55,12 @@ public class MultiConverter<T> extends Conversion<T> {
   private final Chooser chooser;
 
   @SafeVarargs
-  public MultiConverter(Chooser chooser, Conversion<T>... conversions) {
+  public MultiConverter(final Chooser chooser, final Conversion<T>... conversions) {
     this.conversions = conversions;
     this.chooser = chooser;
   }
 
-  private Conversion<T> choose(LogicalType type) {
+  private Conversion<T> choose(final LogicalType type) {
     return conversions[chooser.chose(type)];
   }
 
@@ -75,147 +75,149 @@ public class MultiConverter<T> extends Conversion<T> {
   }
 
   @Override
-  public Optional<T> tryDirectDecode(Decoder dec, Schema schema) throws IOException {
+  public Optional<T> tryDirectDecode(final Decoder dec, final Schema schema) throws IOException {
     return choose(schema.getLogicalType()).tryDirectDecode(dec, schema);
   }
 
   @Override
-  public Optional<T> tryDirectDecode(Decoder dec, Schema schema, DatumContext context) throws IOException {
+  public Optional<T> tryDirectDecode(final Decoder dec, final Schema schema,
+      final DatumContext context) throws IOException {
     return choose(schema.getLogicalType()).tryDirectDecode(dec, schema, context);
   }
 
   @Override
-  public boolean tryDirectEncode(T object, Encoder enc, Schema schema) throws IOException {
+  public boolean tryDirectEncode(final T object, final Encoder enc, final Schema schema) throws IOException {
     return choose(schema.getLogicalType()).tryDirectEncode(object, enc, schema);
   }
 
   @Override
-  public boolean tryDirectEncode(T object, Encoder enc, Schema schema, DatumContext context) throws IOException {
+  public boolean tryDirectEncode(final T object, final Encoder enc, final Schema schema,
+      final DatumContext context) throws IOException {
     return choose(schema.getLogicalType()).tryDirectEncode(object, enc, schema, context);
   }
 
   @Override
-  public String adjustAndSetValue(String varName, String valParamName) {
+  public String adjustAndSetValue(final String varName, final String valParamName) {
     return conversions[0].adjustAndSetValue(varName, valParamName);
   }
 
   @Override
-  public T fromBoolean(Boolean value, Schema schema, LogicalType type) {
+  public T fromBoolean(final Boolean value, final Schema schema, final LogicalType type) {
     return choose(type).fromBoolean(value, schema, type);
   }
 
   @Override
-  public T fromInt(Integer value, Schema schema, LogicalType type) {
+  public T fromInt(final Integer value, final Schema schema, final LogicalType type) {
     return choose(type).fromInt(value, schema, type);
   }
 
   @Override
-  public T fromLong(Long value, Schema schema, LogicalType type) {
+  public T fromLong(final Long value, final Schema schema, final LogicalType type) {
     return choose(type).fromLong(value, schema, type);
   }
 
   @Override
-  public T fromFloat(Float value, Schema schema, LogicalType type) {
+  public T fromFloat(final Float value, final Schema schema, final LogicalType type) {
     return choose(type).fromFloat(value, schema, type);
   }
 
   @Override
-  public T fromDouble(Double value, Schema schema, LogicalType type) {
+  public T fromDouble(final Double value, final Schema schema, final LogicalType type) {
     return choose(type).fromDouble(value, schema, type);
   }
 
   @Override
-  public T fromCharSequence(CharSequence value, Schema schema, LogicalType type) {
+  public T fromCharSequence(final CharSequence value, final Schema schema, final LogicalType type) {
     return choose(type).fromCharSequence(value, schema, type);
   }
 
   @Override
-  public T fromEnumSymbol(GenericEnumSymbol<?> value, Schema schema, LogicalType type) {
+  public T fromEnumSymbol(final GenericEnumSymbol<?> value, final Schema schema, final LogicalType type) {
     return choose(type).fromEnumSymbol(value, schema, type);
   }
 
   @Override
-  public T fromFixed(GenericFixed value, Schema schema, LogicalType type) {
+  public T fromFixed(final GenericFixed value, final Schema schema, final LogicalType type) {
     return choose(type).fromFixed(value, schema, type);
   }
 
   @Override
-  public T fromBytes(ByteBuffer value, Schema schema, LogicalType type) {
+  public T fromBytes(final ByteBuffer value, final Schema schema, final LogicalType type) {
     return choose(type).fromBytes(value, schema, type);
   }
 
   @Override
-  public T fromArray(Collection<?> value, Schema schema, LogicalType type) {
+  public T fromArray(final Collection<?> value, final Schema schema, final LogicalType type) {
     return choose(type).fromArray(value, schema, type);
   }
 
   @Override
-  public T fromMap(Map<?, ?> value, Schema schema, LogicalType type) {
+  public T fromMap(final Map<?, ?> value, final Schema schema, final LogicalType type) {
     return choose(type).fromMap(value, schema, type);
   }
 
   @Override
-  public T fromRecord(IndexedRecord value, Schema schema, LogicalType type) {
+  public T fromRecord(final IndexedRecord value, final Schema schema, final LogicalType type) {
     return choose(type).fromRecord(value, schema, type);
   }
 
   @Override
-  public Boolean toBoolean(T value, Schema schema, LogicalType type) {
+  public Boolean toBoolean(final T value, final Schema schema, final LogicalType type) {
     return choose(type).toBoolean(value, schema, type);
   }
 
   @Override
-  public Integer toInt(T value, Schema schema, LogicalType type) {
+  public Integer toInt(final T value, final Schema schema, final LogicalType type) {
     return choose(type).toInt(value, schema, type);
   }
 
   @Override
-  public Long toLong(T value, Schema schema, LogicalType type) {
+  public Long toLong(final T value, final Schema schema, final LogicalType type) {
     return choose(type).toLong(value, schema, type);
   }
 
   @Override
-  public Float toFloat(T value, Schema schema, LogicalType type) {
+  public Float toFloat(final T value, final Schema schema, final LogicalType type) {
     return choose(type).toFloat(value, schema, type);
   }
 
   @Override
-  public Double toDouble(T value, Schema schema, LogicalType type) {
+  public Double toDouble(final T value, final Schema schema, final LogicalType type) {
     return choose(type).toDouble(value, schema, type);
   }
 
   @Override
-  public CharSequence toCharSequence(T value, Schema schema, LogicalType type) {
+  public CharSequence toCharSequence(final T value, final Schema schema, final LogicalType type) {
     return choose(type).toCharSequence(value, schema, type);
   }
 
   @Override
-  public GenericEnumSymbol<?> toEnumSymbol(T value, Schema schema, LogicalType type) {
+  public GenericEnumSymbol<?> toEnumSymbol(final T value, final Schema schema, final LogicalType type) {
     return choose(type).toEnumSymbol(value, schema, type);
   }
 
   @Override
-  public GenericFixed toFixed(T value, Schema schema, LogicalType type) {
+  public GenericFixed toFixed(final T value, final Schema schema, final LogicalType type) {
     return choose(type).toFixed(value, schema, type);
   }
 
   @Override
-  public ByteBuffer toBytes(T value, Schema schema, LogicalType type) {
+  public ByteBuffer toBytes(final T value, final Schema schema, final LogicalType type) {
     return choose(type).toBytes(value, schema, type);
   }
 
   @Override
-  public Collection<?> toArray(T value, Schema schema, LogicalType type) {
+  public Collection<?> toArray(final T value, final Schema schema, final LogicalType type) {
     return choose(type).toArray(value, schema, type);
   }
 
   @Override
-  public Map<?, ?> toMap(T value, Schema schema, LogicalType type) {
+  public Map<?, ?> toMap(final T value, final Schema schema, final LogicalType type) {
     return choose(type).toMap(value, schema, type);
   }
 
   @Override
-  public IndexedRecord toRecord(T value, Schema schema, LogicalType type) {
+  public IndexedRecord toRecord(final T value, final Schema schema, final LogicalType type) {
     return choose(type).toRecord(value, schema, type);
   }
 
