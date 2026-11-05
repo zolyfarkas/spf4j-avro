@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<!--
+  Checkstyle baseline for spf4j-avro, created 2026-11-05 when spf4j's QA
+  tooling (checkstyle_checks.xml) was wired into this build.
+
+  POLICY: entries in the "grandfathered baseline" section below suppress
+  findings in code inherited from upstream Apache Avro as it stood at the
+  pre-port baseline (2026-11-05). They exist so enforcement bites on all
+  spf4j-authored code and on any new regression, without a mass cleanup of
+  upstream files (which would destroy diff-ability against upstream Avro).
+  This file must only SHRINK over time: never add entries for code written
+  or ported for this library; fix those findings in the code instead, or
+  suppress them narrowly in-line with a stated reason.
+-->
+
+<!DOCTYPE suppressions PUBLIC
+  "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+  "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+
+<suppressions>
+  <!-- Structural (not a finding baseline): generated sources live under
+       target/ and are not hand-maintained. Inherited from the pre-existing
+       Avro build's suppressions.xml. -->
+  <suppress files=".*[\\/]target[\\/]" checks=".*"/>
+
+  <!-- ===== Grandfathered baseline (pre-port upstream code, 2026-11-05) =====
+       Populated by the 2026-11-05 fix pass; see
+       avro-standalone-static-analysis.md for per-category counts. -->
+
+</suppressions>

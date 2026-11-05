@@ -36,6 +36,19 @@
   <properties>
     <main.basedir>${project.parent.basedir}</main.basedir>
 
+    <!-- Static-analysis tooling, mirrored from spf4j's build (2026-11-05):
+         same plugins, versions and rule configs as spf4j. The two location
+         properties use spf4j's ${basedir}/../ convention: they resolve
+         against each module's basedir, i.e. to the files vendored at this
+         repository's root. -->
+    <jacoco.version>0.8.7</jacoco.version>
+    <jacoco.instruction.ratio>0.4</jacoco.instruction.ratio>
+    <jacoco.class.ratio>0.5</jacoco.class.ratio>
+    <jacoco.method.ratio>0.4</jacoco.method.ratio>
+    <findbugs.excludeFilterFile>${basedir}/../findbugs_exclude.xml</findbugs.excludeFilterFile>
+    <checkstyle.configLocation>${basedir}/../checkstyle_checks.xml</checkstyle.configLocation>
+    <skip.forbidenApi>false</skip.forbidenApi>
+
     <!-- version properties for dependencies -->
     <ant.version>1.10.17</ant.version>
     <commons-cli.version>1.11.0</commons-cli.version>
@@ -89,16 +102,135 @@
           <version>3.6.1</version>
         </plugin>
         <plugin>
+          <!-- Checkstyle setup mirrored from spf4j (2026-11-05): plugin 3.1.2,
+               checkstyle 9.2.1, spf4j's checkstyle_checks.xml. The one
+               addition vs spf4j is suppressionsLocation, which feeds the
+               SuppressionFilter added to the vendored config (pre-port
+               upstream baseline, see checkstyle_suppressions.xml). -->
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>${checkstyle-plugin.version}</version>
+          <version>3.1.2</version>
           <dependencies>
             <dependency>
               <groupId>com.puppycrawl.tools</groupId>
               <artifactId>checkstyle</artifactId>
-              <version>${checkstyle.version}</version>
+              <version>9.2.1</version>
             </dependency>
           </dependencies>
+          <configuration>
+            <logViolationsToConsole>true</logViolationsToConsole>
+            <consoleOutput>true</consoleOutput>
+            <configLocation>${checkstyle.configLocation}</configLocation>
+            <suppressionsLocation>${basedir}/../checkstyle_suppressions.xml</suppressionsLocation>
+          </configuration>
+          <executions>
+            <execution>
+              <id>test-code</id>
+              <phase>post-integration-test</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+              <configuration>
+                <includeTestSourceDirectory>true</includeTestSourceDirectory>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin> <!-- SpotBugs setup mirrored verbatim from spf4j (2026-11-05). -->
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>4.7.3.0</version>
+          <configuration>
+            <failOnError>true</failOnError>
+            <effort>Max</effort><!-- Min, Default, Max -->
+            <threshold>Exp</threshold><!-- High, Default, Low, Ignore -->
+            <xmlOutput>true</xmlOutput>
+            <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+            <excludeFilterFile>${findbugs.excludeFilterFile}</excludeFilterFile>
+            <includeTests>true</includeTests>
+            <plugins>
+              <plugin>
+                <groupId>com.mebigfatguy.sb-contrib</groupId>
+                <artifactId>sb-contrib</artifactId>
+                <version>7.4.7</version>
+              </plugin>
+              <plugin>
+                <groupId>com.h3xstream.findsecbugs</groupId>
+                <artifactId>findsecbugs-plugin</artifactId>
+                <version>1.12.0</version>
+              </plugin>
+            </plugins>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>post-integration-test</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <!-- JaCoCo setup mirrored from spf4j (2026-11-05). Only adaptation:
+               the includes pattern names this project's packages
+               (org/spf4j/avro/**) where spf4j has org/spf4j/**. -->
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco.version}</version>
+          <executions>
+            <execution>
+              <id>prepare-agent</id>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>report</id>
+              <phase>post-integration-test</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>check</id>
+              <goals>
+                <goal>check</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <rule implementation="org.jacoco.maven.RuleConfiguration">
+                    <element>BUNDLE</element>
+                    <excludes>
+                      <exclude>*Test</exclude>
+                    </excludes>
+                    <limits>
+                      <limit implementation="org.jacoco.report.check.Limit">
+                        <counter>INSTRUCTION</counter>
+                        <value>COVEREDRATIO</value>
+                        <minimum>${jacoco.instruction.ratio}</minimum>
+                      </limit>
+                      <limit implementation="org.jacoco.report.check.Limit">
+                        <counter>CLASS</counter>
+                        <value>COVEREDRATIO</value>
+                        <minimum>${jacoco.class.ratio}</minimum>
+                      </limit>
+                      <limit implementation="org.jacoco.report.check.Limit">
+                        <counter>METHOD</counter>
+                        <value>COVEREDRATIO</value>
+                        <minimum>${jacoco.method.ratio}</minimum>
+                      </limit>
+                    </limits>
+                  </rule>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+          <configuration>
+            <inclNoLocationClasses>true</inclNoLocationClasses>
+            <includes>
+              <include>org/spf4j/avro/**/*</include>
+            </includes>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -176,7 +308,9 @@
                  rather than the console. -->
             <redirectTestOutputToFile>true</redirectTestOutputToFile>
             <failIfNoTests>false</failIfNoTests>
-            <argLine>-Xmx1000m</argLine>
+            <!-- @{argLine} picks up the JaCoCo agent set by prepare-agent
+                 (same wiring problem spf4j solves via its argLine property). -->
+            <argLine>@{argLine} -Xmx1000m</argLine>
             <systemPropertyVariables>
 
               <!-- Using the related system properties to set the trusted classes/packages for all tests (in every module). -->
@@ -242,11 +376,6 @@
           <version>${exec-plugin.version}</version>
         </plugin>
         <plugin>
-          <groupId>com.diffplug.spotless</groupId>
-          <artifactId>spotless-maven-plugin</artifactId>
-          <version>${spotless-maven-plugin.version}</version>
-        </plugin>
-        <plugin>
           <groupId>org.cyclonedx</groupId>
           <artifactId>cyclonedx-maven-plugin</artifactId>
           <version>${cyclonedx-maven-plugin.version}</version>
@@ -292,56 +421,50 @@
           </execution>
         </executions>
       </plugin>
+      <!-- Checkstyle is configured in pluginManagement above (spf4j's setup)
+           and activated by the core and compiler modules, mirroring how
+           spf4j activates it per-module. Avro's own checkstyle setup
+           (checkstyle.xml, plugin 3.6.0) was replaced by spf4j's on
+           2026-11-05. Spotless was removed the same day: it is not part of
+           spf4j's QA stack, and its formatter path (${main.basedir}/lang/java/…)
+           did not survive this repository's layout. Formatting rules are
+           enforced by spf4j's checkstyle config instead. -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
+        <!-- forbiddenapis setup mirrored from spf4j (2026-11-05). Only
+             adaptation: targetVersion 11 (spf4j: 1.8), matching this
+             library's Java 11 bytecode baseline. -->
+        <groupId>de.thetaphi</groupId>
+        <artifactId>forbiddenapis</artifactId>
+        <version>3.2</version>
         <configuration>
-          <consoleOutput>true</consoleOutput>
-          <configLocation>checkstyle.xml</configLocation>
-          <suppressionsLocation>suppressions.xml</suppressionsLocation>
-        </configuration>
-        <!-- Runs by default in the verify phase  (mvn verify or later in the build cycle)
-             the 'check' goal will fail the build if it does not pass.  "mvn checkstyle:check"
-             will do this alone, or "mvn checkstyle:checkstyle" will report but not break  -->
-        <executions>
-          <execution>
-            <id>checkstyle-check</id>
-            <phase>test</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.diffplug.spotless</groupId>
-        <artifactId>spotless-maven-plugin</artifactId>
-        <configuration>
-          <java>
-            <eclipse>
-              <!-- Avro uses Sun's java code style conventions with 2 spaces, this is a modified version of
-                   the eclipse formatter -->
-              <file>${main.basedir}/lang/java/eclipse-java-formatter.xml</file>
-              <version>4.19</version>
-            </eclipse>
-            <!-- Temporarily disabled for JDK 16+ builds -->
-            <!--<removeUnusedImports/>-->
-            <replaceRegex>
-              <name>Remove wildcard imports</name>
-              <searchRegex>import\s+[^\*\s]+\*;(\r\n|\r|\n)</searchRegex>
-              <replacement>$1</replacement>
-            </replaceRegex>
-            <!-- Allow spotless:off/spotless:on comment pairs to keep ASCII-formatted tables intact -->
-            <toggleOffOn/>
-          </java>
+          <skip>${skip.forbidenApi}</skip>
+          <targetVersion>11</targetVersion>
+          <suppressAnnotations>
+            <suppressAnnotation>**.SuppressForbiden</suppressAnnotation>
+          </suppressAnnotations>
+          <!-- disallow undocumented classes like sun.misc.Unsafe -->
+          <internalRuntimeForbidden>false</internalRuntimeForbidden>
+          <!--
+            if the used Java version is too new,
+            don't fail, just do nothing:
+          -->
+          <failOnUnsupportedJava>false</failOnUnsupportedJava>
+          <bundledSignatures>
+            <bundledSignature>jdk-deprecated-1.7</bundledSignature>
+          </bundledSignatures>
+          <signatures>
+                       <![CDATA[
+java.util.Date#<init>()
+java.util.Date#<init>(long)
+java.util.Calendar#getInstance()
+                        ]]>
+          </signatures>
         </configuration>
         <executions>
           <execution>
-            <!-- Runs in compile phase to fail fast in case of formatting issues.-->
-            <id>spotless-check</id>
-            <phase>compile</phase>
             <goals>
               <goal>check</goal>
+              <goal>testCheck</goal>
             </goals>
           </execution>
         </executions>
@@ -382,18 +505,6 @@
               <configuration>
                 <lifecycleMappingMetadata>
                   <pluginExecutions>
-                    <pluginExecution>
-                      <pluginExecutionFilter>
-                        <groupId>com.diffplug.spotless</groupId>
-                        <artifactId>spotless-maven-plugin</artifactId>
-                        <goals>
-                          <goal>check</goal>
-                        </goals>
-                      </pluginExecutionFilter>
-                      <action>
-                        <ignore></ignore>
-                      </action>
-                    </pluginExecution>
                     <pluginExecution>
                       <pluginExecutionFilter>
                         <groupId>org.apache.maven.plugins</groupId>
