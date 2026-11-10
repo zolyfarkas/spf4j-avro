@@ -60,8 +60,11 @@ import com.fasterxml.jackson.databind.util.TokenBuffer;
  * <li>The fork's {@code ExtendedJsonEncoder.isNullableSingle} /
  * {@code getNullableSingle} helpers are private statics here; the encoder
  * itself is not ported.</li>
- * <li>{@code JsonGrammarGenerator.getRootSymbol} (a fork static) becomes
- * {@code new JsonGrammarGenerator().generate(schema)}.</li>
+ * <li>{@code JsonGrammarGenerator.getRootSymbol} (a fork static backed by
+ * a JVM-wide cache) becomes an instance-owned cache: this decoder holds a
+ * {@link JsonGrammarGenerator} whose {@code getRootSymbol} generates each
+ * schema's grammar once per decoder instance instead of once per
+ * value.</li>
  * <li>Default-value injection sets the buffered parser's codec from the
  * current parser when it has one; the fork unconditionally used
  * {@code Schema.MAPPER}, which is not visible from this package on
@@ -100,6 +103,14 @@ public final class ExtendedJsonDecoder extends JsonDecoder implements JsonExtens
       new JsonFactory().enable(JsonParser.Feature.ALLOW_COMMENTS));
 
   private final boolean lenient;
+
+  /**
+   * Grammar generator held for {@link #advanceBy(Schema)}: its per-schema
+   * root-symbol cache keeps {@code advanceBy} from regenerating the JSON
+   * grammar of a schema for every value read through the extension hooks.
+   * Decoders are single-threaded, so the cache needs no synchronization.
+   */
+  private final JsonGrammarGenerator grammarGenerator = new JsonGrammarGenerator();
 
   public ExtendedJsonDecoder(final Schema schema, final InputStream in) throws IOException {
     this(schema, in, true);
@@ -498,7 +509,7 @@ public final class ExtendedJsonDecoder extends JsonDecoder implements JsonExtens
       advance(Symbol.INT);
       break;
     default:
-      Symbol rootSymbol = new JsonGrammarGenerator().generate(schema);
+      Symbol rootSymbol = grammarGenerator.getRootSymbol(schema);
       Parser p = new Parser(rootSymbol, null);
       int countToFirstTerminal = p.countToFirstTerminal();
       Symbol theTerminal = p.lastSymbol();

@@ -20,9 +20,9 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 
 import org.spf4j.avro.util.Utf8;
+import org.spf4j.avro.util.Utf8Encoder;
 
 /**
  * An abstract {@link Encoder} for Avro's binary encoding.
@@ -54,6 +54,13 @@ public abstract class BinaryEncoder extends Encoder {
    * limit for a 1 byte variable-length long value.
    */
   private final byte[] stringBuffer = new byte[63];
+
+  /*
+   * Scratch used to UTF-8 encode the strings that do not take the ASCII
+   * fast path above. Instance-owned (encoders are single-threaded): the
+   * spf4j avro fork used thread-local temp buffers for the same purpose.
+   */
+  private final Utf8Encoder stringEncoder = new Utf8Encoder();
 
   @Override
   public void writeNull() throws IOException {
@@ -102,14 +109,16 @@ public abstract class BinaryEncoder extends Encoder {
     }
 
     /*
-     * The standard JDK way of turning Strings into byte arrays. Handles UTF-16
-     * case. However, for ASCII this has the overhead of instantiating a new byte
-     * array (which pollutes the heap), and then copying the underlying bytes into
-     * the array,
+     * The string is too long for the ASCII buffer or contains non-ASCII
+     * characters. Encode it as UTF-8 into the reusable scratch buffer
+     * instead of String.getBytes, which instantiates a new byte array (and
+     * copies the data into it) for every string. The scratch encoder
+     * replaces malformed input exactly as String.getBytes does, so the
+     * bytes written are identical.
      */
-    byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
-    writeInt(bytes.length);
-    writeFixed(bytes, 0, bytes.length);
+    int bytesLength = stringEncoder.encode(string);
+    writeInt(bytesLength);
+    writeFixed(stringEncoder.getBuffer(), 0, bytesLength);
   }
 
   @Override
