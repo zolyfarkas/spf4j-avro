@@ -27,7 +27,9 @@ import java.time.temporal.Temporal;
 import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -35,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 
@@ -157,6 +160,30 @@ public class GenericData {
 
   private final Map<Class<?>, Map<String, Conversion<?>>> conversionsByClass = new IdentityHashMap<>();
 
+  /**
+   * Memoized positive results of {@link #getConversionByClass(Class)},
+   * with {@link #conversionByClassNegatives} holding the datum classes
+   * whose memoized result is negative. The assignability-based lookup sits
+   * on the per-field write path and its fallback scans every registered
+   * converted class, so results are memoized per datum class to restore
+   * the donor fork's O(1) steady-state lookup.
+   */
+  private final Map<Class<?>, Conversion<?>> conversionByClassMemo = new IdentityHashMap<>();
+
+  /** Datum classes whose memoized {@link #getConversionByClass(Class)} result is null. */
+  private final Set<Class<?>> conversionByClassNegatives = Collections.newSetFromMap(new IdentityHashMap<>());
+
+  /**
+   * Memoized positive results of {@link #getConversionByClass(Class,
+   * LogicalType)}, keyed by datum class and then logical type name, with
+   * {@link #conversionByClassAndTypeNegatives} holding the negative ones.
+   */
+  private final Map<Class<?>, Map<String, Conversion<?>>> conversionByClassAndTypeMemo =
+      new IdentityHashMap<>();
+
+  /** Datum class to logical type names whose memoized two-arg lookup result is null. */
+  private final Map<Class<?>, Set<String>> conversionByClassAndTypeNegatives = new IdentityHashMap<>();
+
   public Collection<Conversion<?>> getConversions() {
     return conversions.values();
   }
@@ -174,6 +201,13 @@ public class GenericData {
     Map<String, Conversion<?>> conversionsForClass = conversionsByClass.computeIfAbsent(type,
         k -> new LinkedHashMap<>());
     conversionsForClass.put(conversion.getLogicalTypeName(), conversion);
+    // This is the only mutation point of the conversion registry: any
+    // memoized lookup result may have been computed against the previous
+    // registry contents, so the lookup memos are invalidated.
+    conversionByClassMemo.clear();
+    conversionByClassNegatives.clear();
+    conversionByClassAndTypeMemo.clear();
+    conversionByClassAndTypeNegatives.clear();
   }
 
   /**
@@ -194,6 +228,24 @@ public class GenericData {
    */
   @SuppressWarnings("unchecked")
   public <T> Conversion<T> getConversionByClass(Class<T> datumClass) {
+    Conversion<?> memo = conversionByClassMemo.get(datumClass);
+    if (memo != null) {
+      return (Conversion<T>) memo;
+    }
+    if (conversionByClassNegatives.contains(datumClass)) {
+      return null;
+    }
+    Conversion<T> result = computeConversionByClass(datumClass);
+    if (result != null) {
+      conversionByClassMemo.put(datumClass, result);
+    } else {
+      conversionByClassNegatives.add(datumClass);
+    }
+    return result;
+  }
+
+  @SuppressWarnings("unchecked")
+  private <T> Conversion<T> computeConversionByClass(Class<T> datumClass) {
     Map<String, Conversion<?>> exact = conversionsByClass.get(datumClass);
     if (exact != null) {
       return (Conversion<T>) exact.values().iterator().next();
@@ -244,6 +296,28 @@ public class GenericData {
       return null;
     }
     String logicalTypeName = logicalType.getName();
+    Map<String, Conversion<?>> memo = conversionByClassAndTypeMemo.computeIfAbsent(datumClass,
+        k -> new HashMap<>());
+    Conversion<?> memoized = memo.get(logicalTypeName);
+    if (memoized != null) {
+      return (Conversion<T>) memoized;
+    }
+    Set<String> negatives = conversionByClassAndTypeNegatives.computeIfAbsent(datumClass,
+        k -> new HashSet<>());
+    if (negatives.contains(logicalTypeName)) {
+      return null;
+    }
+    Conversion<T> result = computeConversionByClass(datumClass, logicalTypeName);
+    if (result != null) {
+      memo.put(logicalTypeName, result);
+    } else {
+      negatives.add(logicalTypeName);
+    }
+    return result;
+  }
+
+  @SuppressWarnings("unchecked")
+  private <T> Conversion<T> computeConversionByClass(Class<T> datumClass, String logicalTypeName) {
     Map<String, Conversion<?>> exact = conversionsByClass.get(datumClass);
     if (exact != null) {
       Conversion<?> conversion = exact.get(logicalTypeName);
