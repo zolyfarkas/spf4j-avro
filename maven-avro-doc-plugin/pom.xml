@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       https://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.spf4j.avro</groupId>
+    <artifactId>spf4j-avro-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>maven-avro-doc-plugin</artifactId>
+  <packaging>maven-plugin</packaging>
+
+  <name>spf4j-avro-${project.artifactId}</name>
+  <description>Avro schema documentation plugin. Generates a single self-contained HTML page from avro schemas,
+    a pure java replacement for the unmaintained node.js based avrodoc tool. This plugin intentionally depends
+    only on avro (org.spf4j.avro core) and the maven plugin API (and NOT on spf4j-core like
+    maven-avro-schema-plugin does), so that it can be used by spf4j-core itself without creating
+    a reactor dependency cycle. Relocated from the spf4j repository (spf4j-avro-components) in 2026-11.</description>
+
+  <properties>
+    <main.basedir>${project.parent.basedir}</main.basedir>
+    <mavenPluginApi.version>3.9.9</mavenPluginApi.version>
+    <mavenPluginAnnotations.version>3.15.2</mavenPluginAnnotations.version>
+    <junit4.version>4.13.2</junit4.version>
+    <skip.forbidenApi>true</skip.forbidenApi>
+    <jacoco.instruction.ratio>0.0</jacoco.instruction.ratio>
+    <jacoco.class.ratio>0.0</jacoco.class.ratio>
+    <jacoco.method.ratio>0.0</jacoco.method.ratio>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.spf4j.avro</groupId>
+      <artifactId>spf4j-avro</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <!-- @SuppressFBWarnings for the plugin code; CLASS-retention
+           annotations, not needed at runtime, hence provided scope -->
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-annotations</artifactId>
+      <version>4.7.3</version>
+      <scope>provided</scope>
+      <exclusions>
+        <!-- jsr305 is banned by this build's enforcer (license hygiene
+             inherited from upstream Avro); the annotations used here
+             (@SuppressFBWarnings) do not need it -->
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit4.version}</version>
+      <scope>test</scope>
+    </dependency>
+   <!-- Maven Core -->
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>${mavenPluginApi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+      <version>${mavenPluginApi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-annotations</artifactId>
+      <version>${mavenPluginAnnotations.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!-- The parent pom includes only Avro's Test* convention; this
+               module's tests use the spf4j *Test convention. -->
+          <includes combine.children="append">
+            <include>**/*Test**</include>
+          </includes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>mojo-descriptor</id>
+            <goals>
+              <goal>descriptor</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>
+
+</project>
