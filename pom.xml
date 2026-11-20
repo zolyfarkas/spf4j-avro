@@ -63,6 +63,8 @@
     <jopt-simple.version>5.0.4</jopt-simple.version>
     <junit5.version>5.14.4</junit5.version>
     <maven-core.version>3.9.6</maven-core.version>
+    <mavenPluginApi.version>3.9.9</mavenPluginApi.version>
+    <mavenPluginAnnotations.version>3.15.2</mavenPluginAnnotations.version>
     <mockito.version>5.23.0</mockito.version>
     <netty.version>4.2.16.Final</netty.version>
     <protobuf.version>4.35.1</protobuf.version>
@@ -88,7 +90,7 @@
   <modules>
     <module>core</module>
     <module>compiler</module>
-    <module>maven-avro-doc-plugin</module>
+    <module>avro-doc</module>
   </modules>
 
   <build>
@@ -265,6 +267,7 @@
             <inclNoLocationClasses>true</inclNoLocationClasses>
             <includes>
               <include>org/spf4j/avro/**/*</include>
+              <include>org/spf4j/maven/plugin/avro/**/*</include>
             </includes>
           </configuration>
         </plugin>
@@ -758,6 +761,21 @@ java.util.Calendar#getInstance()
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>${commons-lang3.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-core</artifactId>
+        <version>${mavenPluginApi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${mavenPluginApi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.plugin-tools</groupId>
+        <artifactId>maven-plugin-annotations</artifactId>
+        <version>${mavenPluginAnnotations.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

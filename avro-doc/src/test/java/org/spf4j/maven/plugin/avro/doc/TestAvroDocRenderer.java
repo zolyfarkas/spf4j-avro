@@ -15,19 +15,23 @@
  */
 package org.spf4j.maven.plugin.avro.doc;
 
+import org.spf4j.avro.Schema;
+import org.junit.jupiter.api.Test;
+
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.spf4j.avro.Schema;
-import org.junit.Assert;
-import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Zoltan Farkas
  */
-public class AvroDocRendererTest {
+public class TestAvroDocRenderer {
 
   private static final String SCHEMA = "{"
           + "\"type\":\"record\",\"name\":\"TestRecord\",\"namespace\":\"org.example\","
@@ -46,43 +50,43 @@ public class AvroDocRendererTest {
     Schema schema = new Schema.Parser().parse(SCHEMA);
     Map<String, Schema> types = new LinkedHashMap<>();
     AvroDocRenderer.collect(schema, types);
-    Assert.assertEquals(3, types.size());
-    Assert.assertTrue(types.containsKey("org.example.TestRecord"));
-    Assert.assertTrue(types.containsKey("org.example.Status"));
-    Assert.assertTrue(types.containsKey("org.example.Hash"));
-    Assert.assertEquals(4, AvroDocRenderer.countFields(types));
+    assertEquals(3, types.size());
+    assertTrue(types.containsKey("org.example.TestRecord"));
+    assertTrue(types.containsKey("org.example.Status"));
+    assertTrue(types.containsKey("org.example.Hash"));
+    assertEquals(4, AvroDocRenderer.countFields(types));
     StringBuilder out = new StringBuilder();
     AvroDocRenderer.render(out, "test title", types);
     String html = out.toString();
-    Assert.assertTrue(html.contains("id=\"org.example.TestRecord\""));
-    Assert.assertTrue(html.contains("href=\"#org.example.Status\""));
-    Assert.assertTrue(html.contains("<span class=\"sym\">DONE</span>"));
-    Assert.assertTrue(html.contains("Size: <code>16</code> bytes"));
-    Assert.assertTrue(html.contains("&quot;abc&quot;"));
-    Assert.assertTrue(html.contains("<strong>test</strong>"));
-    Assert.assertTrue(html.contains("<code>code</code>"));
-    Assert.assertTrue(html.contains("null"));
+    assertTrue(html.contains("id=\"org.example.TestRecord\""));
+    assertTrue(html.contains("href=\"#org.example.Status\""));
+    assertTrue(html.contains("<span class=\"sym\">DONE</span>"));
+    assertTrue(html.contains("Size: <code>16</code> bytes"));
+    assertTrue(html.contains("&quot;abc&quot;"));
+    assertTrue(html.contains("<strong>test</strong>"));
+    assertTrue(html.contains("<code>code</code>"));
+    assertTrue(html.contains("null"));
   }
 
   @Test
   public void testEscaping() {
-    Assert.assertEquals("a&lt;b&gt;&amp;&quot;c&#39;d&quot;", AvroDocRenderer.esc("a<b>&\"c'd\""));
+    assertEquals("a&lt;b&gt;&amp;&quot;c&#39;d&quot;", AvroDocRenderer.esc("a<b>&\"c'd\""));
   }
 
   @Test
   public void testCodeSpanIsLiteral() {
     String html = AvroDocRenderer.docHtml("Use `**not bold** [x](https://example.com)` literally,"
             + " but **this** is bold and [this](https://example.com) is a link.");
-    Assert.assertTrue(html.contains("<code>**not bold** [x](https://example.com)</code>"));
-    Assert.assertTrue(html.contains("<strong>this</strong>"));
-    Assert.assertTrue(html.contains("<a href=\"https://example.com\">this</a>"));
+    assertTrue(html.contains("<code>**not bold** [x](https://example.com)</code>"));
+    assertTrue(html.contains("<strong>this</strong>"));
+    assertTrue(html.contains("<a href=\"https://example.com\">this</a>"));
   }
 
   @Test
   public void testUnmatchedBacktickIsPlainText() {
     String html = AvroDocRenderer.docHtml("a `b c");
-    Assert.assertFalse(html.contains("<code>"));
-    Assert.assertTrue(html.contains("a `b c"));
+    assertFalse(html.contains("<code>"));
+    assertTrue(html.contains("a `b c"));
   }
 
   @Test
@@ -95,10 +99,10 @@ public class AvroDocRendererTest {
     Schema schema = SchemaDocMojo.parseSchema(file);
     Map<String, Schema> types = new LinkedHashMap<>();
     AvroDocRenderer.collect(schema, types);
-    Assert.assertTrue(types.containsKey("org.example.Any"));
+    assertTrue(types.containsKey("org.example.Any"));
     StringBuilder out = new StringBuilder();
     AvroDocRenderer.render(out, "t", types);
-    Assert.assertTrue(out.toString().contains("org.example.Any"));
+    assertTrue(out.toString().contains("org.example.Any"));
     Files.delete(file.toPath());
   }
 
